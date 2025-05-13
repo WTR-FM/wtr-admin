@@ -1,0 +1,36 @@
+
+> wtr-admin@1.0.0 dev
+> node --watch --loader ts-node/esm src/main.ts
+
+(node:1082854) ExperimentalWarning: `--experimental-loader` may be removed in the future; instead use `register()`:
+--import 'data:text/javascript,import { register } from "node:module"; import { pathToFileURL } from "node:url"; register("ts-node/esm", pathToFileURL("./"));'
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:1082854) [DEP0180] DeprecationWarning: fs.Stats constructor is deprecated.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+[32m[Nest] 1082854  - [39m05/13/2025, 3:49:55 PM [32m    LOG[39m [38;5;3m[NestFactory] [39m[32mStarting Nest application...[39m
+[32m[Nest] 1082854  - [39m05/13/2025, 3:49:55 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mConfigHostModule dependencies initialized[39m[38;5;3m +17ms[39m
+[32m[Nest] 1082854  - [39m05/13/2025, 3:49:55 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mAppModule dependencies initialized[39m[38;5;3m +1ms[39m
+[32m[Nest] 1082854  - [39m05/13/2025, 3:49:55 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mAdminModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 1082854  - [39m05/13/2025, 3:49:55 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mConfigModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 1082854  - [39m05/13/2025, 3:49:55 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mAppController {/}:[39m[38;5;3m +6ms[39m
+[32m[Nest] 1082854  - [39m05/13/2025, 3:49:55 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/, GET} route[39m[38;5;3m +3ms[39m
+[32m[Nest] 1082854  - [39m05/13/2025, 3:49:58 PM [32m    LOG[39m [38;5;3m[NestApplication] [39m[32mNest application successfully started[39m[38;5;3m +2941ms[39m
+[31m[Nest] 1082854  - [39m05/13/2025, 3:49:58 PM [31m  ERROR[39m [38;5;3m[NestApplication] [39m[31mError: listen EADDRINUSE: address already in use :- Bundling files...
+✔ Finish bundling: 1 files
+ng application: Error: listen EADDRINUSE: address already in use :::3001
+    at Server.setupListenHandle [as _listen2] (node:net:1937:16)
+    at listenInCluster (node:net:1994:12)
+    at Server.listen (node:net:2099:7)
+    at ExpressAdapter.listen (/home/hcode/PollenStudios/wtr-admin/node_modules/@nestjs/platform-express/adapters/express-adapter.js:109:32)
+    at /home/hcode/PollenStudios/wtr-admin/node_modules/@nestjs/core/nest-application.js:183:30
+    at new Promise (<anonymous>)
+    at NestApplication.listen (/home/hcode/PollenStudios/wtr-admin/node_modules/@nestjs/core/nest-application.js:173:16)
+    at async bootstrap (file:///home/hcode/PollenStudios/wtr-admin/src/main.ts:13:9) {
+  code: 'EADDRINUSE',
+  errno: -98,
+  syscall: 'listen',
+  address: '::',
+  port: 3001
+}
+- Bundling files...
+✔ Finish bundling: 1 files
