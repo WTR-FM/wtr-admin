@@ -1,27 +1,69 @@
+// main.ts
 import { NestFactory } from '@nestjs/core';
 import { ExpressAdapter } from '@nestjs/platform-express';
 import express from 'express';
+import session from 'express-session';
+import formidableMiddleware from 'express-formidable';
+import AdminJS from 'adminjs';
+import * as AdminJSExpress from '@adminjs/express';
+
 import { AppModule } from './app.module.js';
 
 async function bootstrap() {
   try {
-    // Create Express instance
+    // Create express app
     const expressApp = express();
 
-    // Create NestJS app with Express adapter
+    // Session + formidable middleware (required for AdminJS auth + file uploads)
+    expressApp.use(
+      session({
+        secret: 'secret',
+        resave: true,
+        saveUninitialized: true,
+      }),
+    );
+    expressApp.use(formidableMiddleware());
+
+    // Create AdminJS instance manually
+    const adminJs = new AdminJS({
+      rootPath: '/admin',
+      resources: [],
+    });
+
+    // Set up AdminJS authentication
+    const adminRouter = AdminJSExpress.buildAuthenticatedRouter(
+      adminJs,
+      {
+        authenticate: async (email, password) => {
+          if (email === 'admin@example.com' && password === 'password') {
+            return { email };
+          }
+          return null;
+        },
+        cookieName: 'adminjs',
+        cookiePassword: 'secret',
+      },
+      null,
+      {
+        resave: true,
+        saveUninitialized: true,
+        secret: 'secret',
+      }
+    );
+
+    // Mount AdminJS router manually
+    expressApp.use(adminJs.options.rootPath, adminRouter);
+
+    // Create Nest app
     const app = await NestFactory.create(
-      AppModule,
+      await AppModule.register(),
       new ExpressAdapter(expressApp),
     );
-    
-    const port = 3001;
-    
-    // Start the server
-    await app.listen(port);
-    console.log(`Application is running on: http://localhost:${port}`);
-    console.log(`AdminJS panel is available at: http://localhost:${port}/admin`);
+
+    await app.listen(3001);
+    console.log(`AdminJS available at http://localhost:3001/admin`);
   } catch (error) {
     console.error('Error bootstrapping application:', error);
   }
 }
-bootstrap(); 
+bootstrap();
