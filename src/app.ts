@@ -67,8 +67,8 @@ const start = async () => {
           resource: Admin,
           options: {
             listProperties: ['name', 'email', 'role', 'isActive', 'createdAt'],
-            showProperties: ['id', 'firstName', 'lastName', 'email', 'password', 'role', 'isActive', 'refreshToken', 'createdAt', 'updatedAt', 'deletedAt'],
-            editProperties: ['role', 'isActive'],
+            showProperties: ['id', 'firstName', 'lastName', 'email', 'password', 'role', 'isActive', 'refreshToken', 'createdAt', 'updatedAt'],
+            editProperties: ['firstName', 'lastName', 'email', 'password', 'role', 'isActive'],
             filterProperties: ['name', 'email', 'role', 'isActive', 'createdAt'],
             properties: {
               password: { 
