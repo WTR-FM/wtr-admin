@@ -29,7 +29,9 @@ const authenticate = async (email: string, password: string) => {
   console.log(`Authentication attempt with email: ${email}`);
   // Try admin database authentication
   console.log('Attempting database authentication...');
+  console.log("Looking for Email: ", email, "Password: ", password);
   const admin = await AdminAuthService.authenticate(email, password);
+  console.log("Admin: ", admin);
   
   if (admin) {
     console.log('Database authentication successful for:', admin.email);
@@ -151,6 +153,10 @@ const start = async () => {
               refreshToken: { isVisible: false },
               spotifyTokens: { type: 'mixed' },
             },
+            actions: {
+              delete: {  isAccessible: ({ currentAdmin }) => AdminAuthService.isSuperAdmin(currentAdmin) },
+              bulkDelete: {  isAccessible: ({ currentAdmin }) => AdminAuthService.isSuperAdmin(currentAdmin) },
+            },
             navigation: {
               name: 'User Management',
               icon: 'User',
@@ -167,6 +173,10 @@ const start = async () => {
             properties: {
               metadata: { type: 'mixed' },
               lyrics: { type: 'textarea' },
+            },
+            actions: {
+              delete: {  isAccessible: ({ currentAdmin }) => AdminAuthService.isSuperAdmin(currentAdmin) },
+              bulkDelete: {  isAccessible: ({ currentAdmin }) => AdminAuthService.isSuperAdmin(currentAdmin) },
             },
             navigation: {
               name: 'Content Management',
@@ -185,6 +195,10 @@ const start = async () => {
               metadata: { type: 'mixed' },
               description: { type: 'textarea' },
             },
+            actions: {
+              delete: {  isAccessible: ({ currentAdmin }) => AdminAuthService.isSuperAdmin(currentAdmin) },
+              bulkDelete: {  isAccessible: ({ currentAdmin }) => AdminAuthService.isSuperAdmin(currentAdmin) },
+            },
             navigation: {
               name: 'Content Management',
               icon: 'List',
@@ -197,6 +211,10 @@ const start = async () => {
             listProperties: ['watchlistId', 'songId', 'position', 'syncedWithSpotify', 'createdAt'],
             showProperties: ['id', 'watchlistId', 'songId', 'position', 'syncedWithSpotify', 'watchlist', 'song', 'createdAt', 'updatedAt'],
             editProperties: ['watchlistId', 'songId', 'position', 'syncedWithSpotify'],
+            actions: {
+              delete: {  isAccessible: ({ currentAdmin }) => AdminAuthService.isSuperAdmin(currentAdmin) },
+              bulkDelete: {  isAccessible: ({ currentAdmin }) => AdminAuthService.isSuperAdmin(currentAdmin) },
+            },
             navigation: {
               name: 'Content Management',
             },
@@ -208,6 +226,10 @@ const start = async () => {
             listProperties: ['requesterId', 'receiverId', 'status', 'createdAt'],
             showProperties: ['id', 'requesterId', 'receiverId', 'status', 'createdAt', 'updatedAt'],
             editProperties: ['requesterId', 'receiverId', 'status'],
+            actions: {
+              delete: {  isAccessible: ({ currentAdmin }) => AdminAuthService.isSuperAdmin(currentAdmin) },
+              bulkDelete: {  isAccessible: ({ currentAdmin }) => AdminAuthService.isSuperAdmin(currentAdmin) },
+            },
             navigation: {
               name: 'User Management',
             },
@@ -219,6 +241,10 @@ const start = async () => {
             listProperties: ['userId', 'otp', 'expiresAt', 'verified', 'createdAt'],
             showProperties: ['id', 'userId', 'otp', 'expiresAt', 'verified', 'createdAt', 'updatedAt'],
             editProperties: ['expiresAt', 'verified'],
+            actions: {
+              delete: {  isAccessible: ({ currentAdmin }) => AdminAuthService.isSuperAdmin(currentAdmin) },
+              bulkDelete: {  isAccessible: ({ currentAdmin }) => AdminAuthService.isSuperAdmin(currentAdmin) },
+            },
             navigation: {
               name: 'User Management',
             },
