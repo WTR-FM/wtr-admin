@@ -10,6 +10,9 @@
     "dev-with-db": "docker-compose up -d && node --watch --loader ts-node/esm src/main.ts",
     "adminjs-test": "node --loader ts-node/esm src/adminjs-test.js",
     "adminjs-standalone": "node --loader ts-node/esm adminjs-standalone.js",
+    "create-superadmin": "node --loader ts-node/esm src/scripts/create-superadmin.ts",
+    "create-simple-admin": "node --loader ts-node/esm src/scripts/create-simple-admin.ts",
+    "create-admin": "node --loader ts-node/esm src/scripts/create-admin.ts",
     "build": "tsc"
   },
   "keywords": [],

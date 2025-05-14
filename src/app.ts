@@ -14,7 +14,7 @@ import { PlaylistSong } from './entities/playlist-song.entity.js'
 import { Watchlist } from './entities/watchlist.entity.js'
 import { Otp } from './entities/otp.entity.js'
 import { Admin } from './entities/admin.entity.js'
-import bcrypt from 'bcrypt'
+import { AdminAuthService } from './services/admin-auth.service.js'
 
 // Register Sequelize adapter
 AdminJS.registerAdapter({ Database, Resource })
@@ -24,52 +24,36 @@ dotenv.config()
 
 const PORT = process.env.PORT || 3000
 
-const DEFAULT_ADMIN = {
-  email: process.env.ADMIN_EMAIL || 'admin@example.com',
-  password: process.env.ADMIN_PASSWORD || 'password',
-  role: 'superadmin',
-}
-
+// Authentication handler using our AdminAuthService
 const authenticate = async (email: string, password: string) => {
-  try {
-    // First try to find the admin in the database
-    const admin = await Admin.findOne({ where: { email, isActive: true } })
-    
-    if (admin) {
-      // Use the verifyPassword method
-      const passwordMatch = await admin.verifyPassword(password)
-      if (passwordMatch) {
-        return {
-          email: admin.email,
-          role: admin.role,
-          id: admin.id,
-        }
-      }
-    }
-    
-    // Fallback to default admin if no matching admin found in DB
-    if (email === DEFAULT_ADMIN.email && password === DEFAULT_ADMIN.password) {
-      return Promise.resolve({
-        email: DEFAULT_ADMIN.email,
-        role: DEFAULT_ADMIN.role,
-      })
-    }
-    
-    return null
-  } catch (error) {
-    console.error('Authentication error:', error)
-    return null
+  console.log(`Authentication attempt with email: ${email}`);
+  
+  // Regular admin authentication remains for backward compatibility
+  const defaultAdminEmail = process.env.ADMIN_EMAIL || 'admin@example.com';
+  const defaultAdminPassword = process.env.ADMIN_PASSWORD || 'password';
+  
+  if (email === defaultAdminEmail && password === defaultAdminPassword) {
+    console.log('Default admin authentication successful');
+    return {
+      email: defaultAdminEmail,
+      role: 'admin',
+      id: '0',
+      name: 'System Admin',
+    };
   }
-}
-
-// Check if a user is a superadmin
-const isSuperAdmin = ({ currentAdmin }) => {
-  return currentAdmin && currentAdmin.role === 'superadmin'
-}
-
-// Check if a user is any kind of admin (superadmin or regular admin)
-const isAdmin = ({ currentAdmin }) => {
-  return currentAdmin && ['admin', 'superadmin'].includes(currentAdmin.role)
+  
+  // Try admin database authentication
+  console.log('Attempting database authentication...');
+  const admin = await AdminAuthService.authenticate(email, password);
+  
+  if (admin) {
+    console.log('Database authentication successful for:', admin.email);
+    console.log('User role:', admin.role);
+  } else {
+    console.log('Database authentication failed');
+  }
+  
+  return admin;
 }
 
 const start = async () => {
@@ -77,29 +61,8 @@ const start = async () => {
     // Initialize database connection
     await sequelize.authenticate()
     console.log('Database connection has been established successfully.')
-    
     // Sync database tables
     await initDatabase()
-    
-    // Check if default admin exists, if not create it
-    const adminExists = await Admin.findOne({
-      where: { email: DEFAULT_ADMIN.email }
-    })
-    
-    if (!adminExists) {
-      // Create default admin
-      // The password will be hashed by the BeforeCreate hook
-      await Admin.create({
-        email: DEFAULT_ADMIN.email,
-        firstName: 'Super',
-        lastName: 'Admin',
-        password: DEFAULT_ADMIN.password,
-        role: 'superadmin',
-        isActive: true,
-      })
-      console.log('Default superadmin account created')
-    }
-    
     const app = express()
     
     // For parsing form data
@@ -116,83 +79,78 @@ const start = async () => {
         {
           resource: Admin,
           options: {
-            listProperties: ['email', 'firstName', 'lastName', 'role', 'isActive', 'createdAt'],
-            showProperties: ['id', 'email', 'firstName', 'lastName', 'role', 'isActive', 'createdAt', 'updatedAt'],
-            editProperties: ['email', 'firstName', 'lastName', 'password', 'role', 'isActive'],
-            filterProperties: ['email', 'firstName', 'lastName', 'role', 'isActive', 'createdAt'],
+            listProperties: ['name', 'email', 'role', 'isActive', 'createdAt'],
+            showProperties: ['id', 'name', 'email', 'role', 'isActive', 'createdAt', 'updatedAt'],
+            editProperties: ['name', 'email', 'role', 'isActive'],
+            filterProperties: ['name', 'email', 'role', 'isActive', 'createdAt'],
             properties: {
               password: { 
                 type: 'password',
                 isVisible: {
-                  list: false, 
+                  list: false,
                   filter: false,
                   show: false,
-                  edit: true,
+                  edit: false,
                 }
               },
               refreshToken: { isVisible: false },
-              permissions: { type: 'mixed' },
-              fullName: {
-                type: 'string',
-                isVisible: {
-                  list: true,
-                  show: true,
-                  filter: false,
-                  edit: false,
-                },
-                position: 2,
-                isVirtual: true,
-                // Return fullName in list and show views
-                getter: (record) => {
-                  return `${record.params.firstName || ''} ${record.params.lastName || ''}`.trim();
-                },
-              },
-            },
-            actions: {
-              new: { 
-                isAccessible: isSuperAdmin,
-                before: async (request) => {
-                  // Validate form data
-                  if (!request.payload.email) {
-                    throw new Error('Email is required');
-                  }
-                  if (!request.payload.password || request.payload.password.length < 6) {
-                    throw new Error('Password must be at least 6 characters long');
-                  }
-                  if (!request.payload.firstName) {
-                    throw new Error('First name is required');
-                  }
-                  return request;
-                },
-              },
-              edit: { 
-                isAccessible: isSuperAdmin,
-                before: async (request) => {
-                  // Validate form data
-                  if (!request.payload.email) {
-                    throw new Error('Email is required');
-                  }
-                  if (request.payload.password !== '' && request.payload.password && request.payload.password.length < 6) {
-                    throw new Error('Password must be at least 6 characters long');
-                  }
-                  if (!request.payload.firstName) {
-                    throw new Error('First name is required');
-                  }
-                  
-                  // If password is empty, remove it from the payload
-                  if (request.payload.password === '') {
-                    delete request.payload.password;
-                  }
-                  return request;
-                },
-              },
-              delete: { isAccessible: isSuperAdmin },
-              list: { isAccessible: isSuperAdmin },
-              show: { isAccessible: isSuperAdmin },
             },
             navigation: {
               name: 'System Administration',
-              icon: 'Shield',
+              icon: 'Admin',
+            },
+            actions: {
+              // Only superadmin can see this resource
+              list: { isAccessible: ({ currentAdmin }) => AdminAuthService.isSuperAdmin(currentAdmin) },
+              show: { isAccessible: ({ currentAdmin }) => AdminAuthService.isSuperAdmin(currentAdmin) },
+              edit: { isAccessible: ({ currentAdmin }) => AdminAuthService.isSuperAdmin(currentAdmin) },
+              delete: { isAccessible: ({ currentAdmin }) => AdminAuthService.isSuperAdmin(currentAdmin) },
+              new: { isAccessible: ({ currentAdmin }) => AdminAuthService.isSuperAdmin(currentAdmin) },
+              bulkDelete: { isAccessible: ({ currentAdmin }) => AdminAuthService.isSuperAdmin(currentAdmin) },
+              setPassword: {
+                actionType: 'record',
+                icon: 'Password',
+                isAccessible: ({ currentAdmin }) => AdminAuthService.isSuperAdmin(currentAdmin),
+                handler: async (request, response, context) => {
+                  const { record, currentAdmin } = context;
+                  
+                  if (!request.method || request.method === 'GET') {
+                    return {
+                      record: record.toJSON(),
+                    };
+                  }
+                  
+                  // Handle POST - password update
+                  const { password, passwordConfirmation } = request.payload || {};
+                  
+                  if (!password || !passwordConfirmation) {
+                    throw new Error('Both password and confirmation are required');
+                  }
+                  
+                  if (password !== passwordConfirmation) {
+                    throw new Error('Passwords do not match');
+                  }
+                  
+                  if (password.length < 8) {
+                    throw new Error('Password must be at least 8 characters long');
+                  }
+                  
+                  // Update the password
+                  await Admin.update(
+                    { password },
+                    { where: { id: record.param('id') }, individualHooks: true }
+                  );
+                  
+                  return {
+                    record: record.toJSON(),
+                    notice: {
+                      message: 'Password has been updated successfully',
+                      type: 'success',
+                    },
+                    redirectUrl: `/admin/resources/Admin/records/${record.param('id')}/show`,
+                  };
+                },
+              },
             },
           },
         },

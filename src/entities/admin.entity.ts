@@ -9,7 +9,7 @@ import {
   BeforeCreate,
   BeforeUpdate,
 } from 'sequelize-typescript';
-import bcrypt from 'bcrypt';
+import { hash } from 'bcrypt';
 
 @Table({
   tableName: 'admins',
@@ -31,20 +31,7 @@ export class Admin extends Model {
     type: DataType.STRING,
     allowNull: false,
   })
-  declare firstName: string;
-
-  @Column({
-    type: DataType.STRING,
-    allowNull: true,
-  })
-  declare lastName: string;
-
-  @Column({
-    type: DataType.BOOLEAN,
-    allowNull: false,
-    defaultValue: true,
-  })
-  declare isActive: boolean;
+  declare name: string;
 
   @Column({
     type: DataType.STRING,
@@ -67,18 +54,18 @@ export class Admin extends Model {
   declare role: 'admin' | 'superadmin';
 
   @Column({
+    type: DataType.BOOLEAN,
+    allowNull: false,
+    defaultValue: true,
+  })
+  declare isActive: boolean;
+
+  @Column({
     type: DataType.STRING,
     allowNull: true,
     defaultValue: null,
   })
   declare refreshToken: string;
-
-  @Column({
-    type: DataType.JSONB,
-    allowNull: true,
-    defaultValue: null,
-  })
-  declare permissions: any;
 
   @CreatedAt
   declare createdAt: Date;
@@ -89,29 +76,36 @@ export class Admin extends Model {
   @DeletedAt
   declare deletedAt: Date;
 
-  // Virtual field for full name
-  get fullName(): string {
-    return this.lastName 
-      ? `${this.firstName} ${this.lastName}` 
-      : this.firstName;
-  }
-
+  // This method is called before creating a new instance
   @BeforeCreate
-  static async hashPasswordBeforeCreate(instance: Admin) {
+  static async hashPasswordOnCreate(instance: Admin) {
+    console.log('BeforeCreate hook called, hashing password');
     if (instance.password) {
-      instance.password = await bcrypt.hash(instance.password, 10);
+      try {
+        console.log('Hashing password for new user:', instance.email);
+        instance.password = await hash(instance.password, 10);
+        console.log('Password hashed successfully');
+      } catch (error) {
+        console.error('Error hashing password:', error);
+        throw error;
+      }
     }
   }
 
+  // This method is called before updating an instance
   @BeforeUpdate
-  static async hashPasswordBeforeUpdate(instance: Admin) {
+  static async hashPasswordOnUpdate(instance: Admin) {
+    console.log('BeforeUpdate hook called for user:', instance.email);
+    // Hash the password only if it was changed
     if (instance.changed('password') && instance.password) {
-      instance.password = await bcrypt.hash(instance.password, 10);
+      try {
+        console.log('Password changed, hashing new password');
+        instance.password = await hash(instance.password, 10);
+        console.log('Password hashed successfully');
+      } catch (error) {
+        console.error('Error hashing password:', error);
+        throw error;
+      }
     }
-  }
-
-  // Method to verify password
-  async verifyPassword(password: string): Promise<boolean> {
-    return bcrypt.compare(password, this.password);
   }
 } 
