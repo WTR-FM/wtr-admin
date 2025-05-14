@@ -1,40 +1,59 @@
-# WTR Admin
+# WTR Admin Panel
 
-An AdminJS-based admin panel for your application.
+Admin panel for the WTR application using AdminJS with Express and Sequelize.
+
+## Features
+
+- Complete CRUD operations for all database entities
+- User management (users, OTPs, friend requests)
+- Content management (songs, playlists, watchlists)
+- Authentication with secure password
+- PostgreSQL database integration
 
 ## Setup
 
 1. Install dependencies:
-```
-npm install
-```
+   ```
+   npm install
+   ```
 
-2. Set up environment variables:
-Create a `.env` file based on the provided example.
+2. Configure environment variables:
+   - Copy `.env.example` to `.env` (already done)
+   - Update database credentials in `.env` file
 
-3. Start PostgreSQL database with Docker:
-```
-docker-compose up -d
-```
+3. Start the application:
+   ```
+   npm run start
+   ```
 
-4. Run the application in development mode:
-```
-npm run dev
-```
+4. Access the admin panel:
+   - Navigate to `http://localhost:3000/admin` in your browser
+   - Login with the admin credentials defined in your `.env` file
+   
+## Development
 
-Or run both database and application with a single command:
-```
-npm run dev-with-db
-```
+- Run development server with auto-reload:
+  ```
+  npm run dev
+  ```
 
-## Access
+- Build for production:
+  ```
+  npm run build
+  ```
 
-- Main application: http://localhost:3000
-- Admin panel: http://localhost:3000/admin
+## Integration with WTR Backend
 
-Default admin credentials:
-- Email: admin@example.com
-- Password: password
+This admin panel connects to the same PostgreSQL database used by the WTR backend application. It provides an administrative interface for managing all entities defined in the backend.
+
+## Entity Relationships
+
+- Users - Core user accounts
+- Songs - Music tracks available in the system
+- Watchlists - User playlists/collections
+- PlaylistSongs - Junction table connecting songs to playlists
+- Friend Requests - Social connections between users
+- OTPs - One-time passwords for user verification
 
 ## Troubleshooting AdminJS
 
