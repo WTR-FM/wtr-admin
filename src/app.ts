@@ -84,7 +84,7 @@ const start = async () => {
             },
             navigation: {
               name: null,
-              icon: 'Admin',
+              icon: 'Users',
             },
             actions: {
               // Only superadmin can see this resource
@@ -96,7 +96,7 @@ const start = async () => {
               bulkDelete: { isAccessible: ({ currentAdmin }) => AdminAuthService.isSuperAdmin(currentAdmin) },
               setPassword: {
                 actionType: 'record',
-                icon: 'Password',
+                icon: 'Key',
                 isAccessible: ({ currentAdmin }) => AdminAuthService.isSuperAdmin(currentAdmin),
                 handler: async (request, response, context) => {
                   const { record, currentAdmin } = context;
@@ -180,7 +180,7 @@ const start = async () => {
             },
             navigation: {
               name: 'Content Management',
-              icon: 'MusicNote',
+              icon: 'Music',
             },
           },
         },
@@ -201,7 +201,7 @@ const start = async () => {
             },
             navigation: {
               name: 'Content Management',
-              icon: 'List',
+              icon: 'Eye',
             },
           },
         },
@@ -217,6 +217,7 @@ const start = async () => {
             },
             navigation: {
               name: 'Content Management',
+              icon: 'Playlist',
             },
           },
         },
@@ -232,6 +233,7 @@ const start = async () => {
             },
             navigation: {
               name: 'User Management',
+              icon: 'Users',
             },
           },
         },
@@ -247,6 +249,7 @@ const start = async () => {
             },
             navigation: {
               name: 'User Management',
+              icon: 'Lock',
             },
           },
         },
