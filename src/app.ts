@@ -22,26 +22,11 @@ AdminJS.registerAdapter({ Database, Resource })
 // Load environment variables
 dotenv.config()
 
-const PORT = process.env.PORT || 3000
+const PORT = process.env.PORT || 5000
 
 // Authentication handler using our AdminAuthService
 const authenticate = async (email: string, password: string) => {
   console.log(`Authentication attempt with email: ${email}`);
-  
-  // Regular admin authentication remains for backward compatibility
-  const defaultAdminEmail = process.env.ADMIN_EMAIL || 'admin@example.com';
-  const defaultAdminPassword = process.env.ADMIN_PASSWORD || 'password';
-  
-  if (email === defaultAdminEmail && password === defaultAdminPassword) {
-    console.log('Default admin authentication successful');
-    return {
-      email: defaultAdminEmail,
-      role: 'admin',
-      id: '0',
-      name: 'System Admin',
-    };
-  }
-  
   // Try admin database authentication
   console.log('Attempting database authentication...');
   const admin = await AdminAuthService.authenticate(email, password);
@@ -96,7 +81,7 @@ const start = async () => {
               refreshToken: { isVisible: false },
             },
             navigation: {
-              name: 'System Administration',
+              name: null,
               icon: 'Admin',
             },
             actions: {

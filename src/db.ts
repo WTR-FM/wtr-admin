@@ -42,10 +42,6 @@ sequelize.addModels([
 // Initialize database tables
 const initDatabase = async () => {
   try {
-    // First try to create just the Admin table with force: true
-    await Admin.sync({ force: true });
-    console.log('Admin table created');
-    
     // Now sync other tables with alter: true, force: false
     await sequelize.sync({ alter: true });
     console.log('Database synchronized');
