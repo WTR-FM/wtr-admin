@@ -10,6 +10,7 @@ import {
 
 @Table({
   tableName: 'users',
+  paranoid: false,
   indexes: [
     { unique: true, fields: ['email'] },
     { fields: ['isActive'] },

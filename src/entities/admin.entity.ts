@@ -13,6 +13,7 @@ import { hash } from 'bcrypt';
 
 @Table({
   tableName: 'admins',
+  paranoid: false,
   indexes: [
     { unique: true, fields: ['email'] },
     { fields: ['isActive'] },

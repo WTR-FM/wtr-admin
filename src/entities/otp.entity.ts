@@ -4,6 +4,7 @@ import { DataTypes } from 'sequelize';
 @Table({
   timestamps: true,
   tableName: 'otps',
+  paranoid: false,
   indexes: [
     { fields: ['userId'] },
     { fields: ['otp'] },

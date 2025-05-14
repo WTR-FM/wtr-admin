@@ -11,7 +11,10 @@ import {
 } from 'sequelize-typescript';
 import { User } from './user.entity.js';
 
-@Table({ tableName: 'friend_requests' })
+@Table({ 
+  tableName: 'friend_requests',
+  paranoid: false 
+})
 export class FriendRequest extends Model {
   @PrimaryKey
   @Default(DataType.UUIDV4)

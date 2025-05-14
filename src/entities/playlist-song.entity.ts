@@ -13,6 +13,7 @@ import { Watchlist } from './watchlist.entity.js';
 
 @Table({
   tableName: 'playlist_songs',
+  paranoid: false,
   indexes: [
     {
       unique: true,

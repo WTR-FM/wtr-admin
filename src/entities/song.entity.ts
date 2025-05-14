@@ -10,6 +10,7 @@ import {
 
 @Table({
   tableName: 'songs',
+  paranoid: false,
   indexes: [
     {
       unique: true,

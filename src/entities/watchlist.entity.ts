@@ -11,6 +11,7 @@ import { PlaylistSong } from './playlist-song.entity.js';
 
 @Table({
   tableName: 'watchlists',
+  paranoid: false,
   indexes: [
     {
       unique: true,
