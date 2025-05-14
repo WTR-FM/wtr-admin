@@ -31,7 +31,13 @@ export class Admin extends Model {
     type: DataType.STRING,
     allowNull: false,
   })
-  declare name: string;
+  declare firstName: string;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+  })
+  declare lastName: string;
 
   @Column({
     type: DataType.STRING,

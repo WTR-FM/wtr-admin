@@ -1,6 +1,5 @@
 import { sequelize } from '../db.js';
 import { Admin } from '../entities/admin.entity.js';
-import * as readline from 'readline';
 import { createInterface } from 'readline';
 
 const rl = createInterface({
@@ -51,9 +50,14 @@ async function createAdminInteractively() {
     let roleOption = await question('👑 Select role (1 for admin, 2 for superadmin): ');
     const role = roleOption === '2' ? 'superadmin' : 'admin';
     
-    const name = await question('📝 Enter admin name: ');
-    if (!name) {
-      console.log('⚠️ Warning: Using default name "Admin User"');
+    const firstName = await question('📝 Enter admin first name: ');
+    if (!firstName) {
+      console.log('⚠️ Warning: Using default name "Admin"');
+    }
+
+    const lastName = await question('📝 Enter admin last name: ');
+    if (!lastName) {
+      console.log('⚠️ Warning: Using default name "User"');
     }
     
     console.log('\n📋 Summary:');
@@ -61,7 +65,8 @@ async function createAdminInteractively() {
     console.log('- Email:', email);
     console.log('- Password:', '********');
     console.log('- Role:', role === 'superadmin' ? '👑 Superadmin' : '👤 Admin');
-    console.log('- Name:', name || 'Admin User');
+    console.log('- First Name:', firstName || 'Admin');
+    console.log('- Last Name:', lastName || 'User');
     console.log('='.repeat(50));
     
     const confirmation = await question('\n🔄 Confirm creation? (yes/no): ');
@@ -83,7 +88,8 @@ async function createAdminInteractively() {
       
       // Update the existing admin
       await existingAdmin.update({
-        name: name || existingAdmin.name,
+        firstName: firstName || existingAdmin.firstName,
+        lastName: lastName || existingAdmin.lastName,
         password: password, // Will be hashed by model hooks
         role,
         isActive: true
@@ -97,7 +103,8 @@ async function createAdminInteractively() {
     } else {
       // Create a new admin
       const admin = await Admin.create({
-        name: name || 'Admin User',
+        firstName: firstName || "Admin",
+        lastName: lastName || "User",
         email,
         password, // Will be hashed by model hooks
         role,
@@ -118,16 +125,7 @@ async function createAdminInteractively() {
         console.log('⚠️ Warning: Could not verify admin in database');
       }
     }
-    
-    console.log('\n🔄 Do you want to create another admin? (yes/no): ');
-    const createAnother = await question('');
-    
-    if (createAnother.toLowerCase() === 'yes') {
-      // Clear the console for a better experience
-      console.clear();
-      return createAdminInteractively();
-    }
-    
+
     console.log('\n👋 Thank you for using WTR Admin Account Creation Tool!');
     console.log('You can now log in with the created credentials.');
     
