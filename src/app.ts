@@ -65,8 +65,8 @@ const start = async () => {
           resource: Admin,
           options: {
             listProperties: ['name', 'email', 'role', 'isActive', 'createdAt'],
-            showProperties: ['id', 'name', 'email', 'role', 'isActive', 'createdAt', 'updatedAt'],
-            editProperties: ['name', 'email', 'role', 'isActive'],
+            showProperties: ['id', 'firstName', 'lastName', 'email', 'password', 'role', 'isActive', 'refreshToken', 'createdAt', 'updatedAt', 'deletedAt'],
+            editProperties: ['role', 'isActive'],
             filterProperties: ['name', 'email', 'role', 'isActive', 'createdAt'],
             properties: {
               password: { 
@@ -143,8 +143,8 @@ const start = async () => {
           resource: User,
           options: {
             listProperties: ['firstName', 'lastName', 'email', 'isActive', 'isVerified', 'createdAt'],
-            showProperties: ['id', 'firstName', 'lastName', 'email', 'isActive', 'isVerified', 'createdAt', 'updatedAt', 'coinbaseWalletAddress'],
-            editProperties: ['firstName', 'lastName', 'email', 'isActive', 'isVerified', 'coinbaseWalletAddress'],
+            showProperties: ['id', 'firstName', 'lastName', 'email', 'password', 'isActive', 'isVerified', 'coinbaseWalletAddress', 'refreshToken', 'spotifyTokens', 'createdAt', 'updatedAt'],
+            editProperties: ['isActive', 'isVerified'],
             filterProperties: ['firstName', 'lastName', 'email', 'isActive', 'isVerified', 'createdAt'],
             properties: {
               password: { isVisible: false },
@@ -161,8 +161,8 @@ const start = async () => {
           resource: Song,
           options: {
             listProperties: ['title', 'artist', 'album', 'source', 'createdAt'],
-            showProperties: ['id', 'title', 'artist', 'album', 'source', 'sourceId', 'albumCover', 'durationMs', 'previewUrl', 'createdAt'],
-            editProperties: ['title', 'artist', 'album', 'sourceId', 'source', 'albumCover', 'durationMs', 'previewUrl', 'lyrics'],
+            showProperties: ['id', 'title', 'artist', 'album', 'source', 'sourceId', 'albumCover', 'durationMs', 'previewUrl', 'lyrics', 'metadata', 'createdAt', 'updatedAt'],
+            editProperties: ['title', 'artist', 'album', 'sourceId', 'source', 'albumCover', 'durationMs', 'previewUrl', 'lyrics', 'metadata'],
             filterProperties: ['title', 'artist', 'album', 'source', 'createdAt'],
             properties: {
               metadata: { type: 'mixed' },
@@ -178,8 +178,8 @@ const start = async () => {
           resource: Watchlist,
           options: {
             listProperties: ['name', 'userId', 'isPublic', 'isCollaborative', 'createdAt'],
-            showProperties: ['id', 'name', 'description', 'userId', 'isPublic', 'isCollaborative', 'imageUrl', 'spotifyPlaylistId', 'createdAt'],
-            editProperties: ['name', 'description', 'userId', 'isPublic', 'isCollaborative', 'imageUrl', 'spotifyPlaylistId'],
+            showProperties: ['id', 'userId', 'name', 'description', 'imageUrl', 'isPublic', 'isCollaborative', 'spotifyPlaylistId', 'metadata', 'playlistSongs', 'createdAt', 'updatedAt'],
+            editProperties: ['name', 'description', 'userId', 'isPublic', 'isCollaborative', 'imageUrl', 'spotifyPlaylistId', 'metadata'],
             filterProperties: ['name', 'userId', 'isPublic', 'isCollaborative', 'createdAt'],
             properties: {
               metadata: { type: 'mixed' },
@@ -195,6 +195,8 @@ const start = async () => {
           resource: PlaylistSong,
           options: {
             listProperties: ['watchlistId', 'songId', 'position', 'syncedWithSpotify', 'createdAt'],
+            showProperties: ['id', 'watchlistId', 'songId', 'position', 'syncedWithSpotify', 'watchlist', 'song', 'createdAt', 'updatedAt'],
+            editProperties: ['watchlistId', 'songId', 'position', 'syncedWithSpotify'],
             navigation: {
               name: 'Content Management',
             },
@@ -204,6 +206,8 @@ const start = async () => {
           resource: FriendRequest,
           options: {
             listProperties: ['requesterId', 'receiverId', 'status', 'createdAt'],
+            showProperties: ['id', 'requesterId', 'receiverId', 'status', 'createdAt', 'updatedAt'],
+            editProperties: ['requesterId', 'receiverId', 'status'],
             navigation: {
               name: 'User Management',
             },
@@ -212,7 +216,9 @@ const start = async () => {
         {
           resource: Otp,
           options: {
-            listProperties: ['email', 'code', 'expiresAt', 'verified', 'createdAt'],
+            listProperties: ['userId', 'otp', 'expiresAt', 'verified', 'createdAt'],
+            showProperties: ['id', 'userId', 'otp', 'expiresAt', 'verified', 'createdAt', 'updatedAt'],
+            editProperties: ['expiresAt', 'verified'],
             navigation: {
               name: 'User Management',
             },
