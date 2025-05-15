@@ -32,14 +32,14 @@ const authenticate = async (email: string, password: string) => {
   console.log("Looking for Email: ", email, "Password: ", password);
   const admin = await AdminAuthService.authenticate(email, password);
   console.log("Admin: ", admin);
-  
+
   if (admin) {
     console.log('Database authentication successful for:', admin.email);
     console.log('User role:', admin.role);
   } else {
     console.log('Database authentication failed');
   }
-  
+
   return admin;
 }
 
@@ -51,7 +51,7 @@ const start = async () => {
     // Sync database tables
     await initDatabase()
     const app = express()
-    
+
     // For parsing form data
     app.use(formidable())
 
@@ -67,76 +67,67 @@ const start = async () => {
           resource: Admin,
           options: {
             listProperties: ['name', 'email', 'role', 'isActive', 'createdAt'],
-            showProperties: ['id', 'firstName', 'lastName', 'email', 'password', 'role', 'isActive', 'refreshToken', 'createdAt', 'updatedAt'],
+            showProperties: ['id', 'firstName', 'lastName', 'email', 'role', 'isActive', 'createdAt', 'updatedAt'],
             editProperties: ['firstName', 'lastName', 'email', 'password', 'role', 'isActive'],
             filterProperties: ['name', 'email', 'role', 'isActive', 'createdAt'],
+
             properties: {
-              password: { 
+              password: {
                 type: 'password',
                 isVisible: {
                   list: false,
                   filter: false,
                   show: false,
                   edit: false,
-                }
+                },
               },
               refreshToken: { isVisible: false },
             },
+
             navigation: {
               name: null,
               icon: 'Users',
             },
+
             actions: {
-              // Only superadmin can see this resource
-              list: { isAccessible: ({ currentAdmin }) => AdminAuthService.isSuperAdmin(currentAdmin) },
-              show: { isAccessible: ({ currentAdmin }) => AdminAuthService.isSuperAdmin(currentAdmin) },
-              edit: { isAccessible: ({ currentAdmin }) => AdminAuthService.isSuperAdmin(currentAdmin) },
-              delete: { isAccessible: ({ currentAdmin }) => AdminAuthService.isSuperAdmin(currentAdmin) },
-              new: { isAccessible: ({ currentAdmin }) => AdminAuthService.isSuperAdmin(currentAdmin) },
-              bulkDelete: { isAccessible: ({ currentAdmin }) => AdminAuthService.isSuperAdmin(currentAdmin) },
-              setPassword: {
-                actionType: 'record',
-                icon: 'Key',
-                isAccessible: ({ currentAdmin }) => AdminAuthService.isSuperAdmin(currentAdmin),
-                handler: async (request, response, context) => {
-                  const { record, currentAdmin } = context;
-                  
-                  if (!request.method || request.method === 'GET') {
-                    return {
-                      record: record.toJSON(),
+              list: {
+                isAccessible: ({ currentAdmin }) => true,
+                before: async (request, context) => {
+                  const { currentAdmin } = context;
+
+                  if (!AdminAuthService.isSuperAdmin(currentAdmin)) {
+                    request.query = {
+                      ...request.query,
+                      'filters.id': currentAdmin.id,
                     };
                   }
-                  
-                  // Handle POST - password update
-                  const { password, passwordConfirmation } = request.payload || {};
-                  
-                  if (!password || !passwordConfirmation) {
-                    throw new Error('Both password and confirmation are required');
-                  }
-                  
-                  if (password !== passwordConfirmation) {
-                    throw new Error('Passwords do not match');
-                  }
-                  
-                  if (password.length < 8) {
-                    throw new Error('Password must be at least 8 characters long');
-                  }
-                  
-                  // Update the password
-                  await Admin.update(
-                    { password },
-                    { where: { id: record.param('id') }, individualHooks: true }
-                  );
-                  
-                  return {
-                    record: record.toJSON(),
-                    notice: {
-                      message: 'Password has been updated successfully',
-                      type: 'success',
-                    },
-                    redirectUrl: `/admin/resources/Admin/records/${record.param('id')}/show`,
-                  };
+
+                  return request;
                 },
+              },
+
+              show: {
+                isAccessible: ({ currentAdmin, record }) =>
+                  AdminAuthService.isSuperAdmin(currentAdmin) ||
+                  (record && currentAdmin.id === record.param('id')),
+              },
+
+              edit: {
+                isAccessible: ({ currentAdmin, record }) =>
+                  AdminAuthService.isSuperAdmin(currentAdmin) ||
+                  (record && currentAdmin.id === record.param('id')),
+              },
+
+              delete: {
+                isAccessible: ({ currentAdmin }) => AdminAuthService.isSuperAdmin(currentAdmin),
+              },
+
+              new: {
+                isAccessible: ({ currentAdmin }) => AdminAuthService.isSuperAdmin(currentAdmin),
+              },
+
+              bulkDelete: {
+                isAccessible: ({ currentAdmin }) => AdminAuthService.isSuperAdmin(currentAdmin),
               },
             },
           },
@@ -154,8 +145,8 @@ const start = async () => {
               spotifyTokens: { type: 'mixed' },
             },
             actions: {
-              delete: {  isAccessible: ({ currentAdmin }) => AdminAuthService.isSuperAdmin(currentAdmin) },
-              bulkDelete: {  isAccessible: ({ currentAdmin }) => AdminAuthService.isSuperAdmin(currentAdmin) },
+              delete: { isAccessible: ({ currentAdmin }) => AdminAuthService.isSuperAdmin(currentAdmin) },
+              bulkDelete: { isAccessible: ({ currentAdmin }) => AdminAuthService.isSuperAdmin(currentAdmin) },
             },
             navigation: {
               name: 'User Management',
@@ -175,8 +166,8 @@ const start = async () => {
               lyrics: { type: 'textarea' },
             },
             actions: {
-              delete: {  isAccessible: ({ currentAdmin }) => AdminAuthService.isSuperAdmin(currentAdmin) },
-              bulkDelete: {  isAccessible: ({ currentAdmin }) => AdminAuthService.isSuperAdmin(currentAdmin) },
+              delete: { isAccessible: ({ currentAdmin }) => AdminAuthService.isSuperAdmin(currentAdmin) },
+              bulkDelete: { isAccessible: ({ currentAdmin }) => AdminAuthService.isSuperAdmin(currentAdmin) },
             },
             navigation: {
               name: 'Content Management',
@@ -196,8 +187,8 @@ const start = async () => {
               description: { type: 'textarea' },
             },
             actions: {
-              delete: {  isAccessible: ({ currentAdmin }) => AdminAuthService.isSuperAdmin(currentAdmin) },
-              bulkDelete: {  isAccessible: ({ currentAdmin }) => AdminAuthService.isSuperAdmin(currentAdmin) },
+              delete: { isAccessible: ({ currentAdmin }) => AdminAuthService.isSuperAdmin(currentAdmin) },
+              bulkDelete: { isAccessible: ({ currentAdmin }) => AdminAuthService.isSuperAdmin(currentAdmin) },
             },
             navigation: {
               name: 'Content Management',
@@ -212,8 +203,8 @@ const start = async () => {
             showProperties: ['id', 'watchlistId', 'songId', 'position', 'syncedWithSpotify', 'watchlist', 'song', 'createdAt', 'updatedAt'],
             editProperties: ['watchlistId', 'songId', 'position', 'syncedWithSpotify'],
             actions: {
-              delete: {  isAccessible: ({ currentAdmin }) => AdminAuthService.isSuperAdmin(currentAdmin) },
-              bulkDelete: {  isAccessible: ({ currentAdmin }) => AdminAuthService.isSuperAdmin(currentAdmin) },
+              delete: { isAccessible: ({ currentAdmin }) => AdminAuthService.isSuperAdmin(currentAdmin) },
+              bulkDelete: { isAccessible: ({ currentAdmin }) => AdminAuthService.isSuperAdmin(currentAdmin) },
             },
             navigation: {
               name: 'Content Management',
@@ -228,8 +219,8 @@ const start = async () => {
             showProperties: ['id', 'requesterId', 'receiverId', 'status', 'createdAt', 'updatedAt'],
             editProperties: ['requesterId', 'receiverId', 'status'],
             actions: {
-              delete: {  isAccessible: ({ currentAdmin }) => AdminAuthService.isSuperAdmin(currentAdmin) },
-              bulkDelete: {  isAccessible: ({ currentAdmin }) => AdminAuthService.isSuperAdmin(currentAdmin) },
+              delete: { isAccessible: ({ currentAdmin }) => AdminAuthService.isSuperAdmin(currentAdmin) },
+              bulkDelete: { isAccessible: ({ currentAdmin }) => AdminAuthService.isSuperAdmin(currentAdmin) },
             },
             navigation: {
               name: 'User Management',
@@ -244,8 +235,8 @@ const start = async () => {
             showProperties: ['id', 'userId', 'otp', 'expiresAt', 'verified', 'createdAt', 'updatedAt'],
             editProperties: ['expiresAt', 'verified'],
             actions: {
-              delete: {  isAccessible: ({ currentAdmin }) => AdminAuthService.isSuperAdmin(currentAdmin) },
-              bulkDelete: {  isAccessible: ({ currentAdmin }) => AdminAuthService.isSuperAdmin(currentAdmin) },
+              delete: { isAccessible: ({ currentAdmin }) => AdminAuthService.isSuperAdmin(currentAdmin) },
+              bulkDelete: { isAccessible: ({ currentAdmin }) => AdminAuthService.isSuperAdmin(currentAdmin) },
             },
             navigation: {
               name: 'User Management',
@@ -256,18 +247,18 @@ const start = async () => {
       ],
     })
 
-//   const ConnectSession = Connect(session)
-//   const sessionStore = new ConnectSession({
-//     conObject: {
-//       connectionString: 'postgres://adminjs:@localhost:5432/adminjs',
-//       ssl: process.env.NODE_ENV === 'production',
-//     },
-//     tableName: 'session',
-//     createTableIfMissing: true,
-//   })
+    //   const ConnectSession = Connect(session)
+    //   const sessionStore = new ConnectSession({
+    //     conObject: {
+    //       connectionString: 'postgres://adminjs:@localhost:5432/adminjs',
+    //       ssl: process.env.NODE_ENV === 'production',
+    //     },
+    //     tableName: 'session',
+    //     createTableIfMissing: true,
+    //   })
 
     const adminRouter = buildAuthenticatedRouter(
-      admin, 
+      admin,
       {
         authenticate,
         cookieName: 'adminjs',
@@ -285,7 +276,7 @@ const start = async () => {
         name: 'adminjs',
       }
     )
-    
+
     app.use(admin.options.rootPath, adminRouter)
 
     app.listen(PORT, () => {
