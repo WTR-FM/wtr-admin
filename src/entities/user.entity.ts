@@ -90,6 +90,41 @@ export class User extends Model {
   })
   declare spotifyTokens: any;
 
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+    defaultValue: null,
+  })
+  declare phoneNumber: string;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+    defaultValue: null,
+  })
+  declare country: string;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+    defaultValue: null,
+  })
+  declare state: string;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+    defaultValue: null,
+  })
+  declare pincode: string;
+
+  @Column({
+    type: DataType.TEXT,
+    allowNull: true,
+    defaultValue: null,
+  })
+  declare about: string;
+
   @CreatedAt
   declare createdAt: Date;
 

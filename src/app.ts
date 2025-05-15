@@ -145,8 +145,8 @@ const start = async () => {
           resource: User,
           options: {
             listProperties: ['firstName', 'lastName', 'email', 'isActive', 'isVerified', 'createdAt'],
-            showProperties: ['id', 'firstName', 'lastName', 'email', 'password', 'isActive', 'isVerified', 'coinbaseWalletAddress', 'refreshToken', 'spotifyTokens', 'createdAt', 'updatedAt'],
-            editProperties: ['isActive', 'isVerified'],
+            showProperties: ['id', 'firstName', 'lastName', 'email', 'password', 'phoneNumber', 'country', 'state', 'pincode', 'about', 'isActive', 'isVerified', 'coinbaseWalletAddress', 'refreshToken', 'spotifyTokens', 'createdAt', 'updatedAt'],
+            editProperties: ['firstName', 'lastName', 'email', 'password', 'isActive', 'isVerified'],
             filterProperties: ['firstName', 'lastName', 'email', 'isActive', 'isVerified', 'createdAt'],
             properties: {
               password: { isVisible: false },
