@@ -20,8 +20,6 @@ Admin panel for the WTR application using AdminJS with Express and Sequelize.
 
 2. Configure environment variables:
    - Make sure the `.env` file has the correct database credentials
-   - Set `FORCE_DB_SYNC=false` to maintain database persistence
-   - Use `FORCE_DB_SYNC=true` only when you want to forcefully recreate tables
 
 3. Create admin users:
    ```
@@ -67,7 +65,6 @@ This admin panel connects to the same PostgreSQL database used by the WTR backen
 ## Troubleshooting
 
 - **Database issues**: If you're having problems with the database, check your `.env` file for correct credentials
-- **Admin accounts disappearing**: Ensure `FORCE_DB_SYNC` is set to `false` in your `.env` file
 - **Login problems**: Use the `npm run create-admin` script to create new admin accounts
 
 ## Troubleshooting AdminJS
