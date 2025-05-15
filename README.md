@@ -1,40 +1,74 @@
-# WTR Admin
+# WTR Admin Panel
 
-An AdminJS-based admin panel for your application.
+Admin panel for the WTR application using AdminJS with Express and Sequelize.
+
+## Features
+
+- Complete CRUD operations for all database entities
+- User management (users, OTPs, friend requests)
+- Content management (songs, playlists, watchlists)
+- Authentication with secure password
+- PostgreSQL database integration
+- Persistent database storage
 
 ## Setup
 
 1. Install dependencies:
-```
-npm install
-```
+   ```
+   npm install
+   ```
 
-2. Set up environment variables:
-Create a `.env` file based on the provided example.
+2. Configure environment variables:
+   - Make sure the `.env` file has the correct database credentials
+   - Set `FORCE_DB_SYNC=false` to maintain database persistence
+   - Use `FORCE_DB_SYNC=true` only when you want to forcefully recreate tables
 
-3. Start PostgreSQL database with Docker:
-```
-docker-compose up -d
-```
+3. Create admin users:
+   ```
+   npm run create-admin
+   ```
+   - Follow the interactive prompts to create admin accounts
+   - Admin accounts will persist between server restarts
 
-4. Run the application in development mode:
-```
-npm run dev
-```
+4. Start the application:
+   ```
+   npm run start
+   ```
 
-Or run both database and application with a single command:
-```
-npm run dev-with-db
-```
+5. Access the admin panel:
+   - Navigate to `http://localhost:5000/admin` in your browser
+   - Login with the admin credentials you created
+   
+## Development
 
-## Access
+- Run development server with auto-reload:
+  ```
+  npm run dev
+  ```
 
-- Main application: http://localhost:3000
-- Admin panel: http://localhost:3000/admin
+- Build for production:
+  ```
+  npm run build
+  ```
 
-Default admin credentials:
-- Email: admin@example.com
-- Password: password
+## Integration with WTR Backend
+
+This admin panel connects to the same PostgreSQL database used by the WTR backend application. It provides an administrative interface for managing all entities defined in the backend.
+
+## Entity Relationships
+
+- Users - Core user accounts
+- Songs - Music tracks available in the system
+- Watchlists - User playlists/collections
+- PlaylistSongs - Junction table connecting songs to playlists
+- Friend Requests - Social connections between users
+- OTPs - One-time passwords for user verification
+
+## Troubleshooting
+
+- **Database issues**: If you're having problems with the database, check your `.env` file for correct credentials
+- **Admin accounts disappearing**: Ensure `FORCE_DB_SYNC` is set to `false` in your `.env` file
+- **Login problems**: Use the `npm run create-admin` script to create new admin accounts
 
 ## Troubleshooting AdminJS
 

@@ -1,0 +1,58 @@
+import { compare, hash } from 'bcrypt';
+import { Admin } from '../entities/admin.entity.js';
+
+export class AdminAuthService {
+  /**
+   * Authenticate admin with email and password
+   */
+  static async authenticate(email: string, password: string) {
+    try {
+      console.log(`[AdminAuthService] Authenticating admin with email: ${email}`);
+      
+      // Find admin by email
+      const admin = await Admin.findOne({ where: { email, isActive: true } });
+      if (!admin) {
+        console.log(`[AdminAuthService] Admin not found with email: ${email}`);
+        return null;
+      }
+      
+      console.log('[AdminAuthService] Admin found in database, verifying password');
+      
+      // For debugging only - compare password lengths
+      console.log(`[AdminAuthService] Plain password length: ${password.length}`);
+      console.log(`[AdminAuthService] Hashed password length: ${admin.password.length}`);
+      
+      // Compare password using bcrypt
+      try {
+        const isValidPassword = await compare(password, admin.password);
+        console.log(`[AdminAuthService] Password comparison result: ${isValidPassword}`);
+        
+        if (!isValidPassword) {
+          console.log('[AdminAuthService] Password verification failed');
+          return null;
+        }
+        
+        console.log('[AdminAuthService] Password verified successfully');
+      } catch (error) {
+        console.error('[AdminAuthService] Error comparing passwords:', error);
+        return null;
+      }
+      
+      // Return admin without password
+      const { password: _, ...adminWithoutPassword } = admin.toJSON();
+      return adminWithoutPassword;
+    } catch (error) {
+      console.error('[AdminAuthService] Error authenticating admin:', error);
+      return null;
+    }
+  }
+
+  /**
+   * Check if user is a superadmin
+   */
+  static isSuperAdmin(admin: any) {
+    const isSuperAdmin = admin && admin.role === 'superadmin';
+    console.log(`[AdminAuthService] Checking if admin is superadmin:`, isSuperAdmin, admin?.role);
+    return isSuperAdmin;
+  }
+} 
