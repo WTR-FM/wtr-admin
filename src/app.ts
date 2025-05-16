@@ -1,5 +1,4 @@
 import AdminJS from 'adminjs'
-import express from 'express'
 import * as dotenv from 'dotenv'
 import { Database, Resource } from '@adminjs/sequelize'
 import { sequelize, initDatabase } from './db.js'

@@ -1,4 +1,5 @@
 import { AdminAuthService } from '../services/admin-auth.service.js';
+import { ResourceOptions, ResourceWithOptions } from 'adminjs';
 import { Admin } from '../entities/admin.entity.js';
 import { User } from '../entities/user.entity.js';
 import { Song } from '../entities/song.entity.js';
@@ -6,6 +7,8 @@ import { Watchlist } from '../entities/watchlist.entity.js';
 import { PlaylistSong } from '../entities/playlist-song.entity.js';
 import { FriendRequest } from '../entities/friend-request.entity.js';
 import { Otp } from '../entities/otp.entity.js';
+import UserConfig from './resource-configs/users.js';
+import { TOP } from '../types/components.bundler.js';
 
 export const getResourceConfigurations = () => [
   {
@@ -77,48 +80,7 @@ export const getResourceConfigurations = () => [
       },
     },
   },
-  {
-    resource: User,
-    options: {
-      listProperties: ['firstName', 'lastName', 'email', 'isSuspended', 'isVerified', 'createdAt'],
-      showProperties: ['id', 'firstName', 'lastName', 'email', 'password', 'phoneNumber', 'country', 'state', 'pincode', 'about', 'isSuspended', 'isVerified', 'coinbaseWalletAddress', 'refreshToken', 'spotifyTokens', 'createdAt', 'updatedAt'],
-      editProperties: ['firstName', 'lastName', 'email', 'password', 'isSuspended', 'isVerified'],
-      filterProperties: ['firstName', 'lastName', 'email', 'isSuspended', 'isVerified', 'createdAt'],
-      properties: {
-        password: { isVisible: false },
-        refreshToken: { isVisible: false },
-        spotifyTokens: { type: 'mixed' },
-      },
-      actions: {
-        delete: { isAccessible: ({ currentAdmin }) => AdminAuthService.isSuperAdmin(currentAdmin) },
-        bulkDelete: { isAccessible: ({ currentAdmin }) => AdminAuthService.isSuperAdmin(currentAdmin) },
-        new: { 
-          isAccessible: ({ currentAdmin }) => 
-            // Only superadmin and admin can create users
-            AdminAuthService.canEdit(currentAdmin)
-        },
-        edit: { 
-          isAccessible: ({ currentAdmin }) => 
-            // Only superadmin and admin can edit users
-            AdminAuthService.canEdit(currentAdmin)
-        },
-        list: { 
-          isAccessible: ({ currentAdmin }) => 
-            // All roles can see the list
-            true
-        },
-        show: { 
-          isAccessible: ({ currentAdmin }) => 
-            // All roles can see details
-            true
-        },
-      },
-      navigation: {
-        name: 'User Management',
-        icon: 'User',
-      },
-    },
-  },
+  UserConfig,
   {
     resource: Song,
     options: {
@@ -133,24 +95,20 @@ export const getResourceConfigurations = () => [
       actions: {
         delete: { isAccessible: ({ currentAdmin }) => AdminAuthService.isSuperAdmin(currentAdmin) },
         bulkDelete: { isAccessible: ({ currentAdmin }) => AdminAuthService.isSuperAdmin(currentAdmin) },
-        new: { 
-          isAccessible: ({ currentAdmin }) => 
-            // Only superadmin and admin can create songs
+        new: {
+          isAccessible: ({ currentAdmin }) =>
             AdminAuthService.canEdit(currentAdmin)
         },
-        edit: { 
-          isAccessible: ({ currentAdmin }) => 
-            // Only superadmin and admin can edit songs
+        edit: {
+          isAccessible: ({ currentAdmin }) =>
             AdminAuthService.canEdit(currentAdmin)
         },
-        list: { 
-          isAccessible: ({ currentAdmin }) => 
-            // All roles can see the list
+        list: {
+          isAccessible: ({ currentAdmin }) =>
             true
         },
-        show: { 
-          isAccessible: ({ currentAdmin }) => 
-            // All roles can see details
+        show: {
+          isAccessible: ({ currentAdmin }) =>
             true
         },
       },
@@ -174,24 +132,20 @@ export const getResourceConfigurations = () => [
       actions: {
         delete: { isAccessible: ({ currentAdmin }) => AdminAuthService.isSuperAdmin(currentAdmin) },
         bulkDelete: { isAccessible: ({ currentAdmin }) => AdminAuthService.isSuperAdmin(currentAdmin) },
-        new: { 
-          isAccessible: ({ currentAdmin }) => 
-            // Only superadmin and admin can create watchlists
+        new: {
+          isAccessible: ({ currentAdmin }) =>
             AdminAuthService.canEdit(currentAdmin)
         },
-        edit: { 
-          isAccessible: ({ currentAdmin }) => 
-            // Only superadmin and admin can edit watchlists
+        edit: {
+          isAccessible: ({ currentAdmin }) =>
             AdminAuthService.canEdit(currentAdmin)
         },
-        list: { 
-          isAccessible: ({ currentAdmin }) => 
-            // All roles can see the list
+        list: {
+          isAccessible: ({ currentAdmin }) =>
             true
         },
-        show: { 
-          isAccessible: ({ currentAdmin }) => 
-            // All roles can see details
+        show: {
+          isAccessible: ({ currentAdmin }) =>
             true
         },
       },
@@ -210,24 +164,20 @@ export const getResourceConfigurations = () => [
       actions: {
         delete: { isAccessible: ({ currentAdmin }) => AdminAuthService.isSuperAdmin(currentAdmin) },
         bulkDelete: { isAccessible: ({ currentAdmin }) => AdminAuthService.isSuperAdmin(currentAdmin) },
-        new: { 
-          isAccessible: ({ currentAdmin }) => 
-            // Only superadmin and admin can create playlist songs
+        new: {
+          isAccessible: ({ currentAdmin }) =>
             AdminAuthService.canEdit(currentAdmin)
         },
-        edit: { 
-          isAccessible: ({ currentAdmin }) => 
-            // Only superadmin and admin can edit playlist songs
+        edit: {
+          isAccessible: ({ currentAdmin }) =>
             AdminAuthService.canEdit(currentAdmin)
         },
-        list: { 
-          isAccessible: ({ currentAdmin }) => 
-            // All roles can see the list
+        list: {
+          isAccessible: ({ currentAdmin }) =>
             true
         },
-        show: { 
-          isAccessible: ({ currentAdmin }) => 
-            // All roles can see details
+        show: {
+          isAccessible: ({ currentAdmin }) =>
             true
         },
       },
@@ -246,24 +196,20 @@ export const getResourceConfigurations = () => [
       actions: {
         delete: { isAccessible: ({ currentAdmin }) => AdminAuthService.isSuperAdmin(currentAdmin) },
         bulkDelete: { isAccessible: ({ currentAdmin }) => AdminAuthService.isSuperAdmin(currentAdmin) },
-        new: { 
-          isAccessible: ({ currentAdmin }) => 
-            // Only superadmin and admin can create friend requests
+        new: {
+          isAccessible: ({ currentAdmin }) =>
             AdminAuthService.canEdit(currentAdmin)
         },
-        edit: { 
-          isAccessible: ({ currentAdmin }) => 
-            // Only superadmin and admin can edit friend requests
+        edit: {
+          isAccessible: ({ currentAdmin }) =>
             AdminAuthService.canEdit(currentAdmin)
         },
-        list: { 
-          isAccessible: ({ currentAdmin }) => 
-            // All roles can see the list
+        list: {
+          isAccessible: ({ currentAdmin }) =>
             true
         },
-        show: { 
-          isAccessible: ({ currentAdmin }) => 
-            // All roles can see details
+        show: {
+          isAccessible: ({ currentAdmin }) =>
             true
         },
       },
@@ -282,24 +228,20 @@ export const getResourceConfigurations = () => [
       actions: {
         delete: { isAccessible: ({ currentAdmin }) => AdminAuthService.isSuperAdmin(currentAdmin) },
         bulkDelete: { isAccessible: ({ currentAdmin }) => AdminAuthService.isSuperAdmin(currentAdmin) },
-        new: { 
-          isAccessible: ({ currentAdmin }) => 
-            // Only superadmin and admin can create OTPs
+        new: {
+          isAccessible: ({ currentAdmin }) =>
             AdminAuthService.canEdit(currentAdmin)
         },
-        edit: { 
-          isAccessible: ({ currentAdmin }) => 
-            // Only superadmin and admin can edit OTPs
+        edit: {
+          isAccessible: ({ currentAdmin }) =>
             AdminAuthService.canEdit(currentAdmin)
         },
-        list: { 
-          isAccessible: ({ currentAdmin }) => 
-            // All roles can see the list
+        list: {
+          isAccessible: ({ currentAdmin }) =>
             true
         },
-        show: { 
-          isAccessible: ({ currentAdmin }) => 
-            // All roles can see details
+        show: {
+          isAccessible: ({ currentAdmin }) =>
             true
         },
       },
