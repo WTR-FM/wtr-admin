@@ -11,30 +11,33 @@ export const authenticate = async (email: string, password: string) => {
   try {
     // Try admin database authentication
     console.log('Attempting database authentication...');
-    console.log("Looking for Email: ", email, "Password: ", password);
-    const result = await AdminAuthService.authenticate(email, password);
-    console.log("Authentication result:", result);
-
-    // Check if result contains an error message
-    if (result && result._error) {
-      console.log('Authentication error:', result._error);
-      throw new Error(result._error);
-    }
-
-    if (result) {
-      console.log('Database authentication successful for:', result.email);
-      console.log('User role:', result.role);
+    
+    // This will throw an error if the account is suspended
+    const admin = await AdminAuthService.authenticate(email, password);
+    
+    if (admin) {
+      console.log('Database authentication successful for:', admin.email);
+      console.log('User role:', admin.role);
+      return admin;
     } else {
       console.log('Database authentication failed');
+      // AdminJS expects null for auth failure without message
+      return null;
     }
-
-    return result;
   } catch (error) {
     console.error('Authentication error:', error.message);
-    // AdminJS expects this exact format with an object that has an _error property
-    return { 
-      _error: error.message || 'Authentication failed. Please check your credentials and try again.' 
-    };
+    
+    // Check if the error is about a suspended account
+    if (error.message.includes('suspended')) {
+      console.log('Login rejected: Account suspended');
+      
+      // For AdminJS, when authenticate() throws an error, AdminJS will show that error message
+      // on the login screen, so throw the error to be caught by AdminJS
+      throw new Error('Your account has been suspended. Please contact the super admin.');
+    }
+    
+    // Return null for general authentication failure
+    return null;
   }
 };
 
