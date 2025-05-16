@@ -1,18 +1,24 @@
-
-import { TOP } from "../../types/components.bundler.js";
 import { User } from "../../entities/user.entity.js";
 import { AdminAuthService } from "../../services/admin-auth.service.js";
+import { SpotifyTokenExpiry } from "../../types/components.bundler.js";
 
 const UserConfig = {
   resource: User,
   options: {
-    listProperties: ['lastName', 'email', 'isSuspended', 'isVerified', 'spotifyStatus', 'createdAt'],
+    listProperties: ['firstName', 'lastName', 'email', 'isSuspended', 'isVerified', 'createdAt', 'spotifyTokens.expiry'],
     showProperties: ['id', 'firstName', 'lastName', 'email', 'password', 'phoneNumber', 'spotifyTokens.expiry', 'country', 'state', 'pincode', 'about', 'isSuspended', 'isVerified', 'coinbaseWalletAddress', 'spotifyStatus', 'createdAt', 'updatedAt'],
     editProperties: ['firstName', 'lastName', 'email', 'password', 'isSuspended', 'isVerified'],
     filterProperties: ['firstName', 'lastName', 'email', 'isSuspended', 'isVerified', 'createdAt'],
     properties: {
-      lastName: { components: { list: TOP } },
-      'spotifyTokens.expiry': { isVisible: true, type: 'string'},
+      'spotifyTokens.expiry': { 
+        isVisible: true, 
+        type: 'string',
+        components: {
+          list: SpotifyTokenExpiry,
+          show: SpotifyTokenExpiry
+        },
+        label: 'Token Expired'
+      },
     },
     actions: {
       delete: { isAccessible: ({ currentAdmin }) => AdminAuthService.isSuperAdmin(currentAdmin) },

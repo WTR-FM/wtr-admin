@@ -8,7 +8,6 @@ import { PlaylistSong } from '../entities/playlist-song.entity.js';
 import { FriendRequest } from '../entities/friend-request.entity.js';
 import { Otp } from '../entities/otp.entity.js';
 import UserConfig from './resource-configs/users.js';
-import { TOP } from '../types/components.bundler.js';
 
 export const getResourceConfigurations = () => [
   {
