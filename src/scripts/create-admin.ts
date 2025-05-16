@@ -92,7 +92,7 @@ async function createAdminInteractively() {
         lastName: lastName || existingAdmin.lastName,
         password: password, // Will be hashed by model hooks
         role,
-        isActive: true
+        isSuspended: false
       });
       
       console.log('✅ Admin updated successfully');
@@ -108,7 +108,7 @@ async function createAdminInteractively() {
         email,
         password, // Will be hashed by model hooks
         role,
-        isActive: true,
+        isSuspended: false,
       });
       
       console.log('✅ Admin created successfully');

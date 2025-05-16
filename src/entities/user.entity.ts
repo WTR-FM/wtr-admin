@@ -13,12 +13,12 @@ import {
   paranoid: false,
   indexes: [
     { unique: true, fields: ['email'] },
-    { fields: ['isActive'] },
+    { fields: ['isSuspended'] },
     { fields: ['isVerified'] },
   ],
   scopes: {
     verified: { where: { isVerified: true } },
-    active: { where: { isActive: true } },
+    suspended: { where: { isSuspended: false } },
     withoutPassword: { attributes: { exclude: ['password'] } },
   },
 })
@@ -44,10 +44,10 @@ export class User extends Model {
 
   @Column({
     type: DataType.BOOLEAN,
-    allowNull: false,
+    allowNull: true,
     defaultValue: false,
   })
-  declare isActive: boolean;
+  declare isSuspended: boolean;
 
   @Column({
     type: DataType.BOOLEAN,
@@ -135,4 +135,4 @@ export class User extends Model {
   declare deletedAt: Date;
 }
 
-export type UserAttributes = Omit<User, 'id' | 'isActive' | 'isVerified'>;
+export type UserAttributes = Omit<User, 'id' | 'isSuspended' | 'isVerified'>;

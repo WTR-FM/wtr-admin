@@ -16,7 +16,7 @@ import { hash } from 'bcrypt';
   paranoid: false,
   indexes: [
     { unique: true, fields: ['email'] },
-    { fields: ['isActive'] },
+    { fields: ['isSuspended'] },
     { fields: ['role'] },
   ],
 })
@@ -62,10 +62,10 @@ export class Admin extends Model {
 
   @Column({
     type: DataType.BOOLEAN,
-    allowNull: false,
-    defaultValue: true,
+    allowNull: true,
+    defaultValue: false,
   })
-  declare isActive: boolean;
+  declare isSuspended: boolean;
 
   @Column({
     type: DataType.STRING,

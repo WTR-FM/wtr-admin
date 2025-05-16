@@ -11,10 +11,10 @@ export const getResourceConfigurations = () => [
   {
     resource: Admin,
     options: {
-      listProperties: ['name', 'email', 'role', 'isActive', 'createdAt'],
-      showProperties: ['id', 'firstName', 'lastName', 'email', 'role', 'isActive', 'createdAt', 'updatedAt'],
-      editProperties: ['firstName', 'lastName', 'email', 'password', 'role', 'isActive'],
-      filterProperties: ['name', 'email', 'role', 'isActive', 'createdAt'],
+      listProperties: ['name', 'email', 'role', 'isSuspended', 'createdAt'],
+      showProperties: ['id', 'firstName', 'lastName', 'email', 'role', 'isSuspended', 'createdAt', 'updatedAt'],
+      editProperties: ['firstName', 'lastName', 'email', 'password', 'role', 'isSuspended'],
+      filterProperties: ['name', 'email', 'role', 'isSuspended', 'createdAt'],
 
       properties: {
         password: {
@@ -80,10 +80,10 @@ export const getResourceConfigurations = () => [
   {
     resource: User,
     options: {
-      listProperties: ['firstName', 'lastName', 'email', 'isActive', 'isVerified', 'createdAt'],
-      showProperties: ['id', 'firstName', 'lastName', 'email', 'password', 'phoneNumber', 'country', 'state', 'pincode', 'about', 'isActive', 'isVerified', 'coinbaseWalletAddress', 'refreshToken', 'spotifyTokens', 'createdAt', 'updatedAt'],
-      editProperties: ['firstName', 'lastName', 'email', 'password', 'isActive', 'isVerified'],
-      filterProperties: ['firstName', 'lastName', 'email', 'isActive', 'isVerified', 'createdAt'],
+      listProperties: ['firstName', 'lastName', 'email', 'isSuspended', 'isVerified', 'createdAt'],
+      showProperties: ['id', 'firstName', 'lastName', 'email', 'password', 'phoneNumber', 'country', 'state', 'pincode', 'about', 'isSuspended', 'isVerified', 'coinbaseWalletAddress', 'refreshToken', 'spotifyTokens', 'createdAt', 'updatedAt'],
+      editProperties: ['firstName', 'lastName', 'email', 'password', 'isSuspended', 'isVerified'],
+      filterProperties: ['firstName', 'lastName', 'email', 'isSuspended', 'isVerified', 'createdAt'],
       properties: {
         password: { isVisible: false },
         refreshToken: { isVisible: false },

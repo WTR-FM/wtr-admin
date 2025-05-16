@@ -1,5 +1,6 @@
 import { compare, hash } from 'bcrypt';
 import { Admin } from '../entities/admin.entity.js';
+import { Op } from 'sequelize';
 
 export class AdminAuthService {
   /**
@@ -9,11 +10,26 @@ export class AdminAuthService {
     try {
       console.log(`[AdminAuthService] Authenticating admin with email: ${email}`);
       
-      // Find admin by email
-      const admin = await Admin.findOne({ where: { email, isActive: true } });
+      // First check if admin exists and if suspended
+      const admin = await Admin.findOne({ 
+        where: { 
+          email
+        }
+      });
+      
       if (!admin) {
         console.log(`[AdminAuthService] Admin not found with email: ${email}`);
         return null;
+      }
+      
+      // Get the raw suspended value from JSON
+      const adminData = admin.toJSON();
+      console.log('[AdminAuthService] Admin data:', adminData);
+      
+      // Check if account is suspended
+      if (adminData.isSuspended === true) {
+        console.log(`[AdminAuthService] Admin account is suspended: ${email}`);
+        throw new Error('Your account has been suspended. Please contact the super admin.');
       }
       
       console.log('[AdminAuthService] Admin found in database, verifying password');
@@ -39,11 +55,11 @@ export class AdminAuthService {
       }
       
       // Return admin without password
-      const { password: _, ...adminWithoutPassword } = admin.toJSON();
+      const { password: _, ...adminWithoutPassword } = adminData;
       return adminWithoutPassword;
     } catch (error) {
-      console.error('[AdminAuthService] Error authenticating admin:', error);
-      return null;
+      console.error('[AdminAuthService] Error authenticating admin:', error.message);
+      throw error; // Propagate the error
     }
   }
 
