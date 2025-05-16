@@ -5,19 +5,18 @@ import { SpotifyTokenExpiry } from "../../types/components.bundler.js";
 const UserConfig = {
   resource: User,
   options: {
-    listProperties: ['firstName', 'lastName', 'email', 'isSuspended', 'isVerified', 'createdAt', 'spotifyTokens.expiry'],
-    showProperties: ['id', 'firstName', 'lastName', 'email', 'password', 'phoneNumber', 'spotifyTokens.expiry', 'country', 'state', 'pincode', 'about', 'isSuspended', 'isVerified', 'coinbaseWalletAddress', 'spotifyStatus', 'createdAt', 'updatedAt'],
+    listProperties: ['firstName', 'lastName', 'email', 'isSuspended', 'isVerified', 'createdAt'],
+    showProperties: ['id', 'firstName', 'lastName', 'email', 'phoneNumber', 'spotifyConnection', 'country', 'state', 'pincode', 'about', 'isSuspended', 'isVerified', 'coinbaseWalletAddress', 'spotifyStatus', 'createdAt', 'updatedAt'],
     editProperties: ['firstName', 'lastName', 'email', 'password', 'isSuspended', 'isVerified'],
     filterProperties: ['firstName', 'lastName', 'email', 'isSuspended', 'isVerified', 'createdAt'],
     properties: {
-      'spotifyTokens.expiry': { 
+      'spotifyConnection': { 
         isVisible: true, 
-        type: 'string',
+        type: 'mixed',
         components: {
-          list: SpotifyTokenExpiry,
           show: SpotifyTokenExpiry
         },
-        label: 'Token Expired'
+        label: 'Spotify Tokens Expired'
       },
     },
     actions: {
