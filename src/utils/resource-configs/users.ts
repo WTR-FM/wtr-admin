@@ -10,6 +10,12 @@ const UserConfig = {
     editProperties: ['firstName', 'lastName', 'email', 'password', 'isSuspended', 'isVerified'],
     filterProperties: ['firstName', 'lastName', 'email', 'isSuspended', 'isVerified', 'createdAt'],
     properties: {
+      password: {
+        type: 'password',
+        isVisible: {
+          edit: false,
+        },
+      },
       'spotifyConnection': { 
         isVisible: true, 
         type: 'mixed',
