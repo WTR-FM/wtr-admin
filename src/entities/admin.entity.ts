@@ -54,11 +54,11 @@ export class Admin extends Model {
   declare password: string;
 
   @Column({
-    type: DataType.ENUM('admin', 'superadmin'),
+    type: DataType.ENUM('superadmin', 'admin', 'viewer'),
     allowNull: false,
-    defaultValue: 'admin',
+    defaultValue: 'viewer',
   })
-  declare role: 'admin' | 'superadmin';
+  declare role: 'superadmin' | 'admin' | 'viewer';
 
   @Column({
     type: DataType.BOOLEAN,

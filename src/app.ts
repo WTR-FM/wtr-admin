@@ -21,7 +21,7 @@ const start = async () => {
     console.log('Database connection has been established successfully.')
     
     // Sync database tables
-    // await initDatabase()
+    await initDatabase()
     
     // Get resource configurations
     const resources = getResourceConfigurations()

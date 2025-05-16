@@ -92,6 +92,26 @@ export const getResourceConfigurations = () => [
       actions: {
         delete: { isAccessible: ({ currentAdmin }) => AdminAuthService.isSuperAdmin(currentAdmin) },
         bulkDelete: { isAccessible: ({ currentAdmin }) => AdminAuthService.isSuperAdmin(currentAdmin) },
+        new: { 
+          isAccessible: ({ currentAdmin }) => 
+            // Only superadmin and admin can create users
+            AdminAuthService.canEdit(currentAdmin)
+        },
+        edit: { 
+          isAccessible: ({ currentAdmin }) => 
+            // Only superadmin and admin can edit users
+            AdminAuthService.canEdit(currentAdmin)
+        },
+        list: { 
+          isAccessible: ({ currentAdmin }) => 
+            // All roles can see the list
+            true
+        },
+        show: { 
+          isAccessible: ({ currentAdmin }) => 
+            // All roles can see details
+            true
+        },
       },
       navigation: {
         name: 'User Management',
@@ -113,6 +133,26 @@ export const getResourceConfigurations = () => [
       actions: {
         delete: { isAccessible: ({ currentAdmin }) => AdminAuthService.isSuperAdmin(currentAdmin) },
         bulkDelete: { isAccessible: ({ currentAdmin }) => AdminAuthService.isSuperAdmin(currentAdmin) },
+        new: { 
+          isAccessible: ({ currentAdmin }) => 
+            // Only superadmin and admin can create songs
+            AdminAuthService.canEdit(currentAdmin)
+        },
+        edit: { 
+          isAccessible: ({ currentAdmin }) => 
+            // Only superadmin and admin can edit songs
+            AdminAuthService.canEdit(currentAdmin)
+        },
+        list: { 
+          isAccessible: ({ currentAdmin }) => 
+            // All roles can see the list
+            true
+        },
+        show: { 
+          isAccessible: ({ currentAdmin }) => 
+            // All roles can see details
+            true
+        },
       },
       navigation: {
         name: 'Content Management',
@@ -134,6 +174,26 @@ export const getResourceConfigurations = () => [
       actions: {
         delete: { isAccessible: ({ currentAdmin }) => AdminAuthService.isSuperAdmin(currentAdmin) },
         bulkDelete: { isAccessible: ({ currentAdmin }) => AdminAuthService.isSuperAdmin(currentAdmin) },
+        new: { 
+          isAccessible: ({ currentAdmin }) => 
+            // Only superadmin and admin can create watchlists
+            AdminAuthService.canEdit(currentAdmin)
+        },
+        edit: { 
+          isAccessible: ({ currentAdmin }) => 
+            // Only superadmin and admin can edit watchlists
+            AdminAuthService.canEdit(currentAdmin)
+        },
+        list: { 
+          isAccessible: ({ currentAdmin }) => 
+            // All roles can see the list
+            true
+        },
+        show: { 
+          isAccessible: ({ currentAdmin }) => 
+            // All roles can see details
+            true
+        },
       },
       navigation: {
         name: 'Content Management',
@@ -150,6 +210,26 @@ export const getResourceConfigurations = () => [
       actions: {
         delete: { isAccessible: ({ currentAdmin }) => AdminAuthService.isSuperAdmin(currentAdmin) },
         bulkDelete: { isAccessible: ({ currentAdmin }) => AdminAuthService.isSuperAdmin(currentAdmin) },
+        new: { 
+          isAccessible: ({ currentAdmin }) => 
+            // Only superadmin and admin can create playlist songs
+            AdminAuthService.canEdit(currentAdmin)
+        },
+        edit: { 
+          isAccessible: ({ currentAdmin }) => 
+            // Only superadmin and admin can edit playlist songs
+            AdminAuthService.canEdit(currentAdmin)
+        },
+        list: { 
+          isAccessible: ({ currentAdmin }) => 
+            // All roles can see the list
+            true
+        },
+        show: { 
+          isAccessible: ({ currentAdmin }) => 
+            // All roles can see details
+            true
+        },
       },
       navigation: {
         name: 'Content Management',
@@ -166,6 +246,26 @@ export const getResourceConfigurations = () => [
       actions: {
         delete: { isAccessible: ({ currentAdmin }) => AdminAuthService.isSuperAdmin(currentAdmin) },
         bulkDelete: { isAccessible: ({ currentAdmin }) => AdminAuthService.isSuperAdmin(currentAdmin) },
+        new: { 
+          isAccessible: ({ currentAdmin }) => 
+            // Only superadmin and admin can create friend requests
+            AdminAuthService.canEdit(currentAdmin)
+        },
+        edit: { 
+          isAccessible: ({ currentAdmin }) => 
+            // Only superadmin and admin can edit friend requests
+            AdminAuthService.canEdit(currentAdmin)
+        },
+        list: { 
+          isAccessible: ({ currentAdmin }) => 
+            // All roles can see the list
+            true
+        },
+        show: { 
+          isAccessible: ({ currentAdmin }) => 
+            // All roles can see details
+            true
+        },
       },
       navigation: {
         name: 'User Management',
@@ -182,6 +282,26 @@ export const getResourceConfigurations = () => [
       actions: {
         delete: { isAccessible: ({ currentAdmin }) => AdminAuthService.isSuperAdmin(currentAdmin) },
         bulkDelete: { isAccessible: ({ currentAdmin }) => AdminAuthService.isSuperAdmin(currentAdmin) },
+        new: { 
+          isAccessible: ({ currentAdmin }) => 
+            // Only superadmin and admin can create OTPs
+            AdminAuthService.canEdit(currentAdmin)
+        },
+        edit: { 
+          isAccessible: ({ currentAdmin }) => 
+            // Only superadmin and admin can edit OTPs
+            AdminAuthService.canEdit(currentAdmin)
+        },
+        list: { 
+          isAccessible: ({ currentAdmin }) => 
+            // All roles can see the list
+            true
+        },
+        show: { 
+          isAccessible: ({ currentAdmin }) => 
+            // All roles can see details
+            true
+        },
       },
       navigation: {
         name: 'User Management',

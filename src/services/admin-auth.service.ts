@@ -55,4 +55,31 @@ export class AdminAuthService {
     console.log(`[AdminAuthService] Checking if admin is superadmin:`, isSuperAdmin, admin?.role);
     return isSuperAdmin;
   }
+  
+  /**
+   * Check if user is an admin
+   */
+  static isAdmin(admin: any) {
+    const isAdmin = admin && admin.role === 'admin';
+    console.log(`[AdminAuthService] Checking if admin is admin:`, isAdmin, admin?.role);
+    return isAdmin;
+  }
+  
+  /**
+   * Check if user is a viewer
+   */
+  static isViewer(admin: any) {
+    const isViewer = admin && admin.role === 'viewer';
+    console.log(`[AdminAuthService] Checking if admin is viewer:`, isViewer, admin?.role);
+    return isViewer;
+  }
+  
+  /**
+   * Check if user can edit (superadmin or admin)
+   */
+  static canEdit(admin: any) {
+    const canEdit = admin && (admin.role === 'superadmin' || admin.role === 'admin');
+    console.log(`[AdminAuthService] Checking if admin can edit:`, canEdit, admin?.role);
+    return canEdit;
+  }
 } 
