@@ -67,9 +67,9 @@ This admin panel connects to the same PostgreSQL database used by the WTR backen
 The admin portal now uses the Users table with role-based permissions instead of a separate Admins table. The following roles are available:
 
 - `superadmin`: Full access to all features and can manage other admins
-- `admin`: Can manage content and regular users but cannot modify superadmins
+- `admin`: Can manage content and users but cannot modify superadmins
 - `viewer`: Read-only access to the admin portal
-- `user`: Regular user without admin portal access
+- `user`: User without admin portal access
 
 ## Authentication Integration
 

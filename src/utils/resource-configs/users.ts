@@ -21,7 +21,7 @@ const UserConfig = {
           { value: 'superadmin', label: 'Super Admin' },
           { value: 'admin', label: 'Admin' },
           { value: 'viewer', label: 'Viewer' },
-          { value: 'user', label: 'Regular User' },
+          { value: 'user', label: 'User' },
         ],
         isRequired: true,
         isVisible: {
@@ -67,7 +67,7 @@ const UserConfig = {
             return UserAuthService.isSuperAdmin(currentAdmin);
           }
           
-          // Admins can edit regular users and viewers
+          // Admins can edit users and viewers
           return UserAuthService.canEdit(currentAdmin);
         },
         before: async (request, context) => {
