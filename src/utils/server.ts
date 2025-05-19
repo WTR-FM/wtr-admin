@@ -1,9 +1,11 @@
 import express from 'express';
+import session from 'express-session'
 import formidable from 'express-formidable';
 import { buildAuthenticatedRouter } from '@adminjs/express';
 import AdminJS from 'adminjs';
 import { getAuthConfig } from './auth.js';
 import { componentLoader } from '../types/components.bundler.js';
+import Connect from 'connect-pg-simple';
 
 /**
  * Configure AdminJS instance with branding and resources
@@ -35,15 +37,20 @@ export const setupExpressServer = (admin) => {
   // For parsing form data
   app.use(formidable());
 
-  //   const ConnectSession = Connect(session)
-  //   const sessionStore = new ConnectSession({
-  //     conObject: {
-  //       connectionString: 'postgres://adminjs:@localhost:5432/adminjs',
-  //       ssl: process.env.NODE_ENV === 'production',
-  //     },
-  //     tableName: 'session',
-  //     createTableIfMissing: true,
-  //   })
+  const ConnectSession = Connect(session)
+
+  const sessionStore = new ConnectSession({
+    conObject: {
+      host: process.env.DB_HOST,
+      port: Number(process.env.DB_PORT),
+      database: process.env.DB_NAME,
+      user: process.env.DB_USERNAME,
+      password: process.env.DB_PASSWORD,
+      ssl: process.env.NODE_ENV === 'production',
+    },
+    tableName: 'adminJS-sessions',
+    createTableIfMissing: true,
+  })
 
 
   const adminRouter = buildAuthenticatedRouter(
@@ -51,6 +58,7 @@ export const setupExpressServer = (admin) => {
     getAuthConfig(),
     null,
     {
+      store: sessionStore,
       resave: false,
       saveUninitialized: true,
       secret: process.env.SESSION_SECRET || 'sessionsecret',
