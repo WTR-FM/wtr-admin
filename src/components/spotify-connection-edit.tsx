@@ -15,17 +15,16 @@ interface Props {
 
 /**
  * Removes Spotify connection for a user
- * @param userId The user ID to disconnect
+ * @param spotifyUserId The user ID to disconnect
  * @returns Promise with the API response
  */
-const removeSpotifyConnection = async (userId: string): Promise<any> => {
+const removeSpotifyConnection = async (spotifyUserId: string): Promise<any> => {
   try {
-    console.log("Removing Spotify connection for user:", userId);
+    console.log("Removing Spotify connection for user:", spotifyUserId);
     // Use absolute URL from environment variable
     const backendUrl = process.env.BACKEND_URL || 'http://localhost:8000';
-    console.log(`URL: ${backendUrl}/user/${userId}/spotify/logout`);
-    const response = await fetch(`${backendUrl}/user/${userId}/spotify/logout`, {
-      method: 'POST',
+    const response = await fetch(`${backendUrl}/users/${spotifyUserId}/spotify/logout`, {
+      method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
       },
@@ -45,15 +44,15 @@ const removeSpotifyConnection = async (userId: string): Promise<any> => {
 
 /**
  * Refreshes Spotify token for a user
- * @param userId The user ID to refresh token for
+ * @param spotifyUserId The user ID to refresh token for
  * @returns Promise with the API response
  */
-const refreshSpotifyToken = async (userId: string): Promise<any> => {
+const refreshSpotifyToken = async (spotifyUserId: string): Promise<any> => {
   try {
     // Use absolute URL from environment variable
     const backendUrl = process.env.BACKEND_URL || 'http://localhost:8000';
-    const response = await fetch(`${backendUrl}/user/${userId}/spotify/refresh`, {
-      method: 'POST',
+    const response = await fetch(`${backendUrl}/users/${spotifyUserId}/spotify/refresh`, {
+      method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
       },
