@@ -1,19 +1,34 @@
 import { User } from "../../entities/user.entity.js";
-import { AdminAuthService } from "../../services/admin-auth.service.js";
+import { UserAuthService } from "../../services/user-auth.service.js";
 import { SpotifyTokenEdit, SpotifyTokenExpiry } from "../../types/components.bundler.js";
 
 const UserConfig = {
   resource: User,
   options: {
-    listProperties: ['firstName', 'lastName', 'email', 'isSuspended', 'isVerified', 'createdAt'],
-    showProperties: ['id', 'firstName', 'lastName', 'email', 'phoneNumber', 'spotifyConnection', 'country', 'state', 'pincode', 'about', 'isSuspended', 'isVerified', 'coinbaseWalletAddress', 'spotifyStatus', 'createdAt', 'updatedAt'],
-    editProperties: ['firstName', 'lastName', 'email', 'password', 'isSuspended', 'isVerified','spotifyConnectionEdit'],
-    filterProperties: ['firstName', 'lastName', 'email', 'isSuspended', 'isVerified', 'createdAt'],
+    listProperties: ['firstName', 'lastName', 'email', 'role', 'isSuspended', 'isVerified', 'createdAt'],
+    showProperties: ['id', 'firstName', 'lastName', 'email', 'phoneNumber', 'role', 'spotifyConnection', 'country', 'state', 'pincode', 'about', 'isSuspended', 'isVerified', 'coinbaseWalletAddress', 'spotifyStatus', 'createdAt', 'updatedAt'],
+    editProperties: ['firstName', 'lastName', 'email', 'password', 'role', 'isSuspended', 'isVerified','spotifyConnectionEdit'],
+    filterProperties: ['firstName', 'lastName', 'email', 'role', 'isSuspended', 'isVerified', 'createdAt'],
     properties: {
       password: {
         type: 'password',
         isVisible: {
           edit: false,
+        },
+      },
+      role: {
+        availableValues: [
+          { value: 'superadmin', label: 'Super Admin' },
+          { value: 'admin', label: 'Admin' },
+          { value: 'viewer', label: 'Viewer' },
+          { value: 'user', label: 'Regular User' },
+        ],
+        isRequired: true,
+        isVisible: {
+          list: true,
+          filter: true,
+          show: true,
+          edit: true,
         },
       },
       'spotifyConnection': { 
@@ -33,26 +48,54 @@ const UserConfig = {
       },
     },
     actions: {
-      delete: { isAccessible: ({ currentAdmin }) => AdminAuthService.isSuperAdmin(currentAdmin) },
-      bulkDelete: { isAccessible: ({ currentAdmin }) => AdminAuthService.isSuperAdmin(currentAdmin) },
+      delete: { isAccessible: ({ currentAdmin }) => UserAuthService.isSuperAdmin(currentAdmin) },
+      bulkDelete: { isAccessible: ({ currentAdmin }) => UserAuthService.isSuperAdmin(currentAdmin) },
       new: {
         isAccessible: ({ currentAdmin }) =>
           // Only superadmin and admin can create users
-          AdminAuthService.canEdit(currentAdmin)
+          UserAuthService.canEdit(currentAdmin)
       },
       edit: {
-        isAccessible: ({ currentAdmin }) =>
-          // Only superadmin and admin can edit users
-          AdminAuthService.canEdit(currentAdmin)
+        isAccessible: ({ currentAdmin, record }) => {
+          // Self-edit is always allowed
+          if (record && currentAdmin && currentAdmin.id === record.param('id')) {
+            return true;
+          }
+          
+          // Only superadmin can edit other users with admin roles
+          if (record && ['superadmin', 'admin'].includes(record.param('role'))) {
+            return UserAuthService.isSuperAdmin(currentAdmin);
+          }
+          
+          // Admins can edit regular users and viewers
+          return UserAuthService.canEdit(currentAdmin);
+        },
+        before: async (request, context) => {
+          const { currentAdmin, record } = context;
+          
+          // User editing themselves - can't change their own role
+          if (currentAdmin.id === record.param('id')) {
+            if (request.payload.role && request.payload.role !== currentAdmin.role) {
+              throw new Error("You cannot change your own role.");
+            }
+          }
+          
+          // Only superadmin can create or modify superadmin role
+          if (request.payload.role === 'superadmin' && !UserAuthService.isSuperAdmin(currentAdmin)) {
+            throw new Error("Only superadmins can assign the superadmin role.");
+          }
+          
+          return request;
+        }
       },
       list: {
         isAccessible: ({ currentAdmin }) =>
-          // All roles can see the list
+          // All admin roles can see the list
           true
       },
       show: {
         isAccessible: ({ currentAdmin }) =>
-          // All roles can see details
+          // All admin roles can see details
           true
       },
     },

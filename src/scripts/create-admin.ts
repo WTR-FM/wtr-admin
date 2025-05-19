@@ -1,5 +1,5 @@
 import { sequelize } from '../db.js';
-import { Admin } from '../entities/admin.entity.js';
+import { User } from '../entities/user.entity.js';
 import { createInterface } from 'readline';
 
 const rl = createInterface({
@@ -19,7 +19,7 @@ async function createAdminInteractively() {
   try {
     // Display welcome message
     console.log('='.repeat(50));
-    console.log('👤 WTR Admin - Admin Account Creation Tool 👤');
+    console.log('👤 WTR Admin - User Account Creation Tool 👤');
     console.log('='.repeat(50));
     console.log('This tool will help you create or update an admin account.');
     console.log('Press Ctrl+C at any time to exit.\n');
@@ -47,8 +47,8 @@ async function createAdminInteractively() {
       return;
     }
     
-    let roleOption = await question('�� Select role (1 for admin, 2 for superadmin, 3 for viewer): ');
-    const role = roleOption === '2' ? 'superadmin' : (roleOption === '3' ? 'viewer' : 'admin');
+    let roleOption = await question('�� Select role (1 for admin, 2 for superadmin, 3 for viewer, 4 for user): ');
+    const role = roleOption === '2' ? 'superadmin' : (roleOption === '3' ? 'viewer' : (roleOption === '1' ? 'admin' : 'user'));
     
     const firstName = await question('📝 Enter admin first name: ');
     if (!firstName) {
@@ -71,18 +71,18 @@ async function createAdminInteractively() {
     
     const confirmation = await question('\n🔄 Confirm creation? (yes/no): ');
     if (confirmation.toLowerCase() !== 'yes') {
-      console.log('❌ Admin creation canceled');
+      console.log('❌ User creation canceled');
       return;
     }
     
     // Check if admin already exists
-    const existingAdmin = await Admin.findOne({ where: { email } });
+    const existingAdmin = await User.findOne({ where: { email } });
     if (existingAdmin) {
-      console.log(`⚠️ Admin with email ${email} already exists.`);
+      console.log(`⚠️ User with email ${email} already exists.`);
       const updateConfirm = await question('🔄 Do you want to update this admin? (yes/no): ');
       
       if (updateConfirm.toLowerCase() !== 'yes') {
-        console.log('❌ Admin update canceled');
+        console.log('❌ User update canceled');
         return;
       }
       
@@ -95,15 +95,15 @@ async function createAdminInteractively() {
         isSuspended: false
       });
       
-      console.log('✅ Admin updated successfully');
+      console.log('✅ User updated successfully');
       console.log('- ID:', existingAdmin.id);
       console.log('- Email:', email);
       console.log('- Role:', role);
       
     } else {
       // Create a new admin
-      const admin = await Admin.create({
-        firstName: firstName || "Admin",
+      const admin = await User.create({
+        firstName: firstName || "User",
         lastName: lastName || "User",
         email,
         password, // Will be hashed by model hooks
@@ -111,16 +111,16 @@ async function createAdminInteractively() {
         isSuspended: false,
       });
       
-      console.log('✅ Admin created successfully');
+      console.log('✅ User created successfully');
       console.log('- ID:', admin.id);
       console.log('- Email:', email);
       console.log('- Role:', role);
       
       // Fetch the admin to verify
-      const savedAdmin = await Admin.findOne({ where: { email } });
+      const savedAdmin = await User.findOne({ where: { email } });
       
       if (savedAdmin) {
-        console.log('✅ Verified: Admin exists in database');
+        console.log('✅ Verified: User exists in database');
       } else {
         console.log('⚠️ Warning: Could not verify admin in database');
       }

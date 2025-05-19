@@ -6,7 +6,10 @@ import {
   CreatedAt,
   UpdatedAt,
   DeletedAt,
+  BeforeCreate,
+  BeforeUpdate,
 } from 'sequelize-typescript';
+import { hash } from 'bcrypt';
 
 @Table({
   tableName: 'users',
@@ -15,6 +18,7 @@ import {
     { unique: true, fields: ['email'] },
     { fields: ['isSuspended'] },
     { fields: ['isVerified'] },
+    { fields: ['role'] },
   ],
   scopes: {
     verified: { where: { isVerified: true } },
@@ -68,6 +72,13 @@ export class User extends Model {
     allowNull: false,
   })
   declare password: string;
+
+  @Column({
+    type: DataType.ENUM('superadmin', 'admin', 'viewer', 'user'),
+    allowNull: false,
+    defaultValue: 'user',
+  })
+  declare role: 'superadmin' | 'admin' | 'viewer' | 'user';
 
   @Column({
     type: DataType.STRING,
@@ -133,6 +144,39 @@ export class User extends Model {
 
   @DeletedAt
   declare deletedAt: Date;
+
+   // This method is called before creating a new instance
+    @BeforeCreate
+    static async hashPasswordOnCreate(instance: User) {
+      console.log('BeforeCreate hook called, hashing password');
+      if (instance.password) {
+        try {
+          console.log('Hashing password for new user:', instance.email);
+          instance.password = await hash(instance.password, 10);
+          console.log('Password hashed successfully');
+        } catch (error) {
+          console.error('Error hashing password:', error);
+          throw error;
+        }
+      }
+    }
+  
+    // This method is called before updating an instance
+    @BeforeUpdate
+    static async hashPasswordOnUpdate(instance: User) {
+      console.log('BeforeUpdate hook called for user:', instance.email);
+      // Hash the password only if it was changed
+      if (instance.changed('password') && instance.password) {
+        try {
+          console.log('Password changed, hashing new password');
+          instance.password = await hash(instance.password, 10);
+          console.log('Password hashed successfully');
+        } catch (error) {
+          console.error('Error hashing password:', error);
+          throw error;
+        }
+      }
+    }
 }
 
 export type UserAttributes = Omit<User, 'id' | 'isSuspended' | 'isVerified'>;

@@ -6,7 +6,6 @@ import { FriendRequest } from './entities/friend-request.entity.js';
 import { PlaylistSong } from './entities/playlist-song.entity.js';
 import { Watchlist } from './entities/watchlist.entity.js';
 import { Otp } from './entities/otp.entity.js';
-import { Admin } from './entities/admin.entity.js';
 
 // Load environment variables
 dotenv.config();
@@ -36,7 +35,6 @@ sequelize.addModels([
   PlaylistSong,
   Watchlist,
   Otp,
-  Admin,
 ]);
 
 // Initialize database tables
