@@ -1,5 +1,5 @@
 import { FriendRequest } from "../../entities/friend-request.entity.js";
-import { AdminAuthService } from "../../services/admin-auth.service.js";
+import { UserAuthService } from "../../services/user-auth.service.js";
 
 const FriendRequestConfig = {
     resource: FriendRequest,
@@ -8,15 +8,15 @@ const FriendRequestConfig = {
         showProperties: ['id', 'requesterId', 'receiverId', 'status', 'createdAt', 'updatedAt'],
         editProperties: ['requesterId', 'receiverId', 'status'],
         actions: {
-            delete: { isAccessible: ({ currentAdmin }) => AdminAuthService.isSuperAdmin(currentAdmin) },
-            bulkDelete: { isAccessible: ({ currentAdmin }) => AdminAuthService.isSuperAdmin(currentAdmin) },
+            delete: { isAccessible: ({ currentAdmin }) => UserAuthService.isSuperAdmin(currentAdmin) },
+            bulkDelete: { isAccessible: ({ currentAdmin }) => UserAuthService.isSuperAdmin(currentAdmin) },
             new: {
                 isAccessible: ({ currentAdmin }) =>
-                    AdminAuthService.canEdit(currentAdmin)
+                    UserAuthService.canEdit(currentAdmin)
             },
             edit: {
                 isAccessible: ({ currentAdmin }) =>
-                    AdminAuthService.canEdit(currentAdmin)
+                    UserAuthService.canEdit(currentAdmin)
             },
             list: {
                 isAccessible: ({ currentAdmin }) =>

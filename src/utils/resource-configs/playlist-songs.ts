@@ -1,5 +1,5 @@
 import { PlaylistSong } from "../../entities/playlist-song.entity.js";
-import { AdminAuthService } from "../../services/admin-auth.service.js";
+import { UserAuthService } from "../../services/user-auth.service.js";
 
 const PlaylistSongConfig = {
     resource: PlaylistSong,
@@ -8,15 +8,15 @@ const PlaylistSongConfig = {
         showProperties: ['id', 'watchlistId', 'songId', 'position', 'syncedWithSpotify', 'watchlist', 'song', 'createdAt', 'updatedAt'],
         editProperties: ['watchlistId', 'songId', 'position', 'syncedWithSpotify'],
         actions: {
-            delete: { isAccessible: ({ currentAdmin }) => AdminAuthService.isSuperAdmin(currentAdmin) },
-            bulkDelete: { isAccessible: ({ currentAdmin }) => AdminAuthService.isSuperAdmin(currentAdmin) },
+            delete: { isAccessible: ({ currentAdmin }) => UserAuthService.isSuperAdmin(currentAdmin) },
+            bulkDelete: { isAccessible: ({ currentAdmin }) => UserAuthService.isSuperAdmin(currentAdmin) },
             new: {
                 isAccessible: ({ currentAdmin }) =>
-                    AdminAuthService.canEdit(currentAdmin)
+                    UserAuthService.canEdit(currentAdmin)
             },
             edit: {
                 isAccessible: ({ currentAdmin }) =>
-                    AdminAuthService.canEdit(currentAdmin)
+                    UserAuthService.canEdit(currentAdmin)
             },
             list: {
                 isAccessible: ({ currentAdmin }) =>
