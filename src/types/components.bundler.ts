@@ -22,6 +22,7 @@ export const add = (url: string, componentName: string): string =>
  * Common components
  */
 export const SpotifyTokenExpiry = add('../components/spotify-token-expiry', 'SpotifyTokenExpiry');
+export const SpotifyTokenEdit = add('../components/spotify-connection-edit', 'SpotifyConnectionEdit');
 
 /**
  * Pages

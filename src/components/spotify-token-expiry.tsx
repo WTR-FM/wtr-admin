@@ -1,38 +1,29 @@
-import { Box, Text, Title, Label } from '@adminjs/design-system';
+import { Box, Text, Label } from '@adminjs/design-system';
 import React, { FC } from 'react';
+import { getConnectionStatus } from '../utils/spotify-utils.js';
 
 interface Props {
   record: {
     params: {
-      spotifyTokens?: any;
+      'spotifyTokens.expiry'?: string;
     }
-  }
+  },
+  marginBottom?: string
 }
 
-const SpotifyConnectionStatus: FC<Props> = ({ record: { params } }) => {
-  // Get the spotifyTokens value
+const SpotifyConnectionStatus: FC<Props> = ({ record, marginBottom = '24px' }) => {
+  const { params } = record;
+  const expiryDate = params['spotifyTokens.expiry'];
 
-  if (!params['spotifyTokens.expiry']) {
-    return (
-      <Box style={{marginBottom: '24px'}}>
-        <Label style={{marginBottom: '0px'}}>Spotify Connection Status</Label>
-        <Text color={'error'} fontWeight="normal">
-          Not Connected
-        </Text>
-      </Box>
-    );
-  }
+  console.log(record,'rrr')
 
-  const expiry = new Date(params['spotifyTokens.expiry'])
-
-  const now = Date.now();
-  const isExpired = expiry.getTime() < now;
+  const { statusText, statusColor } = getConnectionStatus(expiryDate);
 
   return (
-    <Box style={{marginBottom: '24px'}}>
-      <Label style={{marginBottom: '0px'}}>Spotify Connection Status</Label>
-      <Text color={isExpired ? 'error' : 'success'} fontWeight="normal">
-        {isExpired ? `Expired on ${expiry.toLocaleString()}` : `Active till ${expiry.toLocaleString()}`}
+    <Box style={{ marginBottom }}>
+      <Label style={{ marginBottom: '0px' }}>Spotify Connection Status</Label>
+      <Text color={statusColor} fontWeight="normal">
+        {statusText}
       </Text>
     </Box>
   );

@@ -1,13 +1,13 @@
 import { User } from "../../entities/user.entity.js";
 import { AdminAuthService } from "../../services/admin-auth.service.js";
-import { SpotifyTokenExpiry } from "../../types/components.bundler.js";
+import { SpotifyTokenEdit, SpotifyTokenExpiry } from "../../types/components.bundler.js";
 
 const UserConfig = {
   resource: User,
   options: {
     listProperties: ['firstName', 'lastName', 'email', 'isSuspended', 'isVerified', 'createdAt'],
     showProperties: ['id', 'firstName', 'lastName', 'email', 'phoneNumber', 'spotifyConnection', 'country', 'state', 'pincode', 'about', 'isSuspended', 'isVerified', 'coinbaseWalletAddress', 'spotifyStatus', 'createdAt', 'updatedAt'],
-    editProperties: ['firstName', 'lastName', 'email', 'password', 'isSuspended', 'isVerified'],
+    editProperties: ['firstName', 'lastName', 'email', 'password', 'isSuspended', 'isVerified','spotifyConnectionEdit'],
     filterProperties: ['firstName', 'lastName', 'email', 'isSuspended', 'isVerified', 'createdAt'],
     properties: {
       password: {
@@ -21,6 +21,13 @@ const UserConfig = {
         type: 'mixed',
         components: {
           show: SpotifyTokenExpiry
+        },
+        label: 'Spotify Tokens Expired'
+      },
+      'spotifyConnectionEdit': { 
+        isVisible: true,
+        components: {
+          edit: SpotifyTokenEdit
         },
         label: 'Spotify Tokens Expired'
       },
