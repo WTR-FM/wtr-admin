@@ -77,7 +77,11 @@ export const setupExpressServer = (admin) => {
   const extractTokensMiddleware = (req, res, next) => {
     // If the backend has set authentication cookies, extract and use them
     if (req.cookies && (req.cookies.accessToken || req.cookies.refreshToken)) {
-      console.log('Found authentication cookies from backend');
+      console.log('Found authentication cookies from backend', req.cookies);
+    }
+    // Add debug logging for the session
+    if (req.session) {
+      console.log('Session data:', req.session);
     }
     next();
   };
@@ -96,7 +100,8 @@ export const setupExpressServer = (admin) => {
       cookie: {
         httpOnly: process.env.NODE_ENV === 'production',
         secure: process.env.NODE_ENV === 'production',
-        sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'none',
+        // maxAge: 24 * 60 * 60 * 1000, // 1 day
+        sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax',
       },
       name: 'adminjs',
     }
