@@ -71,20 +71,20 @@ export const setupExpressServer = (admin) => {
   const tokenRefreshMiddleware = async (req, res, next) => {
     try {
       // Check if we have a refresh token but no access token or expired access token
-      if (req.cookies && req.cookies.refreshToken && (!req.cookies.accessToken || req.session.adminUser)) {
+      if (req.cookies && req.cookies.refresh_token && (!req.cookies.access_token || req.session.adminUser)) {
         console.log('Attempting to refresh access token using refresh token');
         
         // Call backend refresh endpoint
         const response = await axios.post(`${BACKEND_URL}/auth/refresh`, {}, {
           headers: {
-            Cookie: `refreshToken=${req.cookies.refreshToken}`
+            Cookie: `refresh_token=${req.cookies.refresh_token}`
           },
           withCredentials: true
         });
         
-        if (response.data?.tokens?.accessToken) {
+        if (response.data?.tokens?.access_token) {
           // Set the new access token
-          res.cookie('accessToken', response.data.tokens.accessToken, {
+          res.cookie('access_token', response.data.tokens.access_token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
             sameSite: process.env.NODE_ENV === 'production' ? 'strict' as const : 'lax' as const,
@@ -152,7 +152,7 @@ export const setupExpressServer = (admin) => {
   // Create middleware to sync backend session with AdminJS session
   app.use((req, res, next) => {
     // If we have auth cookies but no session, initialize the session
-    if (req.cookies && req.cookies.accessToken && (!req.session || !req.session.adminUser)) {
+    if (req.cookies && req.cookies.access_token && (!req.session || !req.session.adminUser)) {
       console.log('Found auth cookies but no session, initializing session');
       req.session.isAuthenticatedViaCookies = true;
     }

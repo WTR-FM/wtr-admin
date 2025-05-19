@@ -20,8 +20,10 @@ interface Props {
  */
 const removeSpotifyConnection = async (userId: string): Promise<any> => {
   try {
+    console.log("Removing Spotify connection for user:", userId);
     // Use absolute URL from environment variable
     const backendUrl = process.env.BACKEND_URL || 'http://localhost:8000';
+    console.log(`URL: ${backendUrl}/user/${userId}/spotify/logout`);
     const response = await fetch(`${backendUrl}/user/${userId}/spotify/logout`, {
       method: 'POST',
       headers: {
@@ -72,6 +74,13 @@ const refreshSpotifyToken = async (userId: string): Promise<any> => {
 const SpotifyConnectionEdit: FC<Props> = ({ record }) => {
   const expiryDate = record.params['spotifyTokens.expiry'];
   const userId = record.params.id;
+  
+  console.log('SpotifyConnectionEdit Component:', { 
+    params: record.params,
+    expiryDate,
+    userId 
+  });
+  
   const { isConnected } = getConnectionStatus(expiryDate);
   const [isLoading, setIsLoading] = useState<{ remove: boolean; refresh: boolean }>({ 
     remove: false, 

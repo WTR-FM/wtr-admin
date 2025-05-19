@@ -6,8 +6,8 @@ const UserConfig = {
   resource: User,
   options: {
     listProperties: ['firstName', 'lastName', 'email', 'role', 'isSuspended', 'isVerified', 'createdAt'],
-    showProperties: ['id', 'firstName', 'lastName', 'email', 'phoneNumber', 'role', 'spotifyConnection', 'country', 'state', 'pincode', 'about', 'isSuspended', 'isVerified', 'coinbaseWalletAddress', 'spotifyStatus', 'createdAt', 'updatedAt'],
-    editProperties: ['firstName', 'lastName', 'email', 'password', 'role', 'isSuspended', 'isVerified','spotifyConnectionEdit'],
+    showProperties: ['id', 'firstName', 'lastName', 'email', 'phoneNumber', 'role', 'spotifyConnection', 'country', 'state', 'pincode', 'about', 'isSuspended', 'isVerified', 'coinbaseWalletAddress', 'spotifyConnectionEdit', 'createdAt', 'updatedAt'],
+    editProperties: ['firstName', 'lastName', 'email', 'password', 'role', 'isSuspended', 'isVerified', 'spotifyConnectionEdit'],
     filterProperties: ['firstName', 'lastName', 'email', 'role', 'isSuspended', 'isVerified', 'createdAt'],
     properties: {
       password: {
@@ -31,20 +31,30 @@ const UserConfig = {
           edit: true,
         },
       },
+      'spotifyTokens.expiry': {
+        isVisible: false
+      },
       'spotifyConnection': { 
         isVisible: true, 
         type: 'mixed',
         components: {
           show: SpotifyTokenExpiry
         },
-        label: 'Spotify Tokens Expired'
+        label: 'Spotify Connection Status'
       },
       'spotifyConnectionEdit': { 
-        isVisible: true,
+        isVisible: {
+          list: false,
+          filter: false,
+          show: true,
+          edit: true,
+        },
+        type: 'mixed',
         components: {
+          show: SpotifyTokenEdit,
           edit: SpotifyTokenEdit
         },
-        label: 'Spotify Tokens Expired'
+        label: 'Spotify Connection Management'
       },
     },
     actions: {
