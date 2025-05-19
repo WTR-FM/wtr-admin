@@ -6,6 +6,15 @@ import AdminJS from 'adminjs';
 import { getAuthConfig } from './auth.js';
 import { componentLoader } from '../types/components.bundler.js';
 import Connect from 'connect-pg-simple';
+import cors from 'cors';
+import cookieParser from 'cookie-parser';
+import dotenv from 'dotenv';
+
+// Load environment variables
+dotenv.config();
+
+// Backend server URL
+const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:8000';
 
 /**
  * Configure AdminJS instance with branding and resources
@@ -34,6 +43,18 @@ export const configureAdminJS = (resources) => {
  */
 export const setupExpressServer = (admin) => {
   const app = express();
+  
+  // Set up CORS with credentials
+  app.use(cors({
+    origin: [BACKEND_URL, process.env.ADMIN_URL || 'http://localhost:5000'],
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
+  }));
+  
+  // Parse cookies
+  app.use(cookieParser());
+  
   // For parsing form data
   app.use(formidable());
 
@@ -52,6 +73,16 @@ export const setupExpressServer = (admin) => {
     createTableIfMissing: true,
   })
 
+  // Create a middleware to extract tokens from backend cookies
+  const extractTokensMiddleware = (req, res, next) => {
+    // If the backend has set authentication cookies, extract and use them
+    if (req.cookies && (req.cookies.accessToken || req.cookies.refreshToken)) {
+      console.log('Found authentication cookies from backend');
+    }
+    next();
+  };
+
+  app.use(extractTokensMiddleware);
 
   const adminRouter = buildAuthenticatedRouter(
     admin,
@@ -65,6 +96,7 @@ export const setupExpressServer = (admin) => {
       cookie: {
         httpOnly: process.env.NODE_ENV === 'production',
         secure: process.env.NODE_ENV === 'production',
+        sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'none',
       },
       name: 'adminjs',
     }

@@ -21,7 +21,7 @@ interface Props {
 const removeSpotifyConnection = async (userId: string): Promise<any> => {
   try {
     // Use absolute URL from environment variable
-    const backendUrl = process.env.PUBLIC_BACKEND_URL || 'http://localhost:8000';
+    const backendUrl = process.env.BACKEND_URL || 'http://localhost:8000';
     const response = await fetch(`${backendUrl}/user/${userId}/spotify/logout`, {
       method: 'POST',
       headers: {
@@ -49,7 +49,7 @@ const removeSpotifyConnection = async (userId: string): Promise<any> => {
 const refreshSpotifyToken = async (userId: string): Promise<any> => {
   try {
     // Use absolute URL from environment variable
-    const backendUrl = process.env.PUBLIC_BACKEND_URL || 'http://localhost:8000';
+    const backendUrl = process.env.BACKEND_URL || 'http://localhost:8000';
     const response = await fetch(`${backendUrl}/user/${userId}/spotify/refresh`, {
       method: 'POST',
       headers: {

@@ -62,6 +62,33 @@ This admin panel connects to the same PostgreSQL database used by the WTR backen
 - Friend Requests - Social connections between users
 - OTPs - One-time passwords for user verification
 
+## User Role System
+
+The admin portal now uses the Users table with role-based permissions instead of a separate Admins table. The following roles are available:
+
+- `superadmin`: Full access to all features and can manage other admins
+- `admin`: Can manage content and regular users but cannot modify superadmins
+- `viewer`: Read-only access to the admin portal
+- `user`: Regular user without admin portal access
+
+## Authentication Integration
+
+The admin portal now integrates with the main backend server for authentication:
+
+1. When logging in, requests are redirected to the backend server's `/auth/local/signin` endpoint
+2. The backend server validates credentials and sets authentication cookies
+3. These cookies are shared between the admin portal and backend
+4. Only users with admin-level roles (`superadmin`, `admin`, or `viewer`) can access the admin portal
+
+### Configuration
+
+To enable the authentication integration, configure the following environment variables:
+
+```
+BACKEND_URL=http://localhost:3000  # URL of your backend server
+ADMIN_URL=http://localhost:5000    # URL of your admin portal
+```
+
 ## Troubleshooting
 
 - **Database issues**: If you're having problems with the database, check your `.env` file for correct credentials

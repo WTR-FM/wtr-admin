@@ -5,7 +5,6 @@ import {
   DataType,
   CreatedAt,
   UpdatedAt,
-  DeletedAt,
 } from 'sequelize-typescript';
 
 @Table({
@@ -93,7 +92,4 @@ export class Song extends Model {
 
   @UpdatedAt
   declare updatedAt: Date;
-
-  @DeletedAt
-  declare deletedAt: Date;
 }
