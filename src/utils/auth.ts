@@ -14,7 +14,7 @@ const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:3000';
  * @param password Password for authentication
  * @returns User object if authenticated, null otherwise
  */
-export const authenticate = async (email: string, password: string) => {
+export const authenticate = async (email: string, password: string, req, res) => {
   // Try user database authentication
   console.log('Attempting database authentication...');
 
@@ -39,6 +39,31 @@ export const authenticate = async (email: string, password: string) => {
 
         // If login was successful, we should get user data back
         if (response.data?.tokens) {
+          console.log("response.data.tokens: ", response.data.tokens);
+          // Store the tokens in cookies
+          const { access_token, refresh_token } = response.data.tokens;
+          
+          // Set cookies with appropriate settings
+          if (res) {
+            // Set access token cookie
+            res.cookie('access_token', access_token, {
+              httpOnly: true,
+              secure: process.env.NODE_ENV === 'production',
+              sameSite: process.env.NODE_ENV === 'production' ? 'strict' as const : 'lax' as const,
+              maxAge: 15 * 60 * 1000 // 15 minutes
+            });
+            
+            // Set refresh token cookie
+            res.cookie('refresh_token', refresh_token, {
+              httpOnly: true,
+              secure: process.env.NODE_ENV === 'production',
+              sameSite: process.env.NODE_ENV === 'production' ? 'strict' as const : 'lax' as const,
+              maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+            });
+            
+            console.log('Authentication tokens set in cookies');
+          }
+          
           return {
             id: user.id,
             email: user.email,
