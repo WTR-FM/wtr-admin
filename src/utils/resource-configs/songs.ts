@@ -1,5 +1,6 @@
 import { Song } from "../../entities/song.entity.js";
 import { AdminAuthService } from "../../services/admin-auth.service.js";
+import { FormattedDate } from "../../types/components.bundler.js";
 
 const SongConfig = {
     resource: Song,
@@ -11,6 +12,18 @@ const SongConfig = {
         properties: {
             metadata: { type: 'mixed' },
             lyrics: { type: 'textarea' },
+            createdAt: {
+                components: {
+                    list: FormattedDate,
+                    show: FormattedDate,
+                    filter: FormattedDate,
+                }
+            },
+            updatedAt: {
+                components: {
+                    show: FormattedDate,
+                }
+            },
         },
         actions: {
             delete: { isAccessible: ({ currentAdmin }) => AdminAuthService.isSuperAdmin(currentAdmin) },

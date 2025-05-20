@@ -1,5 +1,6 @@
 import { Watchlist } from "../../entities/watchlist.entity.js";
 import { AdminAuthService } from "../../services/admin-auth.service.js";
+import { FormattedDate } from "../../types/components.bundler.js";
 
 const WatchlistConfig = {
     resource: Watchlist,
@@ -11,6 +12,18 @@ const WatchlistConfig = {
         properties: {
             metadata: { type: 'mixed' },
             description: { type: 'textarea' },
+            createdAt: {
+                components: {
+                    list: FormattedDate,
+                    show: FormattedDate,
+                    filter: FormattedDate,
+                }
+            },
+            updatedAt: {
+                components: {
+                    show: FormattedDate,
+                }
+            },
         },
         actions: {
             delete: { isAccessible: ({ currentAdmin }) => AdminAuthService.isSuperAdmin(currentAdmin) },
