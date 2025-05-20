@@ -15,8 +15,6 @@ const SpotifyConnectionStatus: FC<Props> = ({ record, marginBottom = '24px' }) =
   const { params } = record;
   const expiryDate = params['spotifyTokens.expiry'];
 
-  console.log(record,'rrr')
-
   const { statusText, statusColor } = getConnectionStatus(expiryDate);
 
   return (

@@ -1,6 +1,6 @@
 import { User } from "../../entities/user.entity.js";
 import { AdminAuthService } from "../../services/admin-auth.service.js";
-import { SpotifyTokenEdit, SpotifyTokenExpiry } from "../../types/components.bundler.js";
+import { SpotifyTokenEdit, SpotifyTokenExpiry, FormattedDate } from "../../types/components.bundler.js";
 
 const UserConfig = {
   resource: User,
@@ -30,6 +30,20 @@ const UserConfig = {
           edit: SpotifyTokenEdit
         },
         label: 'Spotify Tokens Expired'
+      },
+      'createdAt': {
+        isVisible: { list: true, show: true, filter: true },
+        components: {
+          list: FormattedDate,
+          show: FormattedDate,
+        }
+      },
+      'updatedAt': {
+        isVisible: { show: true },
+        components: {
+          list: FormattedDate,
+          show: FormattedDate,
+        }
       },
     },
     actions: {
