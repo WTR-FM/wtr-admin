@@ -7,6 +7,7 @@ import { PlaylistSong } from './entities/playlist-song.entity.js';
 import { Watchlist } from './entities/watchlist.entity.js';
 import { Otp } from './entities/otp.entity.js';
 import { Admin } from './entities/admin.entity.js';
+import { Notification } from './entities/notification.entity.js';
 
 // Load environment variables
 dotenv.config();
@@ -37,14 +38,15 @@ sequelize.addModels([
   Watchlist,
   Otp,
   Admin,
+  Notification,
 ]);
 
 // Initialize database tables
 const initDatabase = async () => {
   try {
     // Now sync other tables with alter: true, force: false
-    // await sequelize.sync({ alter: true });
-    // console.log('Database synchronized');
+    await sequelize.sync({ alter: true });
+    console.log('Database synchronized');
   } catch (error) {
     console.error('Error synchronizing database:', error);
   }

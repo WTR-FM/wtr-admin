@@ -5,6 +5,7 @@ import WatchlistConfig from './resource-configs/watchlists.js';
 import PlaylistSongConfig from './resource-configs/playlist-songs.js';
 import FriendRequestConfig from './resource-configs/friend-requests.js';
 import OtpConfig from './resource-configs/otps.js';
+import NotificationConfig from './resource-configs/notifications.js';
 
 export const getResourceConfigurations = () => [
   AdminConfig,
@@ -14,4 +15,5 @@ export const getResourceConfigurations = () => [
   PlaylistSongConfig,
   FriendRequestConfig,
   OtpConfig,
+  NotificationConfig,
 ]; 
