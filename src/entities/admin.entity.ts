@@ -5,7 +5,6 @@ import {
   DataType,
   CreatedAt,
   UpdatedAt,
-  DeletedAt,
   BeforeCreate,
   BeforeUpdate,
 } from 'sequelize-typescript';
@@ -79,9 +78,6 @@ export class Admin extends Model {
 
   @UpdatedAt
   declare updatedAt: Date;
-
-  @DeletedAt
-  declare deletedAt: Date;
 
   // This method is called before creating a new instance
   @BeforeCreate
