@@ -1,5 +1,4 @@
 import AdminJS from 'adminjs'
-import express from 'express'
 import * as dotenv from 'dotenv'
 import { Database, Resource } from '@adminjs/sequelize'
 import { sequelize, initDatabase } from './db.js'
@@ -21,7 +20,7 @@ const start = async () => {
     console.log('Database connection has been established successfully.')
     
     // Sync database tables
-    // await initDatabase()
+    await initDatabase()
     
     // Get resource configurations
     const resources = getResourceConfigurations()

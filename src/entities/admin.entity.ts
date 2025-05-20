@@ -5,7 +5,6 @@ import {
   DataType,
   CreatedAt,
   UpdatedAt,
-  DeletedAt,
   BeforeCreate,
   BeforeUpdate,
 } from 'sequelize-typescript';
@@ -16,7 +15,7 @@ import { hash } from 'bcrypt';
   paranoid: false,
   indexes: [
     { unique: true, fields: ['email'] },
-    { fields: ['isActive'] },
+    { fields: ['isSuspended'] },
     { fields: ['role'] },
   ],
 })
@@ -54,18 +53,18 @@ export class Admin extends Model {
   declare password: string;
 
   @Column({
-    type: DataType.ENUM('admin', 'superadmin'),
+    type: DataType.ENUM('superadmin', 'admin', 'viewer'),
     allowNull: false,
-    defaultValue: 'admin',
+    defaultValue: 'viewer',
   })
-  declare role: 'admin' | 'superadmin';
+  declare role: 'superadmin' | 'admin' | 'viewer';
 
   @Column({
     type: DataType.BOOLEAN,
-    allowNull: false,
-    defaultValue: true,
+    allowNull: true,
+    defaultValue: false,
   })
-  declare isActive: boolean;
+  declare isSuspended: boolean;
 
   @Column({
     type: DataType.STRING,
@@ -79,9 +78,6 @@ export class Admin extends Model {
 
   @UpdatedAt
   declare updatedAt: Date;
-
-  @DeletedAt
-  declare deletedAt: Date;
 
   // This method is called before creating a new instance
   @BeforeCreate

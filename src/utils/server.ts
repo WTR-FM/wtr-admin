@@ -1,9 +1,9 @@
 import express from 'express';
-import session from 'express-session';
 import formidable from 'express-formidable';
 import { buildAuthenticatedRouter } from '@adminjs/express';
 import AdminJS from 'adminjs';
 import { getAuthConfig } from './auth.js';
+import { componentLoader } from '../types/components.bundler.js';
 
 /**
  * Configure AdminJS instance with branding and resources
@@ -11,7 +11,7 @@ import { getAuthConfig } from './auth.js';
  * @returns Configured AdminJS instance
  */
 export const configureAdminJS = (resources) => {
-  return new AdminJS({
+  const admin = new AdminJS({
     rootPath: '/admin',
     branding: {
       companyName: 'WTR Admin Panel',
@@ -19,7 +19,10 @@ export const configureAdminJS = (resources) => {
       favicon: '/favicon.ico',
     },
     resources,
-  });
+    componentLoader
+  })
+  admin.watch()
+  return admin;
 };
 
 /**

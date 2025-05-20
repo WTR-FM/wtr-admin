@@ -32,55 +32,62 @@ export class Watchlist extends Model {
     type: DataType.UUID,
     allowNull: false,
   })
-  userId: string;
+  declare userId: string;
 
   @Column({
     type: DataType.STRING,
     allowNull: false
   })
-  name: string;
+  declare name: string;
 
   @Column({
     type: DataType.TEXT,
     allowNull: true,
   })
-  description: string;
+  declare description: string;
 
   @Column({
     type: DataType.STRING,
     allowNull: true,
   })
-  imageUrl: string;
+  declare imageUrl: string;
+
+  @Column({
+    type: DataType.ARRAY(DataType.STRING),
+    allowNull: true,
+    defaultValue: [],
+  })
+  declare tags: string[];
 
   @Column({
     type: DataType.BOOLEAN,
     allowNull: false,
     defaultValue: false,
   })
-  isPublic: boolean;
+  declare isPublic: boolean;
 
   @Column({
     type: DataType.BOOLEAN,
     allowNull: false,
     defaultValue: false,
   })
-  isCollaborative: boolean;
+  declare isCollaborative: boolean;
 
   @Column({
     type: DataType.STRING,
     allowNull: true,
     unique: true
   })
-  spotifyPlaylistId: string;
+  declare spotifyPlaylistId: string;
 
   @Column({
     type: DataType.JSONB,
     allowNull: true,
   })
-  metadata: any;
+  declare metadata: any;
 
   @HasMany(() => PlaylistSong)
-  playlistSongs: PlaylistSong[];
+  declare playlistSongs: PlaylistSong[];
 
   @CreatedAt
   declare createdAt: Date;

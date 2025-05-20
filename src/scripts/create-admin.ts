@@ -47,8 +47,8 @@ async function createAdminInteractively() {
       return;
     }
     
-    let roleOption = await question('👑 Select role (1 for admin, 2 for superadmin): ');
-    const role = roleOption === '2' ? 'superadmin' : 'admin';
+    let roleOption = await question('�� Select role (1 for admin, 2 for superadmin, 3 for viewer): ');
+    const role = roleOption === '2' ? 'superadmin' : (roleOption === '3' ? 'viewer' : 'admin');
     
     const firstName = await question('📝 Enter admin first name: ');
     if (!firstName) {
@@ -64,7 +64,7 @@ async function createAdminInteractively() {
     console.log('='.repeat(50));
     console.log('- Email:', email);
     console.log('- Password:', '********');
-    console.log('- Role:', role === 'superadmin' ? '👑 Superadmin' : '👤 Admin');
+    console.log('- Role:', role === 'superadmin' ? '👑 Superadmin' : (role === 'admin' ? '👤 Admin' : '👁️ Viewer'));
     console.log('- First Name:', firstName || 'Admin');
     console.log('- Last Name:', lastName || 'User');
     console.log('='.repeat(50));
@@ -92,7 +92,7 @@ async function createAdminInteractively() {
         lastName: lastName || existingAdmin.lastName,
         password: password, // Will be hashed by model hooks
         role,
-        isActive: true
+        isSuspended: false
       });
       
       console.log('✅ Admin updated successfully');
@@ -108,7 +108,7 @@ async function createAdminInteractively() {
         email,
         password, // Will be hashed by model hooks
         role,
-        isActive: true,
+        isSuspended: false,
       });
       
       console.log('✅ Admin created successfully');
