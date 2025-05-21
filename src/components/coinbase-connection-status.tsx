@@ -5,7 +5,6 @@ import { getConnectionStatus } from '../utils/coinbase-utils.js';
 
 const CoinbaseConnectionStatus: React.FC<BasePropertyProps> = ({ record, property, where }) => {
   const coinbaseWalletAddress = record.params.coinbaseWalletAddress;
-  console.log('coinbaseWalletAddress:', coinbaseWalletAddress);
   const { statusText, statusColor } = getConnectionStatus(coinbaseWalletAddress);
 
   const displayLabel = property.custom?.customLabel || property.label || property.name;

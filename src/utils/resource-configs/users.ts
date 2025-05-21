@@ -35,7 +35,7 @@ const UserConfig = {
         isVisible: true,
         type: 'mixed',
         components: {
-          show: CoinbaseConnectionStatus
+          list: CoinbaseConnectionStatus
         },
         custom: {
           customLabel: 'Coinbase Connection Status'
