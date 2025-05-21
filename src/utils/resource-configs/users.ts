@@ -31,19 +31,23 @@ const UserConfig = {
         },
         label: 'Spotify Tokens Expired'
       },
-      'createdAt': {
-        isVisible: { list: true, show: true, filter: true },
-        components: {
-          list: FormattedDate,
-          show: FormattedDate,
-        }
+      createdAt: {
+          components: {
+              list: FormattedDate,
+              show: FormattedDate,
+              filter: FormattedDate,
+          },
+          custom: {
+              customLabel: 'Created At'
+          }
       },
-      'updatedAt': {
-        isVisible: { show: true },
-        components: {
-          list: FormattedDate,
-          show: FormattedDate,
-        }
+      updatedAt: {
+          components: {
+              show: FormattedDate,
+          },
+          custom: {
+              customLabel: 'Updated At'
+          }
       },
     },
     actions: {

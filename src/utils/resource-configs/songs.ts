@@ -17,11 +17,17 @@ const SongConfig = {
                     list: FormattedDate,
                     show: FormattedDate,
                     filter: FormattedDate,
+                },
+                custom: {
+                    customLabel: 'Created At'
                 }
             },
             updatedAt: {
                 components: {
                     show: FormattedDate,
+                },
+                custom: {
+                    customLabel: 'Updated At'
                 }
             },
         },
