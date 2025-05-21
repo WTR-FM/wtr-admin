@@ -1,11 +1,11 @@
 import { User } from "../../entities/user.entity.js";
 import { AdminAuthService } from "../../services/admin-auth.service.js";
-import { SpotifyTokenEdit, SpotifyTokenExpiry, FormattedDate } from "../../types/components.bundler.js";
+import { SpotifyTokenEdit, SpotifyConnectionStatus, FormattedDate, CoinbaseConnectionStatus } from "../../types/components.bundler.js";
 
 const UserConfig = {
   resource: User,
   options: {
-    listProperties: ['firstName', 'lastName', 'email', 'isSuspended', 'isVerified', 'createdAt'],
+    listProperties: ['firstName', 'lastName', 'email', 'isSuspended', 'coinbaseConnection', 'spotifyConnection', 'isVerified', 'createdAt'],
     showProperties: ['id', 'firstName', 'lastName', 'email', 'phoneNumber', 'spotifyConnection', 'country', 'state', 'pincode', 'about', 'isSuspended', 'isVerified', 'coinbaseWalletAddress', 'spotifyStatus', 'createdAt', 'updatedAt'],
     editProperties: ['firstName', 'lastName', 'email', 'password', 'isSuspended', 'isVerified','spotifyConnectionEdit'],
     filterProperties: ['firstName', 'lastName', 'email', 'isSuspended', 'isVerified', 'createdAt'],
@@ -20,9 +20,12 @@ const UserConfig = {
         isVisible: true, 
         type: 'mixed',
         components: {
-          show: SpotifyTokenExpiry
+          list: SpotifyConnectionStatus,
+          show: SpotifyConnectionStatus
         },
-        label: 'Spotify Tokens Expired'
+        custom: {
+          customLabel: 'Spotify Connection Status'
+        }
       },
       'spotifyConnectionEdit': { 
         isVisible: true,
@@ -31,19 +34,33 @@ const UserConfig = {
         },
         label: 'Spotify Tokens Expired'
       },
-      'createdAt': {
-        isVisible: { list: true, show: true, filter: true },
+      'coinbaseConnection': {
+        isVisible: true,
+        type: 'mixed',
         components: {
-          list: FormattedDate,
-          show: FormattedDate,
+          list: CoinbaseConnectionStatus
+        },
+        custom: {
+          customLabel: 'Coinbase Connection Status'
         }
       },
-      'updatedAt': {
-        isVisible: { show: true },
-        components: {
-          list: FormattedDate,
-          show: FormattedDate,
-        }
+      createdAt: {
+          components: {
+              list: FormattedDate,
+              show: FormattedDate,
+              filter: FormattedDate,
+          },
+          custom: {
+              customLabel: 'Created At'
+          }
+      },
+      updatedAt: {
+          components: {
+              show: FormattedDate,
+          },
+          custom: {
+              customLabel: 'Updated At'
+          }
       },
     },
     actions: {

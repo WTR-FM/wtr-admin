@@ -19,8 +19,8 @@ export const getConnectionStatus = (expiryDate?: string): ConnectionStatus => {
   return {
     isConnected: true,
     statusText: isExpired 
-      ? `Expired on ${expiry.toLocaleString()}` 
-      : `Active till ${expiry.toLocaleString()}`,
+      ? 'Expired' 
+      : 'Connected',
     statusColor: isExpired ? 'error' : 'success',
   };
 };

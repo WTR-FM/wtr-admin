@@ -12,8 +12,8 @@ export const getResourceConfigurations = () => [
   UserConfig,
   SongConfig,
   WatchlistConfig,
-  PlaylistSongConfig,
-  FriendRequestConfig,
-  OtpConfig,
+  // PlaylistSongConfig,
+  // FriendRequestConfig,
+  // OtpConfig,
   NotificationConfig,
 ]; 
