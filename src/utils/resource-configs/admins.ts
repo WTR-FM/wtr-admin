@@ -1,5 +1,6 @@
 import { Admin } from "../../entities/admin.entity.js";
 import { AdminAuthService } from "../../services/admin-auth.service.js";
+import { FormattedDate } from "../../types/components.bundler.js";
 
 const AdminConfig = {
     resource: Admin,
@@ -20,6 +21,24 @@ const AdminConfig = {
                 },
             },
             refreshToken: { isVisible: false },
+            createdAt: {
+                components: {
+                    list: FormattedDate,
+                    show: FormattedDate,
+                    filter: FormattedDate,
+                },
+                custom: {
+                    customLabel: 'Created At'
+                }
+            },
+            updatedAt: {
+                components: {
+                    show: FormattedDate,
+                },
+                custom: {
+                    customLabel: 'Updated At'
+                }
+            },
         },
 
         navigation: {

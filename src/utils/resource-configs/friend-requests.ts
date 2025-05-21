@@ -1,5 +1,6 @@
 import { FriendRequest } from "../../entities/friend-request.entity.js";
 import { AdminAuthService } from "../../services/admin-auth.service.js";
+import { FormattedDate } from "../../types/components.bundler.js";
 
 const FriendRequestConfig = {
     resource: FriendRequest,
@@ -7,6 +8,26 @@ const FriendRequestConfig = {
         listProperties: ['requesterId', 'receiverId', 'status', 'createdAt'],
         showProperties: ['id', 'requesterId', 'receiverId', 'status', 'createdAt', 'updatedAt'],
         editProperties: ['requesterId', 'receiverId', 'status'],
+        properties: {
+            createdAt: {
+                components: {
+                    list: FormattedDate,
+                    show: FormattedDate,
+                    filter: FormattedDate,
+                },
+                custom: {
+                    customLabel: 'Created At'
+                }
+            },
+            updatedAt: {
+                components: {
+                    show: FormattedDate,
+                },
+                custom: {
+                    customLabel: 'Updated At'
+                }
+            },
+        },
         actions: {
             delete: { isAccessible: ({ currentAdmin }) => AdminAuthService.isSuperAdmin(currentAdmin) },
             bulkDelete: { isAccessible: ({ currentAdmin }) => AdminAuthService.isSuperAdmin(currentAdmin) },

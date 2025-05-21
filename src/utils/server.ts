@@ -3,7 +3,7 @@ import formidable from 'express-formidable';
 import { buildAuthenticatedRouter } from '@adminjs/express';
 import AdminJS from 'adminjs';
 import { getAuthConfig } from './auth.js';
-import { componentLoader } from '../types/components.bundler.js';
+import { componentLoader, Dashboard } from '../types/components.bundler.js';
 
 /**
  * Configure AdminJS instance with branding and resources
@@ -18,9 +18,17 @@ export const configureAdminJS = (resources) => {
       logo: false,
       favicon: '/favicon.ico',
     },
+    dashboard: {
+      component: Dashboard,
+    },
     resources,
-    componentLoader
+    componentLoader,
+    pages: {
+      // Add custom pages here if needed
+    }
   })
+  
+  // Watch for changes
   admin.watch()
   return admin;
 };
