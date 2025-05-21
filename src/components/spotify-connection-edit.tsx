@@ -1,7 +1,7 @@
 import { Box, Button } from '@adminjs/design-system';
 import { useNotice } from 'adminjs';
 import React, { FC, useState } from 'react';
-import SpotifyConnectionStatus from './spotify-token-expiry.js';
+import SpotifyConnectionStatus from './spotify-connection-status.js';
 import { getConnectionStatus } from '../utils/spotify-utils.js';
 
 interface Props {

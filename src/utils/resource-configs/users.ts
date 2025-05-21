@@ -1,11 +1,11 @@
 import { User } from "../../entities/user.entity.js";
 import { AdminAuthService } from "../../services/admin-auth.service.js";
-import { SpotifyTokenEdit, SpotifyTokenExpiry, FormattedDate, CoinbaseConnectionStatus } from "../../types/components.bundler.js";
+import { SpotifyTokenEdit, SpotifyConnectionStatus, FormattedDate, CoinbaseConnectionStatus } from "../../types/components.bundler.js";
 
 const UserConfig = {
   resource: User,
   options: {
-    listProperties: ['firstName', 'lastName', 'email', 'isSuspended', 'coinbaseConnection', 'isVerified', 'createdAt'],
+    listProperties: ['firstName', 'lastName', 'email', 'isSuspended', 'coinbaseConnection', 'spotifyConnection', 'isVerified', 'createdAt'],
     showProperties: ['id', 'firstName', 'lastName', 'email', 'phoneNumber', 'spotifyConnection', 'country', 'state', 'pincode', 'about', 'isSuspended', 'isVerified', 'coinbaseWalletAddress', 'spotifyStatus', 'createdAt', 'updatedAt'],
     editProperties: ['firstName', 'lastName', 'email', 'password', 'isSuspended', 'isVerified','spotifyConnectionEdit'],
     filterProperties: ['firstName', 'lastName', 'email', 'isSuspended', 'isVerified', 'createdAt'],
@@ -20,9 +20,12 @@ const UserConfig = {
         isVisible: true, 
         type: 'mixed',
         components: {
-          show: SpotifyTokenExpiry
+          list: SpotifyConnectionStatus,
+          show: SpotifyConnectionStatus
         },
-        label: 'Spotify Tokens Expired'
+        custom: {
+          customLabel: 'Spotify Connection Status'
+        }
       },
       'spotifyConnectionEdit': { 
         isVisible: true,
