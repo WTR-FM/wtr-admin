@@ -25,6 +25,7 @@ export const SpotifyConnectionStatus = add('../components/spotify-connection-sta
 export const SpotifyTokenEdit = add('../components/spotify-connection-edit', 'SpotifyConnectionEdit');
 export const FormattedDate = add('../components/formatted-date', 'FormattedDate');
 export const CoinbaseConnectionStatus = add('../components/coinbase-connection-status', 'CoinbaseConnectionStatus');
+export const Dashboard = add('../components/dashboard', 'Dashboard');
 /**
  * Pages
  */
