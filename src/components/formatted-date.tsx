@@ -9,6 +9,11 @@ const FormattedDate: React.FC<BasePropertyProps> = ({ record, property, where })
 
   const displayLabel = property.custom?.customLabel || property.label || property.name;
 
+  if (where === 'filter') {
+    // TODO: Add implementation for filter
+    return null; 
+  }
+
   if (where === 'list') {
     return (
       <Text fontWeight="normal" lineHeight="1" margin="0">

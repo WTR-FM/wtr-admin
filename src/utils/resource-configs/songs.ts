@@ -8,7 +8,7 @@ const SongConfig = {
         listProperties: ['title', 'artist', 'album', 'source', 'createdAt'],
         showProperties: ['id', 'title', 'artist', 'album', 'source', 'sourceId', 'albumCover', 'durationMs', 'previewUrl', 'lyrics', 'metadata', 'createdAt', 'updatedAt'],
         editProperties: ['title', 'artist', 'album', 'sourceId', 'source', 'albumCover', 'durationMs', 'previewUrl', 'lyrics', 'metadata'],
-        filterProperties: ['title', 'artist', 'album', 'source', 'createdAt'],
+        filterProperties: ['title', 'artist', 'album', 'source'],
         properties: {
             metadata: { type: 'mixed' },
             lyrics: { type: 'textarea' },

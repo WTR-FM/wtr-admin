@@ -8,7 +8,7 @@ const AdminConfig = {
         listProperties: ['name', 'email', 'role', 'isSuspended', 'createdAt'],
         showProperties: ['id', 'firstName', 'lastName', 'email', 'role', 'isSuspended', 'createdAt', 'updatedAt'],
         editProperties: ['firstName', 'lastName', 'email', 'password', 'role', 'isSuspended'],
-        filterProperties: ['name', 'email', 'role', 'isSuspended', 'createdAt'],
+        filterProperties: ['name', 'email', 'role', 'isSuspended'],
 
         properties: {
             password: {
