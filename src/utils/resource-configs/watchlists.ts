@@ -8,7 +8,7 @@ const WatchlistConfig = {
         listProperties: ['name', 'userId', 'isPublic', 'isCollaborative', 'createdAt'],
         showProperties: ['id', 'userId', 'name', 'description', 'imageUrl', 'isPublic', 'isCollaborative', 'spotifyPlaylistId', 'metadata', 'playlistSongs', 'createdAt', 'updatedAt'],
         editProperties: ['name', 'description', 'userId', 'isPublic', 'isCollaborative', 'imageUrl', 'spotifyPlaylistId', 'metadata'],
-        filterProperties: ['name', 'userId', 'isPublic', 'isCollaborative', 'createdAt'],
+        filterProperties: ['name', 'userId', 'isPublic', 'isCollaborative'],
         properties: {
             metadata: { type: 'mixed' },
             description: { type: 'textarea' },
