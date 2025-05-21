@@ -24,7 +24,7 @@ export const add = (url: string, componentName: string): string =>
 export const SpotifyTokenExpiry = add('../components/spotify-token-expiry', 'SpotifyTokenExpiry');
 export const SpotifyTokenEdit = add('../components/spotify-connection-edit', 'SpotifyConnectionEdit');
 export const FormattedDate = add('../components/formatted-date', 'FormattedDate');
-
+export const CoinbaseConnectionStatus = add('../components/coinbase-connection-status', 'CoinbaseConnectionStatus');
 /**
  * Pages
  */
