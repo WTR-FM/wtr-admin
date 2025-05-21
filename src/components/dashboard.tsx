@@ -90,7 +90,7 @@ const Dashboard: React.FC = () => {
         />
         <Card
           title="Watchlists"
-          description="View and manage user playlists and collections"
+          description="View and manage user watchlists and collections"
           icon={<Illustration variant="DocumentSearch" />}
           path="/admin/resources/watchlists"
         />
