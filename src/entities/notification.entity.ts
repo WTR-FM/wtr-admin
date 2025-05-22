@@ -5,14 +5,12 @@ import {
   DataType,
   CreatedAt,
   UpdatedAt,
+  Index,
 } from 'sequelize-typescript';
 
 @Table({
   tableName: 'notifications',
   paranoid: false,
-  indexes: [
-    { fields: ['triggerName'] },
-  ],
 })
 export class Notification extends Model {
   @Column({
@@ -38,10 +36,10 @@ export class Notification extends Model {
     };
   };
 
+  @Index({ unique: true })
   @Column({
     type: DataType.STRING,
     allowNull: false,
-    unique: true,
     comment: 'Unique identifier for the notification trigger',
   })
   declare triggerName: string;
@@ -58,4 +56,4 @@ export class Notification extends Model {
 
   @UpdatedAt
   declare updatedAt: Date;
-} 
+}
