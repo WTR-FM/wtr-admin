@@ -11,6 +11,7 @@
     "adminjs-test": "node --loader ts-node/esm src/adminjs-test.js",
     "adminjs-standalone": "node --loader ts-node/esm adminjs-standalone.js",
     "create-admin": "node --loader ts-node/esm src/scripts/create-admin.ts",
+    "create-notifications": "node --loader ts-node/esm src/scripts/create-notification-templates.ts",
     "build": "tsc"
   },
   "keywords": [],
