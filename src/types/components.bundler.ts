@@ -26,6 +26,8 @@ export const SpotifyTokenEdit = add('../components/spotify-connection-edit', 'Sp
 export const FormattedDate = add('../components/formatted-date', 'FormattedDate');
 export const CoinbaseConnectionStatus = add('../components/coinbase-connection-status', 'CoinbaseConnectionStatus');
 export const Dashboard = add('../components/dashboard', 'Dashboard');
+// export const NotificationTemplateEdit = add('../components/notification-template-edit', 'NotificationTemplateEdit');
+// export const NotificationTemplateShow = add('../components/notification-template-show', 'NotificationTemplateShow');
 /**
  * Pages
  */
