@@ -30,10 +30,10 @@ export class Config extends Model {
     declare key: string;
 
     @Column({
-        type: DataType.JSON,
+        type: DataType.INTEGER,
         allowNull: false,
     })
-    declare value: any;
+    declare value: number;
 
     @Column({
         type: DataType.STRING,

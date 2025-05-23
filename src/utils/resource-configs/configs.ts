@@ -10,24 +10,6 @@ const ConfigConfig = {
         editProperties: ['key', 'value', 'category', 'description'],
         filterProperties: ['key', 'category'],
         properties: {
-            value: {
-                type: 'mixed',
-                isVisible: {
-                    list: false,
-                    filter: false,
-                    show: true,
-                    edit: true,
-                }
-            },
-            description: {
-                type: 'textarea',
-                isVisible: {
-                    list: true,
-                    filter: true,
-                    show: true,
-                    edit: true,
-                }
-            },
             createdAt: {
                 components: {
                     list: FormattedDate,
