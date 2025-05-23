@@ -106,7 +106,6 @@ const Dashboard: React.FC = () => {
           icon={<Illustration variant="DocumentCheck" />}
           path="/admin/resources/notifications"
         />
-
         <Card
           title="Configs"
           description="View and update app configuration values"
