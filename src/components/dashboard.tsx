@@ -100,6 +100,18 @@ const Dashboard: React.FC = () => {
           icon={<Illustration variant="Folders" />}
           path="/admin/resources/songs"
         />
+        {/* <Card
+          title="Notifications"
+          description="Manage email and push notification templates and triggers"
+          icon={<Illustration variant="DocumentCheck" />}
+          path="/admin/resources/notifications"
+        /> */}
+        <Card
+          title="Configs"
+          description="View and update app configuration values"
+          icon={<Illustration variant="Details" />}
+          path="/admin/resources/configs"
+        />
       </Box>
     </Box>
   );
