@@ -53,10 +53,10 @@ const NotificationConfig = {
           AdminAuthService.canEdit(currentAdmin)
       },
       list: {
-        isAccessible: ({ currentAdmin }) => AdminAuthService.canEdit(currentAdmin)
+        isAccessible: ({ currentAdmin }) => true
       },
       show: {
-        isAccessible: ({ currentAdmin }) => AdminAuthService.canEdit(currentAdmin)
+        isAccessible: ({ currentAdmin }) => true
       },
     },
   },
