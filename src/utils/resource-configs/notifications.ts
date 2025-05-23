@@ -1,4 +1,5 @@
 import { Notification } from '../../entities/notification.entity.js';
+import { AdminAuthService } from "../../services/admin-auth.service.js";
 
 const NotificationConfig = {
   resource: Notification,
@@ -22,9 +23,6 @@ const NotificationConfig = {
         type: 'text',
         label: 'Email Subject',
       },
-      id: {
-        isVisible: { list: true, filter: true, show: true, edit: false },
-      },
       triggerName: {
         isTitle: true,
         position: 100,
@@ -41,6 +39,24 @@ const NotificationConfig = {
       updatedAt: {
         isVisible: { list: true, filter: false, show: true, edit: false },
         position: 500,
+      },
+    },
+    actions: {
+      delete: { isAccessible: ({ currentAdmin }) => AdminAuthService.canEdit(currentAdmin) },
+      bulkDelete: { isAccessible: ({ currentAdmin }) => AdminAuthService.canEdit(currentAdmin) },
+      new: {
+        isAccessible: ({ currentAdmin }) =>
+          AdminAuthService.canEdit(currentAdmin)
+      },
+      edit: {
+        isAccessible: ({ currentAdmin }) =>
+          AdminAuthService.canEdit(currentAdmin)
+      },
+      list: {
+        isAccessible: ({ currentAdmin }) => AdminAuthService.canEdit(currentAdmin)
+      },
+      show: {
+        isAccessible: ({ currentAdmin }) => AdminAuthService.canEdit(currentAdmin)
       },
     },
   },
