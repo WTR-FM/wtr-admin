@@ -8,6 +8,7 @@ import { Watchlist } from './entities/watchlist.entity.js';
 import { Otp } from './entities/otp.entity.js';
 import { Admin } from './entities/admin.entity.js';
 import { Notification } from './entities/notification.entity.js';
+import { Config } from './entities/config.entity.js';
 
 // Load environment variables
 dotenv.config();
@@ -39,6 +40,7 @@ sequelize.addModels([
   Otp,
   Admin,
   Notification,
+  Config,
 ]);
 
 // Initialize database tables
