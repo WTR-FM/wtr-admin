@@ -47,7 +47,7 @@ sequelize.addModels([
 const initDatabase = async () => {
   try {
     // Now sync other tables with alter: true, force: false
-    await sequelize.sync({ alter: true });
+    // await sequelize.sync({ alter: true });
     console.log('Database synchronized');
   } catch (error) {
     console.error('Error synchronizing database:', error);
