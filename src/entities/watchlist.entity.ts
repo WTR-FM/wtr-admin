@@ -9,6 +9,12 @@ import {
 } from 'sequelize-typescript';
 import { PlaylistSong } from './playlist-song.entity.js';
 
+export enum WatchlistType {
+  ROSTER = 'roster',
+  WATCHLIST = 'watchlist',
+  TEAM = 'team',
+}
+
 @Table({
   tableName: 'watchlists',
   paranoid: false,
@@ -36,7 +42,7 @@ export class Watchlist extends Model {
 
   @Column({
     type: DataType.STRING,
-    allowNull: false
+    allowNull: false,
   })
   declare name: string;
 
@@ -74,9 +80,22 @@ export class Watchlist extends Model {
   declare isCollaborative: boolean;
 
   @Column({
+    type: DataType.BOOLEAN,
+    allowNull: false,
+    defaultValue: false,
+  })
+  declare isDraft: boolean;
+
+  @Column({
+    type: DataType.ENUM(...Object.values(WatchlistType)),
+    allowNull: false,
+    defaultValue: WatchlistType.WATCHLIST,
+  })
+  declare type: WatchlistType;
+
+  @Column({
     type: DataType.STRING,
     allowNull: true,
-    unique: true
   })
   declare spotifyPlaylistId: string;
 
@@ -94,4 +113,4 @@ export class Watchlist extends Model {
 
   @UpdatedAt
   declare updatedAt: Date;
-} 
+}
