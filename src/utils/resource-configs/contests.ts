@@ -1,6 +1,7 @@
 import { Contest, ContestStatus, ContestType } from "../../entities/contest.entity.js";
 import { AdminAuthService } from "../../services/admin-auth.service.js";
 import { FormattedDate } from "../../types/components.bundler.js";
+import { GenreSlotsEdit } from "../../types/components.bundler.js";
 
 const ContestConfig = {
   resource: Contest,
@@ -25,6 +26,9 @@ const ContestConfig = {
       'slots': {
         type: 'mixed',
         isArray: true,
+        components: {
+          edit: GenreSlotsEdit,
+        },
       },
       'xpRules': {
         type: 'mixed',

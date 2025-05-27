@@ -28,6 +28,8 @@ export const CoinbaseConnectionStatus = add('../components/coinbase-connection-s
 export const Dashboard = add('../components/dashboard', 'Dashboard');
 // export const NotificationTemplateEdit = add('../components/notification-template-edit', 'NotificationTemplateEdit');
 // export const NotificationTemplateShow = add('../components/notification-template-show', 'NotificationTemplateShow');
+export const GenreSlotsEdit = add('../components/genre-slot-edit', 'GenreSlotsEdit');
+
 /**
  * Pages
  */
