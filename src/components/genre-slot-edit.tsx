@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { useRecord, BasePropertyProps } from "adminjs";
+import { BasePropertyProps } from "adminjs";
 import { Box, Button, Label, Select, Icon, Input, fontSizes } from "@adminjs/design-system";
 
 const genreOptions = [
@@ -9,7 +9,31 @@ const genreOptions = [
   { value: "jazz", label: "Jazz" },
   { value: "classical", label: "Classical" },
   { value: "electronic", label: "Electronic" },
+  { value: "rnb", label: "R&B / Soul" },
+  { value: "country", label: "Country" },
+  { value: "metal", label: "Metal" },
+  { value: "punk", label: "Punk" },
+  { value: "reggae", label: "Reggae" },
+  { value: "blues", label: "Blues" },
+  { value: "folk", label: "Folk" },
+  { value: "indie", label: "Indie" },
+  { value: "alternative", label: "Alternative" },
+  { value: "house", label: "House" },
+  { value: "techno", label: "Techno" },
+  { value: "trance", label: "Trance" },
+  { value: "kpop", label: "K-Pop" },
+  { value: "jpop", label: "J-Pop" },
+  { value: "latin", label: "Latin" },
+  { value: "afrobeat", label: "Afrobeat" },
+  { value: "gospel", label: "Gospel" },
+  { value: "funk", label: "Funk" },
+  { value: "disco", label: "Disco" },
+  { value: "ambient", label: "Ambient" },
+  { value: "lofi", label: "Lo-fi" },
+  { value: "soundtrack", label: "Soundtrack" },
+  { value: "world", label: "World" },
 ];
+
 
 const GenreSlotsEdit: React.FC<BasePropertyProps> = (props) => {
   const { property, record, onChange } = props;

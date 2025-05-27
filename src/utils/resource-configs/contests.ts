@@ -25,7 +25,6 @@ const ContestConfig = {
         })),
       },
       'slots': {
-        type: 'mixed',
         isArray: true,
         components: {
           show: GenreSlotsShow,
