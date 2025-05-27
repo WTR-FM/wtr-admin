@@ -46,7 +46,7 @@ const GenreSlotsShow: React.FC<BasePropertyProps> = (props) => {
   return (
     <Box>
       <Box style={{ marginBottom: '12px' }}>
-        <Text variant="sm" color="grey60">
+        <Text fontWeight="normal" fontSize="12px">
           Team Size: {parsedSlots.length}
         </Text>
       </Box>
