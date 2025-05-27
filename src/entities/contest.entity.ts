@@ -133,4 +133,44 @@ export class Contest extends Model {
             }
         }
     }
+
+    @BeforeUpdate
+    static validateAndUpdateStatusChange(instance: Contest) {
+        // Get the previous version of the instance to check if status is changing
+        const previousStatus = instance.previous('status');
+        const currentStatus = instance.status;
+        
+        // Only run validations if status is changing from DRAFT
+        if (previousStatus === ContestStatus.DRAFT && 
+            (currentStatus === ContestStatus.SCHEDULED || currentStatus === ContestStatus.ACTIVE)) {
+            
+            // Required fields for SCHEDULED or ACTIVE status
+            if (!instance.title) {
+                throw new Error('Contest title is required');
+            }
+            
+            if (!instance.type) {
+                throw new Error('Contest type is required');
+            }
+            
+            if (!instance.slots || !Array.isArray(instance.slots) || instance.slots.length === 0) {
+                throw new Error('Contest slots are required');
+            }
+            
+            // If changing to ACTIVE, set startTime to current time
+            if (currentStatus === ContestStatus.ACTIVE) {
+                instance.startTime = new Date();
+                // endTime will be automatically calculated by calculateEndTime hook
+                this.calculateEndTime(instance);
+            } else if (currentStatus === ContestStatus.SCHEDULED && !instance.startTime) {
+                // For SCHEDULED, startTime must be provided by admin
+                throw new Error('Start time is required for scheduled contests');
+            }
+        }
+        
+        // If status is changing to CLOSED, set endTime to current time
+        if (currentStatus === ContestStatus.CLOSED && previousStatus !== ContestStatus.CLOSED) {
+            instance.endTime = new Date();
+        }
+    }
 } 
