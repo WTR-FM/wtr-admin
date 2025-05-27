@@ -29,6 +29,7 @@ export const Dashboard = add('../components/dashboard', 'Dashboard');
 // export const NotificationTemplateEdit = add('../components/notification-template-edit', 'NotificationTemplateEdit');
 // export const NotificationTemplateShow = add('../components/notification-template-show', 'NotificationTemplateShow');
 export const GenreSlotsEdit = add('../components/genre-slot-edit', 'GenreSlotsEdit');
+export const GenreSlotsShow = add('../components/genre-slot-show', 'GenreSlotsShow');
 
 /**
  * Pages
