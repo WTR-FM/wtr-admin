@@ -37,9 +37,10 @@ const GenreSlotsShow: React.FC<BasePropertyProps> = (props) => {
 
   if (!parsedSlots.length) {
     return (
-      <Box>
-        <Text color="grey60">No slots configured</Text>
-      </Box>
+      <Box style={{ marginBottom: '24px' }}>
+      <Label style={{ marginBottom: '0px', fontSize: '12px' }}>Slots</Label>
+      <Text fontWeight="normal" >No slots configured</Text>
+    </Box>
     );
   }
 

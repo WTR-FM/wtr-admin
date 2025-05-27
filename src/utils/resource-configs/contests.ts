@@ -96,7 +96,7 @@ const ContestConfig = {
     },
     navigation: {
       name: 'Contest Management',
-      icon: 'Trophy',
+      icon: 'Gift',
     },
   },
 };

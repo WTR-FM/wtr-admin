@@ -118,7 +118,7 @@ const GenreSlotsEdit: React.FC<BasePropertyProps> = (props) => {
                   onClick={() => handleRemoveSlot(index)}
                   style={{ flexShrink: 0 }}
                 >
-                  <Icon icon="TrashCan" />
+                  <Icon icon="X" />
                 </Button>
               </Box>
             </Box>
