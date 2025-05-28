@@ -8,8 +8,8 @@ const ContestConfig = {
   resource: Contest,
   options: {
     listProperties: ['title', 'type', 'startTime', 'endTime', 'status'],
-    showProperties: ['id', 'title', 'type', 'startTime', 'endTime', 'status', 'slots', 'xpRules', 'matchCriteria', 'createdAt', 'updatedAt'],
-    editProperties: ['title', 'type', 'startTime', 'status', 'slots', 'xpRules', 'matchCriteria'],
+    showProperties: ['id', 'title', 'type', 'startTime', 'endTime', 'status', 'slots', 'createdAt', 'updatedAt'],
+    editProperties: ['title', 'type', 'startTime', 'status', 'slots'],
     filterProperties: ['title', 'type', 'status'],
     properties: {
       'type': {
