@@ -35,7 +35,7 @@ export class PlaylistSong extends Model {
     type: DataType.UUID,
     allowNull: false,
     onDelete: 'CASCADE',
-    onUpdate: 'CASCADE'
+    onUpdate: 'CASCADE',
   })
   watchlistId: string;
 
@@ -44,7 +44,7 @@ export class PlaylistSong extends Model {
     type: DataType.UUID,
     allowNull: false,
     onDelete: 'CASCADE',
-    onUpdate: 'CASCADE'
+    onUpdate: 'CASCADE',
   })
   songId: string;
 
@@ -73,4 +73,6 @@ export class PlaylistSong extends Model {
 
   @UpdatedAt
   declare updatedAt: Date;
-} 
+}
+
+

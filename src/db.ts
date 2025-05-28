@@ -9,6 +9,7 @@ import { Otp } from './entities/otp.entity.js';
 import { Admin } from './entities/admin.entity.js';
 import { Notification } from './entities/notification.entity.js';
 import { Config } from './entities/config.entity.js';
+import { Contest } from './entities/contest.entity.js';
 
 // Load environment variables
 dotenv.config();
@@ -41,6 +42,7 @@ sequelize.addModels([
   Admin,
   Notification,
   Config,
+  Contest,
 ]);
 
 // Initialize database tables

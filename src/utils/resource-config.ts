@@ -7,12 +7,14 @@ import FriendRequestConfig from './resource-configs/friend-requests.js';
 import OtpConfig from './resource-configs/otps.js';
 import NotificationConfig from './resource-configs/notifications.js';
 import ConfigConfig from './resource-configs/configs.js';
+import ContestConfig from './resource-configs/contests.js';
 
 export const getResourceConfigurations = () => [
   AdminConfig,
   UserConfig,
   SongConfig,
   WatchlistConfig,
+  ContestConfig,
   // PlaylistSongConfig,
   // FriendRequestConfig,
   // OtpConfig,
