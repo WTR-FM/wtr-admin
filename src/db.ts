@@ -10,6 +10,7 @@ import { Admin } from './entities/admin.entity.js';
 import { Notification } from './entities/notification.entity.js';
 import { Config } from './entities/config.entity.js';
 import { Contest } from './entities/contest.entity.js';
+import { Participation } from './entities/participation.entity.js';
 
 // Load environment variables
 dotenv.config();
@@ -43,6 +44,7 @@ sequelize.addModels([
   Notification,
   Config,
   Contest,
+  Participation
 ]);
 
 // Initialize database tables
