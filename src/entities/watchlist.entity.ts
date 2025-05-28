@@ -11,8 +11,7 @@ import { PlaylistSong } from './playlist-song.entity.js';
 
 export enum WatchlistType {
   ROSTER = 'roster',
-  WATCHLIST = 'watchlist',
-  TEAM = 'team',
+  WATCHLIST = 'watchlist'
 }
 
 @Table({
