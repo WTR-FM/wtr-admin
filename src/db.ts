@@ -24,11 +24,13 @@ const sequelize = new Sequelize({
   password: process.env.DB_PASSWORD || 'postgres',
   database: process.env.DB_NAME || 'wtr_dev',
   logging: process.env.NODE_ENV !== 'production',
+  timezone: '+00:00', // Set UTC timezone for all database operations
   dialectOptions: {
     ssl: process.env.DB_SSL === 'true' ? {
       require: true,
       rejectUnauthorized: false, // for self-signed certificates
     } : false,
+    useUTC: true, // Use UTC for database connection
   },
 });
 
