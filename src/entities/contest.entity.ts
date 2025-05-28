@@ -136,21 +136,59 @@ export class Contest extends Model {
         }
     }
 
+    // Validation for required fields for SCHEDULED or ACTIVE status
+    static validateContestFields(instance: Contest) {
+        if (!instance.title) {
+            throw new Error('Contest title is required');
+        }
+
+        if (!instance.type) {
+            throw new Error('Contest type is required');
+        }
+
+        if (!instance.slots || !Array.isArray(instance.slots) || instance.slots.length === 0) {
+            throw new Error('Contest slots are required');
+        }
+
+        // If status is ACTIVE, set startTime to current time if not already set
+        if (instance.status === ContestStatus.ACTIVE && !instance.startTime) {
+            instance.startTime = new Date();
+            Contest.calculateEndTime(instance);
+        } else if (instance.status === ContestStatus.SCHEDULED && !instance.startTime) {
+            // For SCHEDULED, startTime must be provided by admin
+            throw new Error('Start time is required for scheduled contests');
+        }
+    }
+
+    @BeforeCreate
+    static validateNewContest(instance: Contest) {
+        if (instance.status === ContestStatus.SCHEDULED || instance.status === ContestStatus.ACTIVE) {
+            // Validate required fields
+            Contest.validateContestFields(instance);
+        }
+
+        // If status is CLOSED, ensure endTime is set
+        if (instance.status === ContestStatus.CLOSED) {
+            instance.endTime = new Date();
+        }
+    }
+
     @BeforeCreate
     @BeforeUpdate
     static async checkActiveContestLimit(instance: Contest) {
-        // Only perform this check if the contest is being set to ACTIVE
+        // Only perform this check if the contest is being set to ACTIVE or SCHEDULED
         if (instance.status === ContestStatus.ACTIVE || instance.status === ContestStatus.SCHEDULED) {
-            // Skip check if this is an update and status hasn't changed to ACTIVE
+            // For updates, check if status is changing to ACTIVE or SCHEDULED
             if (instance.isNewRecord === false) {
                 const previousStatus = instance.previous('status');
-                if (previousStatus === ContestStatus.ACTIVE || previousStatus === ContestStatus.SCHEDULED) {
-                    throw new Error('Contest already in status ' + previousStatus);
+                // If status hasn't changed and is already ACTIVE/SCHEDULED, no need to check
+                if (previousStatus === instance.status) {
+                    return;
                 }
             }
 
-            // Look for any other active contests of the same type
-            const existingActiveContest = await Contest.findOne({
+            // Look for any other active or scheduled contests of the same type
+            const existingContest = await Contest.findOne({
                 where: {
                     type: instance.type,
                     status: { [Op.or]: [ContestStatus.ACTIVE, ContestStatus.SCHEDULED] },
@@ -158,7 +196,7 @@ export class Contest extends Model {
                 }
             });
 
-            if (existingActiveContest) {
+            if (existingContest) {
                 throw new Error(`There is already an active or scheduled ${instance.type} contest. Only one ${instance.type} contest can be active or scheduled at a time.`);
             }
         }
@@ -170,32 +208,10 @@ export class Contest extends Model {
         const previousStatus = instance.previous('status');
         const currentStatus = instance.status;
 
-        // Only run validations if status is changing from DRAFT
-        if (previousStatus === ContestStatus.DRAFT &&
-            (currentStatus === ContestStatus.SCHEDULED || currentStatus === ContestStatus.ACTIVE)) {
-
-            // Required fields for SCHEDULED or ACTIVE status
-            if (!instance.title) {
-                throw new Error('Contest title is required');
-            }
-
-            if (!instance.type) {
-                throw new Error('Contest type is required');
-            }
-
-            if (!instance.slots || !Array.isArray(instance.slots) || instance.slots.length === 0) {
-                throw new Error('Contest slots are required');
-            }
-
-            // If changing to ACTIVE, set startTime to current time
-            if (currentStatus === ContestStatus.ACTIVE) {
-                instance.startTime = new Date();
-                // endTime will be automatically calculated by calculateEndTime hook
-                this.calculateEndTime(instance);
-            } else if (currentStatus === ContestStatus.SCHEDULED && !instance.startTime) {
-                // For SCHEDULED, startTime must be provided by admin
-                throw new Error('Start time is required for scheduled contests');
-            }
+        // If status is changing to SCHEDULED or ACTIVE
+        if (currentStatus === ContestStatus.SCHEDULED || currentStatus === ContestStatus.ACTIVE) {
+            // Validate required fields
+            Contest.validateContestFields(instance);
         }
 
         // If status is changing to CLOSED, set endTime to current time
