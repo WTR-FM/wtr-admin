@@ -8,6 +8,7 @@ import {
     BeforeCreate,
     BeforeUpdate,
 } from 'sequelize-typescript';
+import { Op } from 'sequelize';
 
 export enum ContestType {
     DAILY = 'daily',
@@ -36,6 +37,7 @@ export class Contest extends Model {
 
     @Column({
         type: DataType.STRING,
+        unique: true,
         allowNull: true,
     })
     declare title: string;
@@ -130,6 +132,34 @@ export class Contest extends Model {
                     break;
                 default:
                     break;
+            }
+        }
+    }
+
+    @BeforeCreate
+    @BeforeUpdate
+    static async checkActiveContestLimit(instance: Contest) {
+        // Only perform this check if the contest is being set to ACTIVE
+        if (instance.status === ContestStatus.ACTIVE || instance.status === ContestStatus.SCHEDULED) {
+            // Skip check if this is an update and status hasn't changed to ACTIVE
+            if (instance.isNewRecord === false) {
+                const previousStatus = instance.previous('status');
+                if (previousStatus === ContestStatus.ACTIVE || previousStatus === ContestStatus.SCHEDULED) {
+                    throw new Error('Contest already in status ' + previousStatus);
+                }
+            }
+
+            // Look for any other active contests of the same type
+            const existingActiveContest = await Contest.findOne({
+                where: {
+                    type: instance.type,
+                    status: { [Op.or]: [ContestStatus.ACTIVE, ContestStatus.SCHEDULED] },
+                    id: { [Op.ne]: instance.id } // Exclude current contest
+                }
+            });
+
+            if (existingActiveContest) {
+                throw new Error(`There is already an active or scheduled ${instance.type} contest. Only one ${instance.type} contest can be active or scheduled at a time.`);
             }
         }
     }
