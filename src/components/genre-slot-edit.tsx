@@ -3,6 +3,7 @@ import { BasePropertyProps } from "adminjs";
 import { Box, Button, Label, Select, Icon, Input, fontSizes } from "@adminjs/design-system";
 
 const genreOptions = [
+  { value: "any", label: "Any" },
   { value: "pop", label: "Pop" },
   { value: "rock", label: "Rock" },
   { value: "hiphop", label: "Hip-Hop" },
