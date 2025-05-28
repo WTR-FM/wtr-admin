@@ -112,6 +112,12 @@ const Dashboard: React.FC = () => {
           icon={<Illustration variant="Details" />}
           path="/admin/resources/configs"
         />
+        <Card
+          title="Contests"
+          description="View and update contests"
+          icon={<Illustration variant="Calendar" />}
+          path="/admin/resources/contests"
+        />
       </Box>
     </Box>
   );
