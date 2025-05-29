@@ -7,8 +7,11 @@ import {
     UpdatedAt,
     BeforeCreate,
     BeforeUpdate,
+    AfterCreate,
+    AfterUpdate,
 } from 'sequelize-typescript';
 import { Op } from 'sequelize';
+import { ContestChangeLog } from './contest-change-log.entity.js';
 
 export enum ContestType {
     DAILY = 'daily',
@@ -249,6 +252,55 @@ export class Contest extends Model {
         // If status is changing to CLOSED, set endTime to current time
         if (currentStatus === ContestStatus.CLOSED && previousStatus !== ContestStatus.CLOSED) {
             instance.endTime = new Date();
+        }
+    }
+
+    @AfterCreate
+    static async logCreation(instance: Contest) {
+        try {
+            // Create a log entry for the new contest
+            await ContestChangeLog.create({
+                contestId: instance.id,
+                userId: (global as any).currentUserId || '00000000-0000-0000-0000-000000000000', // Default if no user context
+                changes: Object.keys(instance.dataValues)
+                    .filter(key => !['id', 'createdAt', 'updatedAt'].includes(key) && instance.dataValues[key] !== null)
+                    .map(key => ({
+                        key,
+                        prevValue: null,
+                        newValue: instance.dataValues[key],
+                    })),
+                description: 'Contest created',
+            });
+        } catch (error) {
+            console.error('Error logging contest creation:', error);
+        }
+    }
+
+    @AfterUpdate
+    static async logChanges(instance: Contest) {
+        try {
+            // Get changed fields
+            const changedFields = instance.changed() as string[];
+            if (!changedFields || changedFields.length === 0) {
+                return; // No changes to log
+            }
+
+            // Build the changes array
+            const changes = changedFields.map(field => ({
+                key: field,
+                prevValue: instance.previous(field),
+                newValue: instance.get(field),
+            }));
+
+            // Create log entry
+            await ContestChangeLog.create({
+                contestId: instance.id,
+                userId: (global as any).currentUserId || '00000000-0000-0000-0000-000000000000', // Default if no user context
+                changes,
+                description: `Contest updated: ${changedFields.join(', ')}`,
+            });
+        } catch (error) {
+            console.error('Error logging contest changes:', error);
         }
     }
 } 

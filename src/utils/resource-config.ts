@@ -9,6 +9,7 @@ import NotificationConfig from './resource-configs/notifications.js';
 import ConfigConfig from './resource-configs/configs.js';
 import ContestConfig from './resource-configs/contests.js';
 import ParticipationConfig from './resource-configs/participations.js';
+import ContestChangeLogConfig from './resource-configs/contest-change-logs.js';
 
 export const getResourceConfigurations = () => [
   AdminConfig,
@@ -17,6 +18,7 @@ export const getResourceConfigurations = () => [
   WatchlistConfig,
   ContestConfig,
   ParticipationConfig,
+  ContestChangeLogConfig,
   // PlaylistSongConfig,
   // FriendRequestConfig,
   // OtpConfig,

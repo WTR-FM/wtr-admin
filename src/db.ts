@@ -11,6 +11,7 @@ import { Notification } from './entities/notification.entity.js';
 import { Config } from './entities/config.entity.js';
 import { Contest } from './entities/contest.entity.js';
 import { Participation } from './entities/participation.entity.js';
+import { ContestChangeLog } from './entities/contest-change-log.entity.js';
 
 // Load environment variables
 dotenv.config();
@@ -46,14 +47,15 @@ sequelize.addModels([
   Notification,
   Config,
   Contest,
-  Participation
+  Participation,
+  ContestChangeLog
 ]);
 
 // Initialize database tables
 const initDatabase = async () => {
   try {
-    // Now sync other tables with alter: true, force: false
-    // await sequelize.sync({ alter: true });
+    // Uncomment to sync tables with the database
+    await sequelize.sync({ alter: true });
     console.log('Database synchronized');
   } catch (error) {
     console.error('Error synchronizing database:', error);
