@@ -1,5 +1,5 @@
 import { ContestChangeLog } from "../../entities/contest-change-log.entity.js";
-import { FormattedDate, JSONViewer } from "../../types/components.bundler.js";
+import { FormattedDate, JSONViewerChangeLog } from "../../types/components.bundler.js";
 
 const ContestChangeLogConfig = {
   resource: ContestChangeLog,
@@ -18,7 +18,7 @@ const ContestChangeLogConfig = {
           edit: false,
         },
         components: {
-          show: JSONViewer,
+          show: JSONViewerChangeLog,
         },
       },
       createdAt: {

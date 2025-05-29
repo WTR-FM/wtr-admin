@@ -2,12 +2,43 @@ import React from 'react';
 import { Box, Label, Text, Badge } from '@adminjs/design-system';
 import { BasePropertyProps } from 'adminjs';
 
+function extractChanges(params) {
+  const changes = [];
+
+  Object.entries(params).forEach(([key, value]) => {
+    const match = key.match(/^changes\.(\d+)\.(.+)$/);
+    if (match) {
+      const index = Number(match[1]);
+      const fieldPath = match[2];
+
+      if (!changes[index]) changes[index] = {};
+
+      // Handle nested fields like newValue.good
+      const fieldParts = fieldPath.split('.');
+      let current = changes[index];
+
+      for (let i = 0; i < fieldParts.length; i++) {
+        const part = fieldParts[i];
+        if (i === fieldParts.length - 1) {
+          current[part] = value;
+        } else {
+          current[part] = current[part] || {};
+          current = current[part];
+        }
+      }
+    }
+  });
+
+  return changes;
+}
+
 const JSONViewer: React.FC<BasePropertyProps> = (props) => {
   const { record, property, where } = props;
   
   // Get data from record params
-  const data = record?.params?.[property.path];
+  // const data = record?.params?.[property.path];
   const displayLabel = property.custom?.customLabel || property.label || property.name;
+  const data = extractChanges(record?.params || {});
   
   // Handle empty data
   if (!data || (Array.isArray(data) && data.length === 0)) {
