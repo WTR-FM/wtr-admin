@@ -202,6 +202,38 @@ export class Contest extends Model {
         }
     }
 
+    @BeforeCreate
+    @BeforeUpdate
+    static async validateStartTimeConflict(instance: Contest) {
+        // Only check for SCHEDULED contests with startTime
+        if (instance.status === ContestStatus.SCHEDULED && instance.startTime) {
+            // For updates, check if startTime or status is changing
+            if (instance.isNewRecord === false) {
+                const previousStartTime = instance.previous('startTime');
+                const previousStatus = instance.previous('status');
+                
+                // If neither startTime nor status has changed, no need to check
+                if (previousStartTime && previousStatus === ContestStatus.SCHEDULED &&
+                    new Date(previousStartTime).getTime() === new Date(instance.startTime).getTime()) {
+                    return;
+                }
+            }
+
+            // Check for other scheduled contests of the same type with the same start time
+            const conflictingContest = await Contest.findOne({
+                where: {
+                    status: ContestStatus.SCHEDULED,
+                    startTime: instance.startTime,
+                    id: { [Op.ne]: instance.id } // Exclude current contest
+                }
+            });
+
+            if (conflictingContest) {
+                throw new Error(`There is already a scheduled ${instance.type} contest with the same start time. Please choose a different start time.`);
+            }
+        }
+    }
+
     @BeforeUpdate
     static validateAndUpdateStatusChange(instance: Contest) {
         // Get the previous version of the instance to check if status is changing

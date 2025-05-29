@@ -10,6 +10,7 @@ import { Admin } from './entities/admin.entity.js';
 import { Notification } from './entities/notification.entity.js';
 import { Config } from './entities/config.entity.js';
 import { Contest } from './entities/contest.entity.js';
+import { Participation } from './entities/participation.entity.js';
 
 // Load environment variables
 dotenv.config();
@@ -23,11 +24,13 @@ const sequelize = new Sequelize({
   password: process.env.DB_PASSWORD || 'postgres',
   database: process.env.DB_NAME || 'wtr_dev',
   logging: process.env.NODE_ENV !== 'production',
+  timezone: '+00:00', // Set UTC timezone for all database operations
   dialectOptions: {
     ssl: process.env.DB_SSL === 'true' ? {
       require: true,
       rejectUnauthorized: false, // for self-signed certificates
     } : false,
+    useUTC: true, // Use UTC for database connection
   },
 });
 
@@ -43,6 +46,7 @@ sequelize.addModels([
   Notification,
   Config,
   Contest,
+  Participation
 ]);
 
 // Initialize database tables
