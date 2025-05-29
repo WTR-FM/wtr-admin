@@ -40,7 +40,7 @@ const setCurrentUserMiddleware = (req, res, next) => {
   try {
     // Extract user ID from session if available
     if (req.session && req.session.adminUser) {
-      global.currentUserId = req.session.adminUser.id;
+      global.currentAdminId = req.session.adminUser.id;
     }
   } catch (error) {
     console.error('Error in currentUser middleware:', error);

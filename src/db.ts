@@ -54,6 +54,9 @@ sequelize.addModels([
 // Initialize database tables
 const initDatabase = async () => {
   try {
+    // Set up circular reference associations
+    await ContestChangeLog.associate();
+    
     // Uncomment to sync tables with the database
     await sequelize.sync({ alter: true });
     console.log('Database synchronized');

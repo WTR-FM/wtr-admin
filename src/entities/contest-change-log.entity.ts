@@ -9,7 +9,7 @@ import {
     BelongsTo,
 } from 'sequelize-typescript';
 import { Contest } from './contest.entity.js';
-import { User } from './user.entity.js';
+import { Admin } from './admin.entity.js';
 
 /**
  * Change log entry for contest changes
@@ -39,23 +39,23 @@ export class ContestChangeLog extends Model {
     })
     declare contestId: string;
 
-    @BelongsTo(() => Contest)
-    declare contest: Contest;
+    // @BelongsTo(() => Contest)
+    // declare contest: Contest;
 
-    @ForeignKey(() => User)
+    @ForeignKey(() => Admin)
     @Column({
         type: DataType.UUID,
-        allowNull: false,
+        allowNull: true, // Changed to allow null for system operations
         references: {
-            model: 'users',
+            model: 'admins',
             key: 'id'
         },
-        onDelete: 'NO ACTION',
+        onDelete: 'SET NULL',
     })
-    declare userId: string;
+    declare adminId: string;
 
-    @BelongsTo(() => User)
-    declare user: User;
+    @BelongsTo(() => Admin)
+    declare admin: Admin;
     
     @Column({
         type: DataType.JSONB,
@@ -80,4 +80,12 @@ export class ContestChangeLog extends Model {
 
     @UpdatedAt
     declare updatedAt: Date;
+
+    // Static method to set up associations after models are loaded
+    static async associate() {
+        // Use dynamic import for ES modules
+        const contestModule = await import('./contest.entity.js');
+        const Contest = contestModule.Contest;
+        ContestChangeLog.belongsTo(Contest, { foreignKey: 'contestId', as: 'contest' });
+    }
 } 

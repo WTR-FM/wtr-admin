@@ -11,7 +11,8 @@ import {
     AfterUpdate,
 } from 'sequelize-typescript';
 import { Op } from 'sequelize';
-import { ContestChangeLog } from './contest-change-log.entity.js';
+// Remove the direct import to avoid circular dependency
+// import { ContestChangeLog } from './contest-change-log.entity.js';
 
 export enum ContestType {
     DAILY = 'daily',
@@ -258,10 +259,17 @@ export class Contest extends Model {
     @AfterCreate
     static async logCreation(instance: Contest) {
         try {
+            // Get ContestChangeLog model dynamically to avoid circular dependency
+            const contestChangeLogModule = await import('./contest-change-log.entity.js');
+            const ContestChangeLog = contestChangeLogModule.ContestChangeLog;
+            
+            // Log the admin ID that will be used
+            console.log('Creating contest log with Admin ID:', (global as any).currentAdminId || null);
+            
             // Create a log entry for the new contest
             await ContestChangeLog.create({
                 contestId: instance.id,
-                userId: (global as any).currentUserId || '00000000-0000-0000-0000-000000000000', // Default if no user context
+                adminId: (global as any).currentAdminId || null, // Use currentAdminId instead of currentUserId
                 changes: Object.keys(instance.dataValues)
                     .filter(key => !['id', 'createdAt', 'updatedAt'].includes(key) && instance.dataValues[key] !== null)
                     .map(key => ({
@@ -285,6 +293,10 @@ export class Contest extends Model {
                 return; // No changes to log
             }
 
+            // Get ContestChangeLog model dynamically to avoid circular dependency
+            const contestChangeLogModule = await import('./contest-change-log.entity.js');
+            const ContestChangeLog = contestChangeLogModule.ContestChangeLog;
+
             // Build the changes array
             const changes = changedFields.map(field => ({
                 key: field,
@@ -292,10 +304,13 @@ export class Contest extends Model {
                 newValue: instance.get(field),
             }));
 
+            // Log the admin ID that will be used
+            console.log('Updating contest log with Admin ID:', (global as any).currentAdminId || null);
+
             // Create log entry
-            await ContestChangeLog.create({
+            await ContestChangeLog.upsert({
                 contestId: instance.id,
-                userId: (global as any).currentUserId || '00000000-0000-0000-0000-000000000000', // Default if no user context
+                adminId: (global as any).currentAdminId || null, // Use currentAdminId instead of currentUserId
                 changes,
                 description: `Contest updated: ${changedFields.join(', ')}`,
             });
