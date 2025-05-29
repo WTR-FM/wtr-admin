@@ -114,7 +114,7 @@ const ContestChangeLogs: React.FC<BasePropertyProps> = (props) => {
     const now = dayjs();
     const date = dayjs(dateString);
     const diffInHours = now.diff(date, 'hour');
-    
+
     if (diffInHours < 1) return 'Just now';
     if (diffInHours < 24) return `${diffInHours}h ago`;
     if (diffInHours < 168) return `${Math.floor(diffInHours / 24)}d ago`;
@@ -124,23 +124,23 @@ const ContestChangeLogs: React.FC<BasePropertyProps> = (props) => {
   // Get change type and colors
   const getChangeType = (prevValue: any, newValue: any) => {
     if (prevValue === null || prevValue === undefined) {
-      return { 
-        type: 'Created', 
+      return {
+        type: 'Created',
         color: 'success',
         bgColor: '#f0fdf4', // very light green
         borderColor: '#bbf7d0'
       };
     }
     if (newValue === null || newValue === undefined) {
-      return { 
-        type: 'Removed', 
+      return {
+        type: 'Removed',
         color: 'error',
         bgColor: '#fef2f2', // very light red
         borderColor: '#fecaca'
       };
     }
-    return { 
-      type: 'Updated', 
+    return {
+      type: 'Updated',
       color: 'primary',
       bgColor: '#fefce8', // very light yellow
       borderColor: '#fde047'
@@ -258,7 +258,7 @@ const ContestChangeLogs: React.FC<BasePropertyProps> = (props) => {
 
       {logs.map((log, logIndex) => {
         const isExpanded = expandedLogs.has(log.id);
-        
+
         return (
           <Box
             key={log.id}
@@ -281,7 +281,15 @@ const ContestChangeLogs: React.FC<BasePropertyProps> = (props) => {
             >
               <Box display="flex" justifyContent="space-between" alignItems="center">
                 <Box>
-                  <Text fontWeight="bold" fontSize="md">{getAdminName(log)}</Text>
+                  {log.admin ? (
+                    <a href={`/admin/resources/admins/records/${log.admin.id}/show`}>
+                      <Text fontWeight="bold" fontSize="md" color="primary100">
+                        {getAdminName(log)}
+                      </Text>
+                    </a>
+                  ) : (
+                    <Text fontWeight="bold" fontSize="md">System</Text>
+                  )}
                   <Text color="grey60" fontSize="sm">{getRelativeTime(log.createdAt)} • {formatDate(log.createdAt)}</Text>
                 </Box>
                 <Box display="flex" alignItems="center" gap="sm">
@@ -309,11 +317,11 @@ const ContestChangeLogs: React.FC<BasePropertyProps> = (props) => {
                   <Box>
                     {log.changes.map((change, index) => {
                       const changeInfo = getChangeType(change.prevValue, change.newValue);
-                      
+
                       return (
-                        <Box 
-                          key={index} 
-                          mb="md" 
+                        <Box
+                          key={index}
+                          mb="md"
                           p="md"
                           borderRadius="sm"
                           style={{
@@ -323,15 +331,15 @@ const ContestChangeLogs: React.FC<BasePropertyProps> = (props) => {
                         >
                           <Box display="flex" justifyContent="space-between" alignItems="center" mb="sm">
                             <Text fontWeight="medium" fontSize="sm">{formatFieldName(change.key)}</Text>
-                            <Badge 
-                              variant="outline" 
+                            <Badge
+                              variant="outline"
                               color={changeInfo.color}
                               size="xs"
                             >
                               {changeInfo.type}
                             </Badge>
                           </Box>
-                          
+
                           <Box display="flex" gap="md">
                             <Box flex="1">
                               <Label fontSize="xs" color="grey60" mb="xs">Previous</Label>
@@ -348,11 +356,11 @@ const ContestChangeLogs: React.FC<BasePropertyProps> = (props) => {
                                 </Text>
                               </Box>
                             </Box>
-                            
+
                             <Box display="flex" alignItems="center" px="xs">
                               <Text color="grey40">→</Text>
                             </Box>
-                            
+
                             <Box flex="1">
                               <Label fontSize="xs" color="grey60" mb="xs">Current</Label>
                               <Box
