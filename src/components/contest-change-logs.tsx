@@ -22,6 +22,10 @@ interface ChangeLogItem {
     lastName: string;
     email: string;
   };
+  contest?: {
+    id: string;
+    title: string;
+  };
 }
 
 function extractChanges(params) {
@@ -176,12 +180,16 @@ const ContestChangeLogs: React.FC<BasePropertyProps> = (props) => {
           description: record.params.description,
           createdAt: record.params.createdAt,
           updatedAt: record.params.updatedAt,
-          admin: record.populated?.admin ? {
-            id: record.populated.admin.id,
-            firstName: record.populated.admin.params.firstName,
-            lastName: record.populated.admin.params.lastName,
-            email: record.populated.admin.params.email
-          } : undefined
+          admin: record.populated?.adminId ? {
+            id: record.populated.adminId.params.id,
+            firstName: record.populated.adminId.params.firstName,
+            lastName: record.populated.adminId.params.lastName,
+            email: record.populated.adminId.params.email
+          } : undefined,
+          contest: record.populated?.contestId ? {
+            id: record.populated.contestId.params.id,
+            title: record.populated.contestId.params.title,
+          } : undefined,
         }));
 
         setLogs(transformedLogs);
