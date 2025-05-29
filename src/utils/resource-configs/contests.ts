@@ -1,14 +1,12 @@
 import { Contest, ContestStatus, ContestType } from "../../entities/contest.entity.js";
 import { AdminAuthService } from "../../services/admin-auth.service.js";
-import { FormattedDate } from "../../types/components.bundler.js";
-import { GenreSlotsEdit } from "../../types/components.bundler.js";
-import { GenreSlotsShow } from "../../types/components.bundler.js";
+import { FormattedDate, GenreSlotsEdit, GenreSlotsShow, ContestChangeLogs } from "../../types/components.bundler.js";
 
 const ContestConfig = {
   resource: Contest,
   options: {
     listProperties: ['title', 'type', 'startTime', 'endTime', 'status'],
-    showProperties: ['id', 'title', 'type', 'startTime', 'endTime', 'status', 'slots', 'createdAt', 'updatedAt'],
+    showProperties: ['id', 'title', 'type', 'startTime', 'endTime', 'status', 'slots', 'createdAt', 'updatedAt', 'changeHistory'],
     editProperties: ['title', 'type', 'startTime', 'status', 'slots'],
     filterProperties: ['title', 'type', 'status'],
     properties: {
@@ -36,6 +34,20 @@ const ContestConfig = {
       },
       'matchCriteria': {
         type: 'mixed',
+      },
+      'changeHistory': {
+        isVisible: {
+          list: false,
+          filter: false,
+          show: true,
+          edit: false,
+        },
+        components: {
+          show: ContestChangeLogs,
+        },
+        custom: {
+          customLabel: 'Change Logs',
+        },
       },
       startTime: {
         type: 'datetime',

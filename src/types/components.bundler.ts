@@ -27,6 +27,7 @@ export const FormattedDate = add('../components/formatted-date', 'FormattedDate'
 export const CoinbaseConnectionStatus = add('../components/coinbase-connection-status', 'CoinbaseConnectionStatus');
 export const Dashboard = add('../components/dashboard', 'Dashboard');
 export const JSONViewerChangeLog = add('../components/json-viewer-change-logs', 'JSONViewerChangeLog');
+export const ContestChangeLogs = add('../components/contest-change-logs', 'ContestChangeLogs');
 // export const NotificationTemplateEdit = add('../components/notification-template-edit', 'NotificationTemplateEdit');
 // export const NotificationTemplateShow = add('../components/notification-template-show', 'NotificationTemplateShow');
 export const GenreSlotsEdit = add('../components/genre-slot-edit', 'GenreSlotsEdit');
