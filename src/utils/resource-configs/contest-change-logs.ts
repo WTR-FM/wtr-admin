@@ -1,28 +1,13 @@
 import { ContestChangeLog } from "../../entities/contest-change-log.entity.js";
-import { AdminAuthService } from "../../services/admin-auth.service.js";
-import { FormattedDate } from "../../types/components.bundler.js";
-
-// Simple component to display changes in a readable format
-const ChangesFormatter = ({ record }) => {
-  const changes = record?.params?.changes || [];
-  
-  if (!changes || changes.length === 0) {
-    return 'No changes';
-  }
-
-  return {
-    component: 'JSONViewer',
-    props: { data: changes },
-  };
-};
+import { FormattedDate, JSONViewer } from "../../types/components.bundler.js";
 
 const ContestChangeLogConfig = {
   resource: ContestChangeLog,
   options: {
-    listProperties: ['contestId', 'userId', 'description', 'createdAt'],
-    showProperties: ['id', 'contestId', 'userId', 'changes', 'description', 'createdAt', 'updatedAt'],
+    listProperties: ['contestId', 'adminId', 'description', 'createdAt'],
+    showProperties: ['id', 'contestId', 'adminId', 'changes', 'description', 'createdAt', 'updatedAt'],
     editProperties: [], // Should not be editable
-    filterProperties: ['contestId', 'userId', 'createdAt'],
+    filterProperties: ['contestId', 'adminId', 'createdAt'],
     properties: {
       'changes': {
         type: 'mixed',
@@ -33,7 +18,7 @@ const ContestChangeLogConfig = {
           edit: false,
         },
         components: {
-          show: ChangesFormatter,
+          show: JSONViewer,
         },
       },
       createdAt: {
