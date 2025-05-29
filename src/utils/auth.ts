@@ -1,5 +1,10 @@
 import { AdminAuthService } from '../services/admin-auth.service.js';
 
+// Declare a type for the global with our added property
+declare global {
+  var currentAdminId: string | undefined;
+}
+
 /**
  * Authentication handler for AdminJS
  * @param email Email address for authentication
@@ -18,6 +23,10 @@ export const authenticate = async (email: string, password: string) => {
     if (admin) {
       console.log('Database authentication successful for:', admin.email);
       console.log('User role:', admin.role);
+      
+      // Store the current admin ID globally for change logging
+      global.currentAdminId = admin.id;
+      
       return admin;
     } else {
       console.log('Database authentication failed');

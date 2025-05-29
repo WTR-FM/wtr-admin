@@ -34,6 +34,21 @@ export const configureAdminJS = (resources) => {
 };
 
 /**
+ * Middleware to extract and set user ID from AdminJS session
+ */
+const setCurrentUserMiddleware = (req, res, next) => {
+  try {
+    // Extract user ID from session if available
+    if (req.session && req.session.adminUser) {
+      global.currentAdminId = req.session.adminUser.id;
+    }
+  } catch (error) {
+    console.error('Error in currentUser middleware:', error);
+  }
+  next();
+};
+
+/**
  * Setup Express server with AdminJS router
  * @param admin AdminJS instance
  * @returns Configured Express app
@@ -54,21 +69,26 @@ export const setupExpressServer = (admin) => {
   //   })
 
 
+  const sessionOptions = {
+    resave: false,
+    saveUninitialized: true,
+    secret: process.env.SESSION_SECRET || 'sessionsecret',
+    cookie: {
+      httpOnly: process.env.NODE_ENV === 'production',
+      secure: process.env.NODE_ENV === 'production',
+    },
+    name: 'adminjs',
+  };
+
   const adminRouter = buildAuthenticatedRouter(
     admin,
     getAuthConfig(),
     null,
-    {
-      resave: false,
-      saveUninitialized: true,
-      secret: process.env.SESSION_SECRET || 'sessionsecret',
-      cookie: {
-        httpOnly: process.env.NODE_ENV === 'production',
-        secure: process.env.NODE_ENV === 'production',
-      },
-      name: 'adminjs',
-    }
+    sessionOptions
   );
+
+  // Add middleware to set current user from session
+  adminRouter.use(setCurrentUserMiddleware);
 
   app.use(admin.options.rootPath, adminRouter);
   return app;
