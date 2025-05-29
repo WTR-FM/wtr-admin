@@ -162,6 +162,15 @@ export class Contest extends Model {
             // For SCHEDULED, startTime must be provided by admin
             throw new Error('Start time is required for scheduled contests');
         }
+
+        if (instance.startTime) {
+            const now = new Date();
+            const startTime = new Date(instance.startTime);
+            if (startTime < now) {
+                // Start time must not be in the past
+                throw new Error('Start time must not be in the past for scheduled / active contests');
+            }
+        }
     }
 
     @BeforeCreate
