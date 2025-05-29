@@ -61,10 +61,8 @@ const ContestChangeLogs: React.FC<BasePropertyProps> = (props) => {
   const [logs, setLogs] = useState<ChangeLogItem[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const [page, setPage] = useState<number>(1);
   const [total, setTotal] = useState<number>(0);
   const [expandedLogs, setExpandedLogs] = useState<Set<string>>(new Set());
-  const perPage = 5;
 
   // Toggle expanded state for a log
   const toggleLogExpansion = (logId: string) => {
@@ -166,8 +164,6 @@ const ContestChangeLogs: React.FC<BasePropertyProps> = (props) => {
         params: {
           'filters.contestId': contestId,
           sort: '-createdAt',
-          limit: perPage,
-          offset: (page - 1) * perPage,
         },
       });
 
@@ -201,11 +197,6 @@ const ContestChangeLogs: React.FC<BasePropertyProps> = (props) => {
     }
   };
 
-  // Handle pagination
-  const handlePageChange = (pageNumber: number) => {
-    setPage(pageNumber);
-  };
-
   // Fetch logs on mount and when page changes
   useEffect(() => {
     if (contestId) {
@@ -214,7 +205,7 @@ const ContestChangeLogs: React.FC<BasePropertyProps> = (props) => {
       setLoading(false);
       setError('Contest ID not found');
     }
-  }, [contestId, page]);
+  }, [contestId]);
 
   // Render loading state
   if (loading) {
@@ -384,18 +375,6 @@ const ContestChangeLogs: React.FC<BasePropertyProps> = (props) => {
           </Box>
         );
       })}
-
-      {/* Pagination */}
-      {total > perPage && (
-        <Box mt="lg" display="flex" justifyContent="center">
-          <Pagination
-            page={page}
-            perPage={perPage}
-            total={total}
-            onChange={handlePageChange}
-          />
-        </Box>
-      )}
     </Box>
   );
 };
