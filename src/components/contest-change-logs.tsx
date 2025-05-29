@@ -67,7 +67,7 @@ const ContestChangeLogs: React.FC<BasePropertyProps> = (props) => {
     try {
       const api = new ApiClient();
       const response = await api.resourceAction({
-        resourceId: 'ContestChangeLogs',
+        resourceId: 'contest_change_logs',
         actionName: 'list',
         params: {
           'filters.contestId': contestId,
@@ -177,36 +177,42 @@ const ContestChangeLogs: React.FC<BasePropertyProps> = (props) => {
           
           <Box>
             <Label>Changes</Label>
-            {log.changes.map((change, index) => (
-              <Box 
-                key={index} 
-                mt="sm" 
-                p="md" 
-                backgroundColor="grey10" 
-                borderRadius="default"
-              >
-                <Box mb="sm">
-                  <Label>Field</Label>
-                  <Text fontWeight="bold">{change.key}</Text>
-                </Box>
-                
-                <Box display="flex" flexDirection={['column', 'column', 'row']} justifyContent="space-between">
-                  <Box flex="1" mb={['md', 'md', '0']} mr={[0, 0, 'md']}>
-                    <Label>Previous value</Label>
-                    <Text style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-all' }}>
-                      {formatValue(change.prevValue)}
-                    </Text>
+            {log.changes && Array.isArray(log.changes) ? (
+              log.changes.map((change, index) => (
+                <Box 
+                  key={index} 
+                  mt="sm" 
+                  p="md" 
+                  backgroundColor="grey10" 
+                  borderRadius="default"
+                >
+                  <Box mb="sm">
+                    <Label>Field</Label>
+                    <Text fontWeight="bold">{change.key}</Text>
                   </Box>
                   
-                  <Box flex="1">
-                    <Label>New value</Label>
-                    <Text style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-all' }}>
-                      {formatValue(change.newValue)}
-                    </Text>
+                  <Box display="flex" flexDirection={['column', 'column', 'row']} justifyContent="space-between">
+                    <Box flex="1" mb={['md', 'md', '0']} mr={[0, 0, 'md']}>
+                      <Label>Previous value</Label>
+                      <Text style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-all' }}>
+                        {formatValue(change.prevValue)}
+                      </Text>
+                    </Box>
+                    
+                    <Box flex="1">
+                      <Label>New value</Label>
+                      <Text style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-all' }}>
+                        {formatValue(change.newValue)}
+                      </Text>
+                    </Box>
                   </Box>
                 </Box>
+              ))
+            ) : (
+              <Box p="md" backgroundColor="grey10" borderRadius="default">
+                <Text>No detailed change information available</Text>
               </Box>
-            ))}
+            )}
           </Box>
         </Box>
       ))}
