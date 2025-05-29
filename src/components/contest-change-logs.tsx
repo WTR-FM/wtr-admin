@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Box, H3, Text, Label, Badge, Loader, Pagination, Button } from '@adminjs/design-system';
+import { Box, H4, Text, Label, Badge, Loader, Pagination, Button } from '@adminjs/design-system';
 import { ApiClient, BasePropertyProps } from 'adminjs';
 import dayjs from 'dayjs';
 
@@ -219,7 +219,7 @@ const ContestChangeLogs: React.FC<BasePropertyProps> = (props) => {
   if (loading) {
     return (
       <Box mb="xl">
-        <H3 mb="lg">Change History</H3>
+        <H4 mb="lg">Change History</H4>
         <Box display="flex" justifyContent="center" p="xxl">
           <Loader />
         </Box>
@@ -231,7 +231,7 @@ const ContestChangeLogs: React.FC<BasePropertyProps> = (props) => {
   if (error) {
     return (
       <Box mb="xl">
-        <H3 mb="lg">Change History</H3>
+        <H4 mb="lg">Change History</H4>
         <Box p="lg" backgroundColor="error" borderRadius="default">
           <Text color="white">{error}</Text>
         </Box>
@@ -243,7 +243,7 @@ const ContestChangeLogs: React.FC<BasePropertyProps> = (props) => {
   if (!logs || logs.length === 0) {
     return (
       <Box mb="xl">
-        <H3 mb="lg">Change History</H3>
+        <H4 mb="lg">Change History</H4>
         <Box p="xl" textAlign="center" backgroundColor="grey10" borderRadius="default">
           <Text color="grey60">No changes recorded yet</Text>
         </Box>
@@ -254,7 +254,7 @@ const ContestChangeLogs: React.FC<BasePropertyProps> = (props) => {
   // Main render
   return (
     <Box mb="xl">
-      <H3 mb="lg">Change History</H3>
+      <H4 mb="lg">Change History</H4>
 
       {logs.map((log, logIndex) => {
         const isExpanded = expandedLogs.has(log.id);
