@@ -24,6 +24,36 @@ interface ChangeLogItem {
   };
 }
 
+function extractChanges(params) {
+  const changes = [];
+
+  Object.entries(params).forEach(([key, value]) => {
+    const match = key.match(/^changes\.(\d+)\.(.+)$/);
+    if (match) {
+      const index = Number(match[1]);
+      const fieldPath = match[2];
+
+      if (!changes[index]) changes[index] = {};
+
+      // Handle nested fields like newValue.good
+      const fieldParts = fieldPath.split('.');
+      let current = changes[index];
+
+      for (let i = 0; i < fieldParts.length; i++) {
+        const part = fieldParts[i];
+        if (i === fieldParts.length - 1) {
+          current[part] = value;
+        } else {
+          current[part] = current[part] || {};
+          current = current[part];
+        }
+      }
+    }
+  });
+
+  return changes;
+}
+
 const ContestChangeLogs: React.FC<BasePropertyProps> = (props) => {
   const { record } = props;
   const contestId = record?.params?.id;
@@ -77,9 +107,31 @@ const ContestChangeLogs: React.FC<BasePropertyProps> = (props) => {
         },
       });
 
-      if (response.data) {
-        setLogs(response.data.records);
-        setTotal(response.data.totalCount);
+      console.log("Response from API Call: ", response.data.records);
+      console.log("Record data: ", response.data.records[0]?.params);
+
+      if (response.data && response.data.records) {
+        // Transform the records to match the expected ChangeLogItem structure
+        const transformedLogs = response.data.records.map(record => ({
+          id: record.params.id,
+          contestId: record.params.contestId,
+          adminId: record.params.adminId,
+          changes: extractChanges(record.params),
+          description: record.params.description,
+          createdAt: record.params.createdAt,
+          updatedAt: record.params.updatedAt,
+          admin: record.populated?.admin ? {
+            id: record.populated.admin.id,
+            firstName: record.populated.admin.params.firstName,
+            lastName: record.populated.admin.params.lastName,
+            email: record.populated.admin.params.email
+          } : undefined
+        }));
+
+        setLogs(transformedLogs);
+        setTotal(transformedLogs.length);
+        console.log("Transformed logs: ", JSON.stringify(transformedLogs));
+        console.log("Total: ", transformedLogs.length);
       } else {
         setError('Failed to load change logs');
       }
@@ -98,6 +150,7 @@ const ContestChangeLogs: React.FC<BasePropertyProps> = (props) => {
 
   // Fetch logs on mount and when page changes
   useEffect(() => {
+    console.log("Contest ID: ", contestId);
     if (contestId) {
       fetchLogs();
     } else {
@@ -146,12 +199,12 @@ const ContestChangeLogs: React.FC<BasePropertyProps> = (props) => {
   return (
     <Box mb="xl">
       <H3 mb="lg">Change Logs</H3>
-      
+
       {logs.map((log) => (
-        <Box 
-          key={log.id} 
-          mb="lg" 
-          p="lg" 
+        <Box
+          key={log.id}
+          mb="lg"
+          p="lg"
           borderRadius="default"
           border="1px solid"
           borderColor="grey40"
@@ -168,29 +221,29 @@ const ContestChangeLogs: React.FC<BasePropertyProps> = (props) => {
               <Text>{formatDate(log.createdAt)}</Text>
             </Box>
           </Box>
-          
+
           {log.description && (
             <Box mb="md" p="sm" backgroundColor="grey20" borderRadius="default">
               <Text>{log.description}</Text>
             </Box>
           )}
-          
+
           <Box>
             <Label>Changes</Label>
             {log.changes && Array.isArray(log.changes) ? (
               log.changes.map((change, index) => (
-                <Box 
-                  key={index} 
-                  mt="sm" 
-                  p="md" 
-                  backgroundColor="grey10" 
+                <Box
+                  key={index}
+                  mt="sm"
+                  p="md"
+                  backgroundColor="grey10"
                   borderRadius="default"
                 >
                   <Box mb="sm">
                     <Label>Field</Label>
                     <Text fontWeight="bold">{change.key}</Text>
                   </Box>
-                  
+
                   <Box display="flex" flexDirection={['column', 'column', 'row']} justifyContent="space-between">
                     <Box flex="1" mb={['md', 'md', '0']} mr={[0, 0, 'md']}>
                       <Label>Previous value</Label>
@@ -198,7 +251,7 @@ const ContestChangeLogs: React.FC<BasePropertyProps> = (props) => {
                         {formatValue(change.prevValue)}
                       </Text>
                     </Box>
-                    
+
                     <Box flex="1">
                       <Label>New value</Label>
                       <Text style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-all' }}>
@@ -216,7 +269,7 @@ const ContestChangeLogs: React.FC<BasePropertyProps> = (props) => {
           </Box>
         </Box>
       ))}
-      
+
       {total > perPage && (
         <Box mt="xl" display="flex" justifyContent="center">
           <Pagination
