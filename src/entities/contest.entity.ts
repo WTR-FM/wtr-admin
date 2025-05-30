@@ -224,7 +224,7 @@ export class Contest extends Model {
             if (instance.isNewRecord === false) {
                 const previousStartTime = instance.previous('startTime');
                 const previousStatus = instance.previous('status');
-                
+
                 // If neither startTime nor status has changed, no need to check
                 if (previousStartTime && previousStatus === ContestStatus.SCHEDULED &&
                     new Date(previousStartTime).getTime() === new Date(instance.startTime).getTime()) {
@@ -253,6 +253,29 @@ export class Contest extends Model {
         const previousStatus = instance.previous('status');
         const currentStatus = instance.status;
 
+        // If status is CLOSED, prevent any updates
+        if (previousStatus === ContestStatus.CLOSED) {
+            throw new Error('Closed contests cannot be modified');
+        }
+
+        // If previous status was ACTIVE, only allow changing status to CLOSED
+        if (previousStatus === ContestStatus.ACTIVE) {
+            // Get all changed fields
+            const changedFields = instance.changed() || [];
+
+            console.log("Changed Fields: ", changedFields);
+
+            // If there are changes other than status, prevent the update
+            if (changedFields.length > 2 || (changedFields.length === 2 && !changedFields.includes('status'))) {
+                throw new Error('Active contests can only be updated to change status to CLOSED');
+            }
+
+            // If status is being changed to something other than CLOSED, prevent the update
+            if (changedFields.includes('status') && currentStatus !== ContestStatus.CLOSED) {
+                throw new Error('Active contests can only be updated to change status to CLOSED');
+            }
+        }
+
         // If status is changing to SCHEDULED or ACTIVE
         if (currentStatus === ContestStatus.SCHEDULED || currentStatus === ContestStatus.ACTIVE) {
             // Validate required fields
@@ -271,10 +294,10 @@ export class Contest extends Model {
             // Get ContestChangeLog model dynamically to avoid circular dependency
             const contestChangeLogModule = await import('./contest-change-log.entity.js');
             const ContestChangeLog = contestChangeLogModule.ContestChangeLog;
-            
+
             // Log the admin ID that will be used
             console.log('Creating contest log with Admin ID:', (global as any).currentAdminId || null);
-            
+
             // Create a log entry for the new contest
             await ContestChangeLog.create({
                 contestId: instance.id,
