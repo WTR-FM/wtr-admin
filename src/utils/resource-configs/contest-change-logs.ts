@@ -45,8 +45,8 @@ const ContestChangeLogConfig = {
       bulkDelete: { isAccessible: false },
       new: { isAccessible: false }, // Change logs should be created programmatically
       edit: { isAccessible: false }, // Change logs should not be editable
-      list: { isAccessible: ({ currentAdmin }) => false },
-      show: { isAccessible: ({ currentAdmin }) => false },
+      list: { isAccessible: ({ currentAdmin }) => true },
+      show: { isAccessible: ({ currentAdmin }) => true },
     },
     navigation: {
       name: 'Contest Management',
