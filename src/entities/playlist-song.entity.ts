@@ -74,5 +74,3 @@ export class PlaylistSong extends Model {
   @UpdatedAt
   declare updatedAt: Date;
 }
-
-

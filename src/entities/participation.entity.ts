@@ -12,6 +12,7 @@ import { User } from './user.entity.js';
 
 @Table({
     tableName: 'participations',
+    paranoid: false,
     indexes: [
         {
             unique: true,
@@ -21,6 +22,13 @@ import { User } from './user.entity.js';
     ],
 })
 export class Participation extends Model {
+    @Column({
+        type: DataType.UUID,
+        defaultValue: DataType.UUIDV4,
+        primaryKey: true,
+    })
+    declare id: string;
+
     @ForeignKey(() => Contest)
     @Column({
         type: DataType.UUID,

@@ -11,8 +11,6 @@ import {
     AfterUpdate,
 } from 'sequelize-typescript';
 import { Op } from 'sequelize';
-// Remove the direct import to avoid circular dependency
-// import { ContestChangeLog } from './contest-change-log.entity.js';
 
 export enum ContestType {
     DAILY = 'daily',
