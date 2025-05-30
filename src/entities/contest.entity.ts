@@ -159,9 +159,7 @@ export class Contest extends Model {
         if (instance.status === ContestStatus.ACTIVE) {
             // For admin updates, update startTime to current time
             // For cron job updates (preserveStartTime = true), keep the original startTime
-            console.log("Instance.PreserveState: ", instance.preserveStartTime);
             if (!instance.preserveStartTime) {
-                console.log("Admin Update Preserve State");
                 instance.startTime = new Date();
                 Contest.calculateEndTime(instance);
             }
