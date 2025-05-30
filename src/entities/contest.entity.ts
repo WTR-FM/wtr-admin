@@ -153,7 +153,7 @@ export class Contest extends Model {
         }
 
         // If status is ACTIVE, set startTime to current time if not already set
-        if (instance.status === ContestStatus.ACTIVE && !instance.startTime) {
+        if (instance.status === ContestStatus.ACTIVE) {
             instance.startTime = new Date();
             Contest.calculateEndTime(instance);
         } else if (instance.status === ContestStatus.SCHEDULED && !instance.startTime) {
@@ -186,8 +186,11 @@ export class Contest extends Model {
         }
     }
 
-    @BeforeCreate
-    @BeforeUpdate
+    // Uncomment this to prevent active contest more than one
+    // This revokes to active / schedule the contest if there is already an active / scheduled contest of the same type
+    // TODO: Add a case to allow admin to schedule multiple contests of the same type at different times (e.g. daily - after 1 day, weekly - after 1 week, monthly - after 1 month)
+    // @BeforeCreate
+    // @BeforeUpdate
     static async checkActiveContestLimit(instance: Contest) {
         // Only perform this check if the contest is being set to ACTIVE or SCHEDULED
         if (instance.status === ContestStatus.ACTIVE || instance.status === ContestStatus.SCHEDULED) {
@@ -215,8 +218,9 @@ export class Contest extends Model {
         }
     }
 
-    @BeforeCreate
-    @BeforeUpdate
+    // Uncomment this to prevent start time conflicts
+    // @BeforeCreate
+    // @BeforeUpdate
     static async validateStartTimeConflict(instance: Contest) {
         // Only check for SCHEDULED contests with startTime
         if (instance.status === ContestStatus.SCHEDULED && instance.startTime) {
