@@ -17,7 +17,7 @@ export const getResourceConfigurations = () => [
   SongConfig,
   WatchlistConfig,
   ContestConfig,
-  ParticipationConfig,
+  // ParticipationConfig,
   ContestChangeLogConfig,
   // PlaylistSongConfig,
   // FriendRequestConfig,

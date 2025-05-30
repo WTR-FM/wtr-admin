@@ -105,6 +105,9 @@ export class Contest extends Model {
         good: number;
     };
 
+    // Non-persisted property to differentiate between admin and cron job updates
+    preserveStartTime?: boolean;
+
     // @HasMany(() => Participation)
     // declare participations: Participation[];
 
@@ -152,16 +155,20 @@ export class Contest extends Model {
             throw new Error('Contest slots are required');
         }
 
-        // If status is ACTIVE, set startTime to current time if not already set
-        if (instance.status === ContestStatus.ACTIVE && !instance.startTime) {
-            instance.startTime = new Date();
-            Contest.calculateEndTime(instance);
+        // If status is ACTIVE, set startTime to current time unless preserveStartTime is true
+        if (instance.status === ContestStatus.ACTIVE) {
+            // For admin updates, update startTime to current time
+            // For cron job updates (preserveStartTime = true), keep the original startTime
+            if (!instance.preserveStartTime) {
+                instance.startTime = new Date();
+                Contest.calculateEndTime(instance);
+            }
         } else if (instance.status === ContestStatus.SCHEDULED && !instance.startTime) {
             // For SCHEDULED, startTime must be provided by admin
             throw new Error('Start time is required for scheduled contests');
         }
 
-        if (instance.startTime) {
+        if (instance.startTime && !instance.preserveStartTime) {
             const now = new Date();
             const startTime = new Date(instance.startTime);
             // Start time must not be in the past
@@ -186,8 +193,11 @@ export class Contest extends Model {
         }
     }
 
-    @BeforeCreate
-    @BeforeUpdate
+    // Uncomment this to prevent active contest more than one
+    // This revokes to active / schedule the contest if there is already an active / scheduled contest of the same type
+    // TODO: Add a case to allow admin to schedule multiple contests of the same type at different times (e.g. daily - after 1 day, weekly - after 1 week, monthly - after 1 month)
+    // @BeforeCreate
+    // @BeforeUpdate
     static async checkActiveContestLimit(instance: Contest) {
         // Only perform this check if the contest is being set to ACTIVE or SCHEDULED
         if (instance.status === ContestStatus.ACTIVE || instance.status === ContestStatus.SCHEDULED) {
@@ -215,8 +225,9 @@ export class Contest extends Model {
         }
     }
 
-    @BeforeCreate
-    @BeforeUpdate
+    // Uncomment this to prevent start time conflicts
+    // @BeforeCreate
+    // @BeforeUpdate
     static async validateStartTimeConflict(instance: Contest) {
         // Only check for SCHEDULED contests with startTime
         if (instance.status === ContestStatus.SCHEDULED && instance.startTime) {
