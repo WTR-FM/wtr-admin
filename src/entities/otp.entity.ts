@@ -20,20 +20,20 @@ export class Otp extends Model {
 
   @AllowNull(false)
   @Column
-  userId: string;
+  declare userId: string;
 
   @AllowNull(false)
   @Column
-  otp: string;
+  declare otp: string;
 
   @AllowNull(false)
   @Column(DataType.DATE)
-  expiresAt: Date;
+  declare expiresAt: Date;
 
   @AllowNull(false)
   @Column({
     type: DataType.BOOLEAN,
     defaultValue: false,
   })
-  verified: boolean;
+  declare verified: boolean;
 } 

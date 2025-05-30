@@ -37,7 +37,7 @@ export class PlaylistSong extends Model {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })
-  watchlistId: string;
+  declare watchlistId: string;
 
   @ForeignKey(() => Song)
   @Column({
@@ -46,27 +46,27 @@ export class PlaylistSong extends Model {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })
-  songId: string;
+  declare songId: string;
 
   @Column({
     type: DataType.INTEGER,
     allowNull: false,
     defaultValue: 0,
   })
-  position: number;
+  declare position: number;
 
   @Column({
     type: DataType.BOOLEAN,
     allowNull: false,
     defaultValue: false,
   })
-  syncedWithSpotify: boolean;
+  declare syncedWithSpotify: boolean;
 
   @BelongsTo(() => Watchlist)
-  watchlist: Watchlist;
+  declare watchlist: Watchlist;
 
   @BelongsTo(() => Song)
-  song: Song;
+  declare song: Song;
 
   @CreatedAt
   declare createdAt: Date;

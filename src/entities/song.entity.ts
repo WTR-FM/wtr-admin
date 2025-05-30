@@ -30,62 +30,62 @@ export class Song extends Model {
     type: DataType.STRING,
     allowNull: false,
   })
-  title: string;
+  declare title: string;
 
   @Column({
     type: DataType.STRING,
     allowNull: false,
   })
-  artist: string;
+  declare artist: string;
 
   @Column({
     type: DataType.STRING,
     allowNull: true,
   })
-  album: string;
+  declare album: string;
 
   @Column({
     type: DataType.STRING,
     allowNull: true
   })
-  sourceId: string;
+  declare sourceId: string;
 
   @Column({
     type: DataType.STRING,
     allowNull: false,
     defaultValue: 'spotify'
   })
-  source: string;
+  declare source: string;
 
   @Column({
     type: DataType.STRING,
     allowNull: true,
   })
-  albumCover: string;
+  declare albumCover: string;
 
   @Column({
     type: DataType.INTEGER,
     allowNull: true,
   })
-  durationMs: number;
+  declare durationMs: number;
 
   @Column({
     type: DataType.STRING,
     allowNull: true,
   })
-  previewUrl: string;
+  declare previewUrl: string;
 
   @Column({
     type: DataType.TEXT,
     allowNull: true,
   })
-  lyrics: string;
+  declare lyrics: string;
 
   @Column({
     type: DataType.JSONB,
     allowNull: true,
   })
-  metadata: any;
+  declare metadata: any;
 
   @CreatedAt
   declare createdAt: Date;
