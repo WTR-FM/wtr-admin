@@ -276,13 +276,16 @@ export class Contest extends Model {
 
             console.log("Changed Fields: ", changedFields);
 
-            // If there are changes other than status, prevent the update
-            if (changedFields.length > 2 || (changedFields.length === 2 && !changedFields.includes('status'))) {
-                throw new Error('Active contests can only be updated to change status to CLOSED');
-            }
-
-            // If status is being changed to something other than CLOSED, prevent the update
-            if (changedFields.includes('status') && currentStatus !== ContestStatus.CLOSED) {
+            // When changing from ACTIVE to CLOSED, we'll only care about the status change
+            // and ignore other potential Sequelize-detected changes in JSONB fields
+            if (changedFields.includes('status')) {
+                // Only allow changing to CLOSED status
+                if (currentStatus !== ContestStatus.CLOSED) {
+                    throw new Error('Active contests can only be updated to change status to CLOSED');
+                }
+                // If changing to CLOSED, allow any other detected changes (often false positives with JSON)
+            } else {
+                // If not changing status, don't allow any other changes
                 throw new Error('Active contests can only be updated to change status to CLOSED');
             }
         }
