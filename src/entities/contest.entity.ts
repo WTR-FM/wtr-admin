@@ -168,8 +168,8 @@ export class Contest extends Model {
             const startTime = new Date(instance.startTime);
             // Start time must not be in the past
             // Add a 2-second tolerance to account for small processing delays
-            const fiveSecondsMs = 2 * 1000; // 2 seconds in milliseconds
-            if (startTime.getTime() + fiveSecondsMs < now.getTime()) {
+            const twoSecondsMs = 2 * 1000; // 2 seconds in milliseconds
+            if (startTime.getTime() + twoSecondsMs < now.getTime()) {
                 throw new Error('Start time must not be in the past for scheduled / active contests');
             }
         }
