@@ -105,6 +105,9 @@ export class Contest extends Model {
         good: number;
     };
 
+    // Non-persisted property to differentiate between admin and cron job updates
+    preserveStartTime?: boolean;
+
     // @HasMany(() => Participation)
     // declare participations: Participation[];
 
@@ -152,16 +155,22 @@ export class Contest extends Model {
             throw new Error('Contest slots are required');
         }
 
-        // If status is ACTIVE, set startTime to current time if not already set
+        // If status is ACTIVE, set startTime to current time unless preserveStartTime is true
         if (instance.status === ContestStatus.ACTIVE) {
-            instance.startTime = new Date();
-            Contest.calculateEndTime(instance);
+            // For admin updates, update startTime to current time
+            // For cron job updates (preserveStartTime = true), keep the original startTime
+            console.log("Instance.PreserveState: ", instance.preserveStartTime);
+            if (!instance.preserveStartTime) {
+                console.log("Admin Update Preserve State");
+                instance.startTime = new Date();
+                Contest.calculateEndTime(instance);
+            }
         } else if (instance.status === ContestStatus.SCHEDULED && !instance.startTime) {
             // For SCHEDULED, startTime must be provided by admin
             throw new Error('Start time is required for scheduled contests');
         }
 
-        if (instance.startTime) {
+        if (instance.startTime && !instance.preserveStartTime) {
             const now = new Date();
             const startTime = new Date(instance.startTime);
             // Start time must not be in the past
