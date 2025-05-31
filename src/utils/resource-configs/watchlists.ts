@@ -5,10 +5,10 @@ import { FormattedDate } from "../../types/components.bundler.js";
 const WatchlistConfig = {
     resource: Watchlist,
     options: {
-        listProperties: ['name', 'userId', 'isPublic', 'isCollaborative', 'createdAt'],
-        showProperties: ['id', 'userId', 'name', 'description', 'imageUrl', 'isPublic', 'isCollaborative', 'spotifyPlaylistId', 'metadata', 'playlistSongs', 'createdAt', 'updatedAt'],
-        editProperties: ['name', 'description', 'userId', 'isPublic', 'isCollaborative', 'imageUrl', 'spotifyPlaylistId', 'metadata'],
-        filterProperties: ['name', 'userId', 'isPublic', 'isCollaborative'],
+        listProperties: ['name', 'description', 'isPublic', 'isCollaborative', 'createdAt'],
+        showProperties: [], // show everything
+        editProperties: ['userId', 'name', 'description', 'imageUrl', 'isPublic', 'isCollaborative', 'isDraft', 'type'],
+        filterProperties: ['name', 'isPublic', 'isCollaborative', 'isDraft', 'type'],
         properties: {
             metadata: { type: 'mixed' },
             description: { type: 'textarea' },
