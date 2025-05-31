@@ -6,9 +6,9 @@ const WatchlistConfig = {
     resource: Watchlist,
     options: {
         listProperties: ['name', 'description', 'isPublic', 'isCollaborative', 'createdAt'],
-        showProperties: [], // show everything
+        showProperties: ['id', 'userId', 'name', 'description', 'imageUrl', 'tags', 'isPublic', 'isCollaborative', 'isDraft', 'type', 'spotifyPlaylistId', 'metadata', 'createdAt', 'updatedAt'],
         editProperties: ['userId', 'name', 'description', 'imageUrl', 'isPublic', 'isCollaborative', 'isDraft', 'type'],
-        filterProperties: ['name', 'isPublic', 'isCollaborative', 'isDraft', 'type'],
+        filterProperties: ['userId', 'name', 'isPublic', 'isCollaborative', 'isDraft', 'type'],
         properties: {
             metadata: { type: 'mixed' },
             description: { type: 'textarea' },
@@ -32,8 +32,8 @@ const WatchlistConfig = {
             },
         },
         actions: {
-            delete: { isAccessible: ({ currentAdmin }) => AdminAuthService.isSuperAdmin(currentAdmin) },
-            bulkDelete: { isAccessible: ({ currentAdmin }) => AdminAuthService.isSuperAdmin(currentAdmin) },
+            delete: { isAccessible: ({ currentAdmin }) => AdminAuthService.canEdit(currentAdmin) },
+            bulkDelete: { isAccessible: ({ currentAdmin }) => AdminAuthService.canEdit(currentAdmin) },
             new: {
                 isAccessible: ({ currentAdmin }) =>
                     AdminAuthService.canEdit(currentAdmin)
