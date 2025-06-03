@@ -11,6 +11,7 @@ import {
     AfterUpdate,
 } from 'sequelize-typescript';
 import { Op } from 'sequelize';
+import { getSchedulerService } from '../services/scheduler-contest.service.js';
 
 export enum ContestType {
     DAILY = 'daily',
@@ -364,4 +365,68 @@ export class Contest extends Model {
             console.error('Error logging contest changes:', error);
         }
     }
-} 
+
+    /**
+     * Handle notification scheduling after contest creation
+     */
+    @AfterCreate
+    static async scheduleNotifications(instance: Contest) {
+        try {
+            // Only schedule notifications for SCHEDULED contests with startTime
+            if (instance.status === ContestStatus.SCHEDULED && instance.startTime) {
+                const schedulerService = getSchedulerService();
+                await schedulerService.scheduleContestNotifications(instance.id, instance.startTime);
+                console.log(`Scheduled notifications for contest ${instance.id} at ${instance.startTime}`);
+            }
+        } catch (error) {
+            console.error(`Error scheduling notifications for contest ${instance.id}:`, error);
+            // Don't throw error as it shouldn't prevent contest creation
+        }
+    }
+
+    /**
+     * Handle notification updates after contest update
+     */
+    @AfterUpdate
+    static async updateNotifications(instance: Contest) {
+        try {
+            const changedFields = instance.changed() as string[];
+            const previousStartTime = instance.previous('startTime');
+            const previousStatus = instance.previous('status');
+            const currentStatus = instance.status;
+            const currentStartTime = instance.startTime;
+
+            // Check if we need to update notifications
+            const startTimeChanged = changedFields.includes('startTime');
+            const statusChanged = changedFields.includes('status');
+            
+            // Scenarios where we need to handle notifications:
+            // 1. startTime changed for SCHEDULED contest
+            // 2. Status changed from SCHEDULED to something else (remove notifications)
+            // 3. Status changed to SCHEDULED (add notifications)
+            // 4. Status changed to CLOSED (remove notifications)
+
+            if (startTimeChanged && currentStatus === ContestStatus.SCHEDULED && currentStartTime) {
+                // Update notifications with new start time
+                const schedulerService = getSchedulerService();
+                await schedulerService.updateContestNotifications(instance.id, currentStartTime);
+                console.log(`Updated notifications for contest ${instance.id} with new start time ${currentStartTime}`);
+            } else if (statusChanged) {
+                const schedulerService = getSchedulerService();
+                
+                if (currentStatus === ContestStatus.SCHEDULED && currentStartTime) {
+                    // Status changed to SCHEDULED - add notifications
+                    await schedulerService.scheduleContestNotifications(instance.id, currentStartTime);
+                    console.log(`Scheduled notifications for contest ${instance.id} (status changed to SCHEDULED)`);
+                } else if (previousStatus === ContestStatus.SCHEDULED) {
+                    // Status changed from SCHEDULED to something else - remove notifications
+                    await schedulerService.removeContestNotifications(instance.id);
+                    console.log(`Removed notifications for contest ${instance.id} (status changed from SCHEDULED to ${currentStatus})`);
+                }
+            }
+        } catch (error) {
+            console.error(`Error updating notifications for contest ${instance.id}:`, error);
+            // Don't throw error as it shouldn't prevent contest update
+        }
+    }
+}
