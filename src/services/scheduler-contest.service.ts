@@ -6,7 +6,8 @@ import {
     ScheduleState,
     Target,
     ListSchedulesCommand,
-    FlexibleTimeWindowMode
+    FlexibleTimeWindowMode,
+    ActionAfterCompletion
 } from '@aws-sdk/client-scheduler';
 
 export interface ContestNotificationEvent {
@@ -116,10 +117,13 @@ export class SchedulerContestService {
                 RoleArn: process.env.SCHEDULER_EXECUTION_ROLE_ARN,
                 Input: JSON.stringify({
                     contestId,
-                    triggerName,
+                    triggerName
                 }),
+                EventBridgeParameters: {
+                    DetailType: "sasas",
+                    Source: "qwerty"
+                }
             };
-            
 
             triggerTime.setSeconds(0, 0);
             const scheduleTime = triggerTime.toISOString().slice(0, 19); // "2025-06-04T05:05:00"
@@ -127,6 +131,7 @@ export class SchedulerContestService {
 
             const scheduleConfig = {
                 Name: scheduleName,
+                ActionAfterCompletion: ActionAfterCompletion.DELETE,
                 GroupName: this.scheduleGroup,
                 ScheduleExpression: scheduleExpression,
                 Target: target,
