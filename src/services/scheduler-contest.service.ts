@@ -12,7 +12,7 @@ import {
 
 export interface ContestNotificationEvent {
     contestId: string;
-    triggerName: 'BEFORE_7_HOUR' | 'BEFORE_2_HOUR';
+    triggerName: 'wtr_wednesday_reminder' | 'team_not_submitted_final_hours';
     startTime: Date;
 }
 
@@ -57,7 +57,7 @@ export class SchedulerContestService {
         // Schedule 7-hour notification if it's at least 7 hours in the future
         if (sevenHoursBefore.getTime() > nowMs) {
             promises.push(
-                this.createScheduledEvent(contestId, 'BEFORE_7_HOUR', sevenHoursBefore)
+                this.createScheduledEvent(contestId, 'wtr_wednesday_reminder', sevenHoursBefore)
             );
             console.log("Scheduled 7 hours notification with AWS Scheduler");
         }
@@ -65,7 +65,7 @@ export class SchedulerContestService {
         // Schedule 2-hour notification if it's at least 2 hours in the future
         if (twoHoursBefore.getTime() > nowMs) {
             promises.push(
-                this.createScheduledEvent(contestId, 'BEFORE_2_HOUR', twoHoursBefore)
+                this.createScheduledEvent(contestId, 'team_not_submitted_final_hours', twoHoursBefore)
             );
             console.log("Scheduled 2 hours notification with AWS Scheduler");
         }
@@ -78,8 +78,8 @@ export class SchedulerContestService {
      */
     async removeContestNotifications(contestId: string): Promise<void> {
         const scheduleNames = [
-            this.getScheduleName(contestId, 'BEFORE_7_HOUR'),
-            this.getScheduleName(contestId, 'BEFORE_2_HOUR')
+            this.getScheduleName(contestId, 'wtr_wednesday_reminder'),
+            this.getScheduleName(contestId, 'team_not_submitted_final_hours')
         ];
 
         const promises = scheduleNames.map(scheduleName => this.deleteScheduledEvent(scheduleName));
@@ -102,7 +102,7 @@ export class SchedulerContestService {
      */
     private async createScheduledEvent(
         contestId: string,
-        triggerName: 'BEFORE_7_HOUR' | 'BEFORE_2_HOUR',
+        triggerName: 'wtr_wednesday_reminder' | 'team_not_submitted_final_hours',
         triggerTime: Date
     ): Promise<void> {
         const scheduleName = this.getScheduleName(contestId, triggerName);
@@ -116,8 +116,13 @@ export class SchedulerContestService {
                 Arn: this.getHttpTargetArn(),
                 RoleArn: process.env.SCHEDULER_EXECUTION_ROLE_ARN,
                 Input: JSON.stringify({
-                    contestId,
-                    triggerName
+                    body: JSON.stringify({
+                        contestId,
+                        triggerName
+                    }),
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
                 }),
                 EventBridgeParameters: {
                     DetailType: "sasas",

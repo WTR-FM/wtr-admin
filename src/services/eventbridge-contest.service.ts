@@ -2,7 +2,7 @@ import { EventBridgeClient, PutRuleCommand, PutTargetsCommand, DeleteRuleCommand
 
 export interface ContestNotificationEvent {
     contestId: string;
-    triggerName: 'BEFORE_7_HOUR' | 'BEFORE_2_HOUR';
+    triggerName: 'wtr_wednesday_reminder' | 'team_not_submitted_final_hours';
     startTime: Date;
 }
 
@@ -42,7 +42,7 @@ export class EventBridgeContestService {
         // Schedule 7-hour notification if it's at least 7 hours in the future
         if (sevenHoursBefore.getTime() > nowMs) {
             promises.push(
-                this.createScheduledEvent(contestId, 'BEFORE_7_HOUR', sevenHoursBefore)
+                this.createScheduledEvent(contestId, 'wtr_wednesday_reminder', sevenHoursBefore)
             );
             console.log("Pushed 7 hours notification in Event Bus");
         }
@@ -50,7 +50,7 @@ export class EventBridgeContestService {
         // Schedule 2-hour notification if it's at least 2 hours in the future
         if (twoHoursBefore.getTime() > nowMs) {
             promises.push(
-                this.createScheduledEvent(contestId, 'BEFORE_2_HOUR', twoHoursBefore)
+                this.createScheduledEvent(contestId, 'team_not_submitted_final_hours', twoHoursBefore)
             );
             console.log("Pushed 2 hours notification in Event Bus");
         }
@@ -87,7 +87,7 @@ export class EventBridgeContestService {
      */
     private async createScheduledEvent(
         contestId: string,
-        triggerName: 'BEFORE_7_HOUR' | 'BEFORE_2_HOUR',
+        triggerName: 'wtr_wednesday_reminder' | 'team_not_submitted_final_hours',
         triggerTime: Date
     ): Promise<void> {
         const ruleName = this.getRuleName(contestId, triggerName);

@@ -20,8 +20,8 @@ async function testScheduler() {
     const testContestId = uuidv4();
     console.log(`\nCreating test schedules for contest ID: ${testContestId}`);
     
-    // Set a start time 24 hours from now to ensure both notifications will be scheduled
-    const startTime = new Date(Date.now() + (24 * 60 * 60 * 1000));
+    // Set a start time 7 hours and 2 minutes from now
+    const startTime = new Date(Date.now() + (7 * 60 * 60 * 1000) + (2 * 60 * 1000));
     console.log(`Test contest start time: ${startTime.toISOString()}`);
     
     // Get the scheduler service
