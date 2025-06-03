@@ -112,21 +112,19 @@ export class SchedulerContestService {
             console.log(`Using Execution Role ARN: ${process.env.SCHEDULER_EXECUTION_ROLE_ARN || 'undefined'}`);
 
             // Create the target configuration
+            // Note for the backend API: When EventBridge delivers this to the endpoint, the 
+            // contestId and triggerName will be in the request.body object:
+            // const { contestId, triggerName } = req.body;
             const target: Target = {
                 Arn: this.getHttpTargetArn(),
                 RoleArn: process.env.SCHEDULER_EXECUTION_ROLE_ARN,
                 Input: JSON.stringify({
-                    body: JSON.stringify({
-                        contestId,
-                        triggerName
-                    }),
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
+                    contestId,
+                    triggerName
                 }),
                 EventBridgeParameters: {
-                    DetailType: "sasas",
-                    Source: "qwerty"
+                    DetailType: "contest_notification",
+                    Source: "wtr.admin.scheduler"
                 }
             };
 
@@ -194,7 +192,8 @@ export class SchedulerContestService {
      */
     private getScheduleName(contestId: string, triggerName: string): string {
         // return `contest-notification-${contestId}-${triggerName}`.toLowerCase();
-        return `contest-notification-${triggerName}`.toLowerCase();
+        // return `contest-notification-${triggerName}`.toLowerCase();
+        return `contest-notification-${contestId.substring(0, 8)}-${triggerName}`.toLowerCase();
     }
 
     /**
