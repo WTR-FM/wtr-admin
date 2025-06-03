@@ -1,4 +1,4 @@
-import { getSchedulerService } from './services/scheduler-contest.service.js';
+import { getEventBridgeService } from './services/eventbridge-contest.service.js';
 import { v4 as uuidv4 } from 'uuid';
 import * as dotenv from 'dotenv';
 
@@ -25,10 +25,10 @@ async function testScheduler() {
     console.log(`Test contest start time: ${startTime.toISOString()}`);
     
     // Get the scheduler service
-    const scheduler = getSchedulerService();
+    const eventBridge = getEventBridgeService();
     
     // Schedule notifications
-    await scheduler.scheduleContestNotifications(testContestId, startTime);
+    await eventBridge.scheduleContestNotifications(testContestId, startTime);
     
     console.log('\nTest completed successfully!');
     console.log('------------------------------------------');

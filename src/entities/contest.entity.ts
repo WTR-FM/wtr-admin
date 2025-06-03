@@ -11,7 +11,7 @@ import {
     AfterUpdate,
 } from 'sequelize-typescript';
 import { Op } from 'sequelize';
-import { getSchedulerService } from '../services/scheduler-contest.service.js';
+import { getEventBridgeService } from '../services/eventbridge-contest.service.js';
 
 export enum ContestType {
     DAILY = 'daily',
@@ -374,8 +374,8 @@ export class Contest extends Model {
         try {
             // Only schedule notifications for SCHEDULED contests with startTime
             if (instance.status === ContestStatus.SCHEDULED && instance.startTime) {
-                const schedulerService = getSchedulerService();
-                await schedulerService.scheduleContestNotifications(instance.id, instance.startTime);
+                const eventBridgeService = getEventBridgeService();
+                await eventBridgeService.scheduleContestNotifications(instance.id, instance.startTime);
                 console.log(`Scheduled notifications for contest ${instance.id} at ${instance.startTime}`);
             }
         } catch (error) {
@@ -408,19 +408,19 @@ export class Contest extends Model {
 
             if (startTimeChanged && currentStatus === ContestStatus.SCHEDULED && currentStartTime) {
                 // Update notifications with new start time
-                const schedulerService = getSchedulerService();
-                await schedulerService.updateContestNotifications(instance.id, currentStartTime);
+                const eventBridgeService = getEventBridgeService();
+                await eventBridgeService.updateContestNotifications(instance.id, currentStartTime);
                 console.log(`Updated notifications for contest ${instance.id} with new start time ${currentStartTime}`);
             } else if (statusChanged) {
-                const schedulerService = getSchedulerService();
+                const eventBridgeService = getEventBridgeService();
                 
                 if (currentStatus === ContestStatus.SCHEDULED && currentStartTime) {
                     // Status changed to SCHEDULED - add notifications
-                    await schedulerService.scheduleContestNotifications(instance.id, currentStartTime);
+                    await eventBridgeService.scheduleContestNotifications(instance.id, currentStartTime);
                     console.log(`Scheduled notifications for contest ${instance.id} (status changed to SCHEDULED)`);
                 } else if (previousStatus === ContestStatus.SCHEDULED) {
                     // Status changed from SCHEDULED to something else - remove notifications
-                    await schedulerService.removeContestNotifications(instance.id);
+                    await eventBridgeService.removeContestNotifications(instance.id);
                     console.log(`Removed notifications for contest ${instance.id} (status changed from SCHEDULED to ${currentStatus})`);
                 }
             }

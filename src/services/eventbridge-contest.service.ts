@@ -8,12 +8,12 @@ export interface ContestNotificationEvent {
 
 export class EventBridgeContestService {
     private eventBridgeClient: EventBridgeClient;
-    private notificationEndpoint: string;
+    private notificationEndpointArn: string;
     private eventBusName?: string;
 
     constructor(
-        region: string = 'eu-north-1',
-        notificationEndpoint: string,
+        region: string = process.env.AWS_REGION || 'eu-north-1',
+        notificationEndpointArn: string,
         eventBusName?: string
     ) {
         const credentials = {
@@ -21,7 +21,7 @@ export class EventBridgeContestService {
             secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
           };
         this.eventBridgeClient = new EventBridgeClient({ region, credentials});
-        this.notificationEndpoint = notificationEndpoint;
+        this.notificationEndpointArn = notificationEndpointArn;
         this.eventBusName = eventBusName;
     }
 
@@ -111,20 +111,12 @@ export class EventBridgeContestService {
                 EventBusName: this.eventBusName,
                 Targets: [{
                     Id: `contest-notification-${triggerName}`,
-                    Arn: this.getHttpTargetArn(),
-                    HttpParameters: {
-                        HeaderParameters: {
-                            'Content-Type': 'application/json'
-                        },
-                        QueryStringParameters: {}
-                    },
-                    RoleArn: process.env.EVENTBRIDGE_EXECUTION_ROLE_ARN, // Role with permissions to invoke HTTP endpoint
+                    Arn: this.getTargetArn(),
                     Input: JSON.stringify({
                         contestId,
                         triggerName,
                         startTime: triggerTime.toISOString(),
                         timestamp: new Date().toISOString(),
-                        endpoint: this.notificationEndpoint // Include endpoint in payload
                     })
                 }]
             }));
@@ -191,12 +183,17 @@ export class EventBridgeContestService {
     }
 
     /**
-     * Get HTTP target ARN - you might need to adjust this based on your setup
+     * Get target ARN
      */
-    private getHttpTargetArn(): string {
-        // For HTTP endpoints, EventBridge uses a specific ARN format
-        // This assumes you're using EventBridge's HTTP endpoint integration
-        return `arn:aws:events:${process.env.AWS_REGION}:${process.env.AWS_ACCOUNT_ID}:destination/http-destination`;
+    private getTargetArn(): string {
+        return this.notificationEndpointArn;
+
+        // Using an SNS topic as target - this is a simpler, well-supported target type
+    //     console.log("AWS Account ID:", process.env.AWS_ACCOUNT_ID);
+    //     console.log("AWS Region:", process.env.AWS_REGION);
+        
+    //     // Create SNS topic ARN format
+    //     return `arn:aws:sns:${process.env.AWS_REGION}:${process.env.AWS_ACCOUNT_ID}:wtr-contest-notifications`;
     }
 }
 
@@ -205,15 +202,15 @@ let eventBridgeService: EventBridgeContestService | null = null;
 
 export function getEventBridgeService(): EventBridgeContestService {
     if (!eventBridgeService) {
-        const notificationEndpoint = process.env.BACKEND_URL;
-        if (!notificationEndpoint) {
+        const notificationEndpointArn = process.env.SCHEDULER_HTTP_ENDPOINT_ARN;
+        if (!notificationEndpointArn) {
             throw new Error('CONTEST_NOTIFICATION_ENDPOINT environment variable is required');
         }
-        console.log("Notification Endpoint: ", notificationEndpoint);
+        console.log("Notification Endpoint: ", notificationEndpointArn);
 
         eventBridgeService = new EventBridgeContestService(
             process.env.AWS_REGION || 'eu-north-1',
-            notificationEndpoint,
+            notificationEndpointArn,
             process.env.EVENTBRIDGE_BUS_NAME
         );
 
