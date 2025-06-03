@@ -1,10 +1,12 @@
-import { 
-    SchedulerClient, 
-    CreateScheduleCommand, 
-    DeleteScheduleCommand, 
+import {
+    SchedulerClient,
+    CreateScheduleCommand,
+    DeleteScheduleCommand,
     UpdateScheduleCommand,
     ScheduleState,
-    Target
+    Target,
+    ListSchedulesCommand,
+    FlexibleTimeWindowMode
 } from '@aws-sdk/client-scheduler';
 
 export interface ContestNotificationEvent {
@@ -32,6 +34,9 @@ export class SchedulerContestService {
         this.scheduleGroup = scheduleGroup;
 
         console.log("Notification Endpoint ARN: ", notificationEndpointARN);
+        console.log("AWS Region: ", region);
+        console.log("Schedule Group: ", scheduleGroup);
+        console.log("Using credentials with Access Key ID: ", credentials.accessKeyId ? credentials.accessKeyId.substring(0, 5) + '...' : 'undefined');
     }
 
     /**
@@ -86,7 +91,7 @@ export class SchedulerContestService {
     async updateContestNotifications(contestId: string, newStartTime: Date): Promise<void> {
         // Remove existing notifications
         await this.removeContestNotifications(contestId);
-        
+
         // Schedule new notifications
         await this.scheduleContestNotifications(contestId, newStartTime);
     }
@@ -100,50 +105,59 @@ export class SchedulerContestService {
         triggerTime: Date
     ): Promise<void> {
         const scheduleName = this.getScheduleName(contestId, triggerName);
-        
+
         try {
+            // Debug log role ARN
+            console.log(`Using Execution Role ARN: ${process.env.SCHEDULER_EXECUTION_ROLE_ARN || 'undefined'}`);
+
             // Create the target configuration
-            const target: any = {
-                Arn: this.getHttpTargetArn(), // This must be an EventBridge Endpoint ARN
+            const target: Target = {
+                Arn: this.getHttpTargetArn(),
                 RoleArn: process.env.SCHEDULER_EXECUTION_ROLE_ARN,
                 Input: JSON.stringify({
                     contestId,
                     triggerName,
-                    startTime: triggerTime.toISOString(),
-                    timestamp: new Date().toISOString(),
-                    endpoint: this.notificationEndpointARN
                 }),
-                HttpParameters: {
-                    HeaderParameters: {
-                        'Content-Type': 'application/json'
-                    },
-                    Body: JSON.stringify({
-                        contestId,
-                        triggerName,
-                        startTime: triggerTime.toISOString(),
-                        timestamp: new Date().toISOString(),
-                        endpoint: this.notificationEndpointARN
-                    }),
-                    Method: 'POST'
-                }
             };
+            
 
-            // Create the schedule
-            await this.schedulerClient.send(new CreateScheduleCommand({
+            triggerTime.setSeconds(0, 0);
+            const scheduleTime = triggerTime.toISOString().slice(0, 19); // "2025-06-04T05:05:00"
+            const scheduleExpression = `at(${scheduleTime})`;
+
+            const scheduleConfig = {
                 Name: scheduleName,
                 GroupName: this.scheduleGroup,
-                ScheduleExpression: `at(${triggerTime.toISOString().replace(/\.\d+Z$/, 'Z')})`, // AWS Scheduler at() expression format
+                ScheduleExpression: scheduleExpression,
                 Target: target,
                 State: ScheduleState.ENABLED,
                 Description: `Contest notification for ${triggerName}`,
                 FlexibleTimeWindow: {
-                    Mode: 'OFF' // Exact time execution
+                    Mode: FlexibleTimeWindowMode.OFF
                 }
-            }));
+            };
+
+
+            console.log("Creating schedule with config:", JSON.stringify(scheduleConfig, null, 2));
+
+            // Create the schedule
+            const response = await this.schedulerClient.send(new CreateScheduleCommand(scheduleConfig));
 
             console.log(`Scheduled event created: ${scheduleName} at ${triggerTime.toISOString()}`);
+            console.log("AWS Response:", JSON.stringify(response, null, 2));
         } catch (error) {
             console.error(`Error creating scheduled event ${scheduleName}:`, error);
+            if (error.name === 'AccessDeniedException') {
+                console.error('You do not have permission to create schedules. Check your IAM roles and policies.');
+            } else if (error.name === 'ValidationException') {
+                console.error('Validation error. Check your schedule configuration parameters.');
+            } else if (error.name === 'ServiceQuotaExceededException') {
+                console.error('Service quota exceeded. You may have reached your limit for schedules.');
+            } else if (error.name === 'ConflictException') {
+                console.error('A schedule with this name already exists.');
+            } else if (error.name === 'ResourceNotFoundException') {
+                console.error('Schedule group not found. Make sure it exists in the specified region.');
+            }
             throw error;
         }
     }
@@ -169,7 +183,8 @@ export class SchedulerContestService {
      * Generate schedule name for a contest notification
      */
     private getScheduleName(contestId: string, triggerName: string): string {
-        return `contest-notification-${contestId}-${triggerName}`.toLowerCase();
+        // return `contest-notification-${contestId}-${triggerName}`.toLowerCase();
+        return `contest-notification-${triggerName}`.toLowerCase();
     }
 
     /**
