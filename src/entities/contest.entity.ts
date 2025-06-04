@@ -163,7 +163,11 @@ export class Contest extends Model {
             where: { key: 'MaxSongsPerTeam' }
         });
 
-        if (maxSongsConfig && instance.slots.length > maxSongsConfig.value) {
+        if (!maxSongsConfig) {
+            throw new Error('Team size configuration (MaxSongsPerTeam) is not set. Please contact an administrator to configure this setting.');
+        }
+        
+        if (instance.slots.length > maxSongsConfig.value) {
             throw new Error(`Number of slots cannot exceed ${maxSongsConfig.value} as defined in system configuration`);
         }
 
