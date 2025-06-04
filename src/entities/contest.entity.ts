@@ -13,6 +13,7 @@ import {
 } from 'sequelize-typescript';
 import { Op } from 'sequelize';
 import { getSchedulerService } from '../services/scheduler-contest.service.js';
+import { Config } from './config.entity.js';
 
 export enum ContestType {
     DAILY = 'daily',
@@ -144,7 +145,7 @@ export class Contest extends Model {
     }
 
     // Validation for required fields for SCHEDULED or ACTIVE status
-    static validateContestFields(instance: Contest) {
+    static async validateContestFields(instance: Contest) {
         if (!instance.title) {
             throw new Error('Contest title is required');
         }
@@ -155,6 +156,15 @@ export class Contest extends Model {
 
         if (!instance.slots || !Array.isArray(instance.slots) || instance.slots.length === 0) {
             throw new Error('Contest slots are required');
+        }
+
+        // Check if the number of slots exceeds the MaxSongsPerTeam config value
+        const maxSongsConfig = await Config.findOne({
+            where: { key: 'MaxSongsPerTeam' }
+        });
+
+        if (maxSongsConfig && instance.slots.length > maxSongsConfig.value) {
+            throw new Error(`Number of slots cannot exceed ${maxSongsConfig.value} as defined in system configuration`);
         }
 
         // If status is ACTIVE, set startTime to current time unless preserveStartTime is true
@@ -183,10 +193,10 @@ export class Contest extends Model {
     }
 
     @BeforeCreate
-    static validateNewContest(instance: Contest) {
+    static async validateNewContest(instance: Contest) {
         if (instance.status === ContestStatus.SCHEDULED || instance.status === ContestStatus.ACTIVE) {
             // Validate required fields
-            Contest.validateContestFields(instance);
+            await Contest.validateContestFields(instance);
         }
 
         // If status is CLOSED, ensure endTime is set
@@ -261,7 +271,7 @@ export class Contest extends Model {
     }
 
     @BeforeUpdate
-    static validateAndUpdateStatusChange(instance: Contest) {
+    static async validateAndUpdateStatusChange(instance: Contest) {
         // Get the previous version of the instance to check if status is changing
         const previousStatus = instance.previous('status');
         const currentStatus = instance.status;
@@ -295,7 +305,7 @@ export class Contest extends Model {
         // If status is changing to SCHEDULED or ACTIVE
         if (currentStatus === ContestStatus.SCHEDULED || currentStatus === ContestStatus.ACTIVE) {
             // Validate required fields
-            Contest.validateContestFields(instance);
+            await Contest.validateContestFields(instance);
         }
 
         // If status is changing to CLOSED, set endTime to current time
