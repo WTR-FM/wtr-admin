@@ -113,8 +113,8 @@ export class SchedulerContestService {
 
             // Create the target configuration
             // Note for the backend API: When EventBridge delivers this to the endpoint, the 
-            // contestId and triggerName will be in the request.body object:
-            // const { contestId, triggerName } = req.body;
+            // contestId and triggerName will be in the request.body.detail object:
+            // const { contestId, triggerName } = req.body.detail;
             const target: Target = {
                 Arn: this.getHttpTargetArn(),
                 RoleArn: process.env.SCHEDULER_EXECUTION_ROLE_ARN,
