@@ -9,6 +9,7 @@ import {
     BeforeUpdate,
     AfterCreate,
     AfterUpdate,
+    AfterDestroy,
 } from 'sequelize-typescript';
 import { Op } from 'sequelize';
 import { getSchedulerService } from '../services/scheduler-contest.service.js';
@@ -427,6 +428,24 @@ export class Contest extends Model {
         } catch (error) {
             console.error(`Error updating notifications for contest ${instance.id}:`, error);
             // Don't throw error as it shouldn't prevent contest update
+        }
+    }
+
+    /**
+     * Handle cleanup after contest deletion
+     */
+    @AfterDestroy
+    static async handleContestDeletion(instance: Contest) {
+        try {
+            // Remove any scheduled notifications
+            if (instance.status === ContestStatus.SCHEDULED) {
+                const schedulerService = getSchedulerService();
+                await schedulerService.removeContestNotifications(instance.id);
+                console.log(`Removed notifications for deleted contest ${instance.id}`);
+            }
+        } catch (error) {
+            console.error(`Error handling deletion for contest ${instance.id}:`, error);
+            // Don't throw error as it shouldn't prevent contest deletion
         }
     }
 }

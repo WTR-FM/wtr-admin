@@ -19,11 +19,11 @@ export class Otp extends Model {
   declare id: string;
 
   @AllowNull(false)
-  @Column
+  @Column(DataType.STRING)
   declare userId: string;
 
   @AllowNull(false)
-  @Column
+  @Column(DataType.STRING)
   declare otp: string;
 
   @AllowNull(false)
