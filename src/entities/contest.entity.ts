@@ -376,7 +376,7 @@ export class Contest extends Model {
             // Only schedule notifications for SCHEDULED contests with startTime
             if (instance.status === ContestStatus.SCHEDULED && instance.startTime) {
                 const schedulerService = getSchedulerService();
-                await schedulerService.scheduleContestNotifications(instance.id, instance.startTime);
+                await schedulerService.scheduleContestNotifications(instance.id, instance.startTime, instance.endTime);
                 console.log(`Scheduled notifications for contest ${instance.id} at ${instance.startTime}`);
             }
         } catch (error) {
@@ -396,6 +396,7 @@ export class Contest extends Model {
             const previousStatus = instance.previous('status');
             const currentStatus = instance.status;
             const currentStartTime = instance.startTime;
+            const currentEndTime = instance.endTime;
 
             // Check if we need to update notifications
             const startTimeChanged = changedFields.includes('startTime');
@@ -405,19 +406,19 @@ export class Contest extends Model {
             // 1. startTime changed for SCHEDULED contest
             // 2. Status changed from SCHEDULED to something else (remove notifications)
             // 3. Status changed to SCHEDULED (add notifications)
-            // 4. Status changed to CLOSED (remove notifications)
+            // 4. Status changed to CLOSED (schedule post-contest notification)
 
             if (startTimeChanged && currentStatus === ContestStatus.SCHEDULED && currentStartTime) {
                 // Update notifications with new start time
                 const schedulerService = getSchedulerService();
-                await schedulerService.updateContestNotifications(instance.id, currentStartTime);
+                await schedulerService.updateContestNotifications(instance.id, currentStartTime, currentEndTime);
                 console.log(`Updated notifications for contest ${instance.id} with new start time ${currentStartTime}`);
             } else if (statusChanged) {
                 const schedulerService = getSchedulerService();
                 
                 if (currentStatus === ContestStatus.SCHEDULED && currentStartTime) {
                     // Status changed to SCHEDULED - add notifications
-                    await schedulerService.scheduleContestNotifications(instance.id, currentStartTime);
+                    await schedulerService.scheduleContestNotifications(instance.id, currentStartTime, currentEndTime);
                     console.log(`Scheduled notifications for contest ${instance.id} (status changed to SCHEDULED)`);
                 } else if (previousStatus === ContestStatus.SCHEDULED) {
                     // Status changed from SCHEDULED to something else - remove notifications

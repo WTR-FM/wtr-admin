@@ -12,7 +12,7 @@ import {
 
 export interface ContestNotificationEvent {
     contestId: string;
-    triggerName: 'wtr_wednesday_reminder' | 'team_not_submitted_final_hours';
+    triggerName: 'wtr_wednesday_reminder' | 'team_not_submitted_final_hours' | 'wtr_results_email';
     startTime: Date;
 }
 
@@ -43,14 +43,16 @@ export class SchedulerContestService {
     /**
      * Schedule notification events for a contest
      */
-    async scheduleContestNotifications(contestId: string, startTime: Date): Promise<void> {
+    async scheduleContestNotifications(contestId: string, startTime: Date, endTime?: Date): Promise<void> {
         const now = new Date();
         const startTimeMs = startTime.getTime();
+        const endTimeMs = endTime ? endTime.getTime() : null;
         const nowMs = now.getTime();
 
         // Calculate trigger times
         const sevenHoursBefore = new Date(startTimeMs - (7 * 60 * 60 * 1000));
         const twoHoursBefore = new Date(startTimeMs - (2 * 60 * 60 * 1000));
+        const oneHourAfterEnd = new Date(endTimeMs + (1 * 60 * 60 * 1000));
 
         const promises: Promise<void>[] = [];
 
@@ -70,6 +72,16 @@ export class SchedulerContestService {
             console.log("Scheduled 2 hours notification with AWS Scheduler");
         }
 
+        // Schedule post-contest results notification if endTime is provided
+        if (endTimeMs) {
+            if (oneHourAfterEnd.getTime() > nowMs) {
+                promises.push(
+                    this.createScheduledEvent(contestId, 'wtr_results_email', oneHourAfterEnd)
+                );
+                console.log("Scheduled results email notification with AWS Scheduler for 1 hour after end time");
+            }
+        }
+
         await Promise.all(promises);
     }
 
@@ -79,7 +91,8 @@ export class SchedulerContestService {
     async removeContestNotifications(contestId: string): Promise<void> {
         const scheduleNames = [
             this.getScheduleName(contestId, 'wtr_wednesday_reminder'),
-            this.getScheduleName(contestId, 'team_not_submitted_final_hours')
+            this.getScheduleName(contestId, 'team_not_submitted_final_hours'),
+            this.getScheduleName(contestId, 'wtr_results_email')
         ];
 
         const promises = scheduleNames.map(scheduleName => this.deleteScheduledEvent(scheduleName));
@@ -89,12 +102,12 @@ export class SchedulerContestService {
     /**
      * Update contest notifications - removes old ones and creates new ones
      */
-    async updateContestNotifications(contestId: string, newStartTime: Date): Promise<void> {
+    async updateContestNotifications(contestId: string, newStartTime: Date, newEndTime?: Date): Promise<void> {
         // Remove existing notifications
         await this.removeContestNotifications(contestId);
 
         // Schedule new notifications
-        await this.scheduleContestNotifications(contestId, newStartTime);
+        await this.scheduleContestNotifications(contestId, newStartTime, newEndTime);
     }
 
     /**
@@ -102,7 +115,7 @@ export class SchedulerContestService {
      */
     private async createScheduledEvent(
         contestId: string,
-        triggerName: 'wtr_wednesday_reminder' | 'team_not_submitted_final_hours',
+        triggerName: 'wtr_wednesday_reminder' | 'team_not_submitted_final_hours' | 'wtr_results_email',
         triggerTime: Date
     ): Promise<void> {
         const scheduleName = this.getScheduleName(contestId, triggerName);
