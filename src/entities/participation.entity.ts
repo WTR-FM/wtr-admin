@@ -68,6 +68,20 @@ export class Participation extends Model {
     })
     declare isLocked: boolean;
 
+    @Column({
+        type: DataType.INTEGER,
+        allowNull: true,
+        defaultValue: 0,
+    })
+    declare earnedXPs: number; // Total XPs earned by the team
+
+    @Column({
+        type: DataType.JSONB,
+        allowNull: true,
+        defaultValue: {},
+    })
+    declare earnedXPsByTrack: Record<string, number> | null; // XPs earned by each track
+
     @CreatedAt
     declare createdAt: Date;
 

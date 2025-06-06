@@ -5,8 +5,8 @@ import { FormattedDate } from "../../types/components.bundler.js";
 const ParticipationConfig = {
   resource: Participation,
   options: {
-    listProperties: ['contestId', 'userId', 'teamTitle', 'rank', 'isLocked'],
-    showProperties: ['id', 'contestId', 'userId', 'team', 'teamTitle', 'rank', 'isLocked', 'createdAt', 'updatedAt'],
+    listProperties: ['contestId', 'userId', 'teamTitle', 'rank', 'isLocked', 'earnedXPs'],
+    showProperties: ['id', 'contestId', 'userId', 'team', 'teamTitle', 'rank', 'isLocked', 'earnedXPs', 'earnedXPsByTrack', 'createdAt', 'updatedAt'],
     editProperties: ['contestId', 'userId', 'team', 'teamTitle', 'rank', 'isLocked'],
     filterProperties: ['contestId', 'userId', 'isLocked', 'rank'],
     properties: {

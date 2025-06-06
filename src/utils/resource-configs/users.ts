@@ -6,7 +6,7 @@ const UserConfig = {
   resource: User,
   options: {
     listProperties: ['firstName', 'lastName', 'email', 'isSuspended', 'coinbaseConnection', 'spotifyConnection', 'isVerified', 'createdAt'],
-    showProperties: ['id', 'firstName', 'lastName', 'email', 'phoneNumber', 'spotifyConnection', 'country', 'state', 'pincode', 'about', 'isSuspended', 'isVerified', 'coinbaseWalletAddress', 'spotifyStatus', 'createdAt', 'updatedAt'],
+    showProperties: ['id', 'firstName', 'lastName', 'email', 'phoneNumber', 'spotifyConnection', 'country', 'state', 'pincode', 'about', 'isSuspended', 'isVerified', 'coinbaseWalletAddress', 'spotifyStatus', 'totalXPs', 'createdAt', 'updatedAt'],
     editProperties: ['firstName', 'lastName', 'email', 'password', 'isSuspended', 'isVerified','spotifyConnectionEdit'],
     filterProperties: ['firstName', 'lastName', 'email', 'isSuspended', 'isVerified'],
     properties: {

@@ -159,11 +159,11 @@ async function createNotificationTemplates() {
                                         <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
                                             <tr>
                                                 <td width="50%" style="text-align: center; padding-right: 15px;">
-                                                    <div style="font-size: 32px; font-weight: bold; color: #4CD964; margin-bottom: 5px;">+{{xpChange}}</div>
+                                                    <div style="font-size: 32px; font-weight: bold; color: #4CD964; margin-bottom: 5px;">+{{earnedXPs}}</div>
                                                     <div style="font-size: 14px; color: #c4c4c4; text-transform: uppercase; letter-spacing: 0.5px;">XP Earned</div>
                                                 </td>
                                                 <td width="50%" style="text-align: center; padding-left: 15px;">
-                                                    <div style="font-size: 32px; font-weight: bold; color: #B19CFF; margin-bottom: 5px;">{{newXp}}</div>
+                                                    <div style="font-size: 32px; font-weight: bold; color: #B19CFF; margin-bottom: 5px;">{{totalXPs}}</div>
                                                     <div style="font-size: 14px; color: #c4c4c4; text-transform: uppercase; letter-spacing: 0.5px;">Total XP</div>
                                                 </td>
                                             </tr>

@@ -142,6 +142,13 @@ export class User extends Model {
   })
   declare profileImageUrl: string;
 
+  @Column({
+    type: DataType.INTEGER,
+    allowNull: true,
+    defaultValue: 0,
+  })
+  declare totalXPs: number;
+
   @CreatedAt
   declare createdAt: Date;
 
