@@ -8,15 +8,13 @@ export const componentLoader = new ComponentLoader();
 export const add = (url: string, componentName: string): string =>
   componentLoader.add(componentName, path.join(__dirname, url));
 
-// export const override = (url: string, componentName: OverridableComponent): string =>
-//   componentLoader.override(componentName, path.join(__dirname, url));
+export const override = (url: string, componentName: string): string =>
+  componentLoader.override(componentName, path.join(__dirname, url));
 
-// /**
-//  * Overridable components
-//  */
-// override('components/top-bar', 'Version');
-// override('components/login', 'Login');
-// override('components/sidebar-resource-section', 'SidebarResourceSection');
+/**
+ * Overridable components
+ */
+export const Login = override('../components/login', 'Login');
 
 /**
  * Common components
