@@ -61,7 +61,7 @@ export const Login: React.FC<LoginProps> = (props) => {
             display={['none', 'none', 'block']}
             position="relative"
           >
-            <H2 fontWeight="lighter">WELCOME</H2>
+            <H2 fontWeight="lighter">Welcome</H2>
             <Text fontWeight="lighter" mt="default">
               Please login to manage contests, users, and platform settings
             </Text>
